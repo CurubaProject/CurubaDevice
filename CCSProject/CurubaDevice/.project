@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>CurubaDevice</name>
+	<comment></comment>
+	<projects>
+		<project>CC3000 Board</project>
+		<project>CC3000 Spi</project>
+		<project>CC3000HostDriver</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>CommsManager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.c</locationURI>
+		</link>
+		<link>
+			<name>CommsManager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.h</locationURI>
+		</link>
+		<link>
+			<name>domumapp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.c</locationURI>
+		</link>
+		<link>
+			<name>domumapp.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.h</locationURI>
+		</link>
+		<link>
+			<name>main.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/main.c</locationURI>
+		</link>
+		<link>
+			<name>wifi.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/wifi.c</locationURI>
+		</link>
+		<link>
+			<name>wifi.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/wifi.h</locationURI>
+		</link>
+		<link>
+			<name>Librairy/CC3000 Board.lib</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CC3000%20Board/Debug/CC3000%20Board.lib</locationURI>
+		</link>
+		<link>
+			<name>Librairy/CC3000 Spi.lib</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CC3000%20Board/Debug/CC3000%20Spi.lib</locationURI>
+		</link>
+		<link>
+			<name>Librairy/CC3000HostDriver.lib</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CC3000HostDriver/Debug/CC3000HostDriver.lib</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

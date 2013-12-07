@@ -1,0 +1,1 @@
+"./wifi.obj" "./main.obj" "./domumapp.obj" "./CommsManager.obj" -l"libc.a" "../lnk_msp430f5310.cmd" "C:/ti/Curuba/CCSProject/CC3000 Board/Debug/CC3000 Board.lib" "C:/ti/Curuba/CCSProject/CC3000 Board/Debug/CC3000 Spi.lib" "C:/ti/Curuba/CCSProject/CC3000HostDriver/Debug/CC3000HostDriver.lib" 
