@@ -38,22 +38,18 @@ extern comms* TransmitPop;
 	char SSIDName[] = "domumrff";
 #endif
 
-signed char mac_status = -1;
-extern int uart_have_cmd;
-
 volatile unsigned long ulTimecount;
+volatile unsigned long ulTimeRef;
 
-volatile unsigned long ulSmartConfigFinished,
-						ulCC3000Connected,
-						ulCC3000DHCP,
-						OkToDoShutDown,
-						ulCC3000DHCP_configured,
-						ulPingNumber;
+volatile unsigned long  ulCC3000Connected,
+                        ulCC3000DHCP,
+                        ulCC3000SocketClosed,
+                        ulPingNumber;
 
 volatile long ulSocket, ulSocketTCP;
-volatile short 	slSocketConnected,
-				slSocketFault,
-				sNetworkConnectAttempt;
+volatile short  sSocketConnected,
+                sNetworkConnectAttempt;
+volatile short sLedState;
 netapp_pingreport_args_t pingReport;
 tNetappIpconfigRetArgs CC3000ipconfig;
 unsigned char DSServerIP[4] = { 192, 168, 20, 140 };
@@ -97,52 +93,51 @@ char *sendBootLoaderPatch(unsigned long *Length) {
 
 void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
 {
-	if (lEventType == HCI_EVNT_WLAN_UNSOL_CONNECT)
-	{
-		ulCC3000Connected = 1;
-	}
+    if (lEventType == HCI_EVNT_WLAN_UNSOL_CONNECT)
+    {
+        ulCC3000Connected = 1;
+    }
 
-	if (lEventType == HCI_EVNT_WLAN_UNSOL_DISCONNECT)
-	{
-		ulCC3000Connected = 0;
-		ulCC3000DHCP = 0;
-		ulCC3000DHCP_configured = 0;
-	}
+    if (lEventType == HCI_EVNT_WLAN_UNSOL_DISCONNECT)
+    {
+        ulCC3000Connected = 0;
+        ulCC3000DHCP = 0;
+    }
 
-	if (lEventType == HCI_EVNT_WLAN_UNSOL_DHCP)
-	{
-		// Notes:
-		// 1) IP config parameters are received swapped
-		// 2) IP config parameters are valid only if status is OK, i.e. ulCC3000DHCP becomes 1
+    if (lEventType == HCI_EVNT_WLAN_UNSOL_DHCP)
+    {
+        // Notes:
+        // 1) IP config parameters are received swapped
+        // 2) IP config parameters are valid only if status is OK, i.e. ulCC3000DHCP becomes 1
 
-		// only if status is OK, the flag is set to 1 and the addresses are valid
-		if ( *(data + NETAPP_IPCONFIG_MAC_OFFSET) == 0)
-		{
-			ulCC3000DHCP = 1;
-		}
-		else
-		{
-			ulCC3000DHCP = 0;
-		}
-	}
+        // only if status is OK, the flag is set to 1 and the addresses are valid
+        if ( *(data + NETAPP_IPCONFIG_MAC_OFFSET) == 0)
+        {
+            ulCC3000DHCP = 1;
+        }
+        else
+        {
+            ulCC3000DHCP = 0;
+        }
+    }
 
-	if (lEventType == HCI_EVENT_CC3000_CAN_SHUT_DOWN)
-	{
-		OkToDoShutDown = 1;
-	}
-
-	if (lEventType == HCI_EVNT_WLAN_ASYNC_PING_REPORT)
-	{
+    if (lEventType == HCI_EVNT_WLAN_ASYNC_PING_REPORT)
+    {
 
 
-		memcpy(&pingReport, data, length);
+        memcpy(&pingReport, data, length);
 
-		if(pingReport.packets_received > 1) //All packets are received
-		{
-			ulPingNumber++;
-		}
+        if(pingReport.packets_received > 1) //All packets are received
+        {
+            ulPingNumber++;
+        }
 
-	}
+    }
+    if (lEventType == HCI_EVNT_BSD_TCP_CLOSE_WAIT)
+    {
+        ulCC3000SocketClosed = 1;
+    }
+
 }
 
 //*****************************************************************************
@@ -159,19 +154,18 @@ void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
 
 void initCommunication (void)
 {
-	//  Board Initialization start
-	ulCC3000DHCP = 0;
-	ulCC3000Connected = 0;
-	ulSocket = 0;
-	ulSmartConfigFinished = 0;
-	ulPingNumber = 0;
-	slSocketConnected = 0;
-	slSocketFault= 0;
-	sNetworkConnectAttempt = 0;
-	ulTimecount = 0;
+    //  Board Initialization start
+    ulCC3000DHCP = 0;
+    ulCC3000Connected = 0;
+    ulCC3000SocketClosed = 0;
+    ulSocket = 0;
+    ulPingNumber = 0;
+    sSocketConnected = 0;
+    sNetworkConnectAttempt = 0;
+    ulTimecount = 0;
 
-	// Initialize the UART RX Buffer
-	memset(requestBuffer, 0, sizeof(requestBuffer));
+    // Initialize the UART RX Buffer
+    memset(requestBuffer, 0, sizeof(requestBuffer));
 }
 
 //*****************************************************************************
@@ -237,11 +231,8 @@ void initCC3000(void)
 		__delay_cycles(100);
 		hci_unsolicited_event_handler();
 	}
-
-	ulSmartConfigFinished = 0;
 	ulCC3000Connected = 0;
 	ulCC3000DHCP = 0;
-	OkToDoShutDown = 0;
 
 	//init device with new FAT
 	wlan_stop();
@@ -455,118 +446,121 @@ void initCOMMS(void) {
 */
 int connectNetwork(void)
 {
-	int iReturnConnect;
-	long iReturnping;
-	unsigned long sReftime;
+    int iReturnConnect;
+    int iReturnValue = 0; //Default return value if problem connecting to Network or Server
+    unsigned long ulReftime;
 
+    hci_unsolicited_event_handler();
+    __delay_cycles(100);
+    if(sNetworkConnectAttempt < 5) //After 5  attempt, stopped trying to connect
+    {
+        sNetworkConnectAttempt++;
+        if (ulCC3000Connected == 0)
+        {
+            iReturnConnect = wlan_connect(WLAN_SEC_WPA2,
+                        SSIDName,
+                        strlen(SSIDName),
+                        NULL,
+                        SSIDKey,
+                        strlen((char *) SSIDKey));
 
-	hci_unsolicited_event_handler();
-	__delay_cycles(100);
+            ulReftime = getCountValue(); //Wait until connected to Network
+            while (iReturnConnect == 0 && ulCC3000Connected == 0 && getTimeCollapse(ulReftime) < 20) //Wait 10 sec
+            {
+                __delay_cycles(100);
+                hci_unsolicited_event_handler();
+            }
+            if(ulCC3000Connected == 1)
+            {
+                unsigned long aucDHCP = 14400;
+                unsigned long aucARP = 3600;
+                unsigned long aucKeepalive = 10;
+                unsigned long aucInactivity = 0;
 
-	if(sNetworkConnectAttempt < 5) //After 5 sec of attempt, retry
-	{
+                netapp_timeout_values(&aucDHCP, &aucARP, &aucKeepalive, &aucInactivity);
+                netapp_ipconfig(&CC3000ipconfig); //Get My IP address
+                __delay_cycles(50000000); //Wait Important (Make sure all events have been received)
+            }
 
-		if (ulCC3000Connected == 0)
-		{
-			wlan_connect(WLAN_SEC_WPA2,
-						SSIDName,
-						strlen(SSIDName),
-						NULL,
-						SSIDKey,
-						strlen((char *) SSIDKey));
+        }
+        if(ulCC3000Connected == 1)
+        {
+            if(connectServer())
+            {
+                iReturnValue = 1;
+                sNetworkConnectAttempt = 0;
+                sLedState = LED_STATE_CONNECTED;
+            }
+            else
+            {
+                sLedState = LED_STATE_UNCONNECTED;
+            }
+        }
+    }
+    else //Wait Before reconnecting to Wifi Network or Socket server
+    {
+        //Reset Variable to try to reconnect
+        sNetworkConnectAttempt = 0;
+        sLedState = LED_STATE_UNCONNECTED;
+        iReturnValue = 0;
 
-			//Wait until connected to Network
-			sReftime = getCountValue();
-			while (ulCC3000Connected == 0 && getTimeCollapse(sReftime) < 20) //Wait 10 sec
-			{
-				__delay_cycles(100);
-				hci_unsolicited_event_handler();
-			}
+    }
+    return (iReturnValue);
+}
 
-		}
-		//Check Server IP address
-		if(ulCC3000Connected == 1 && slSocketFault == 0)
-		{
-			unsigned long ulPingAttempts = 5;
-			unsigned long ulPingSize = 10;
-			unsigned long ulPingTimeout = 20;
+int connectServer(void)
+{
+    unsigned long ulReftime;
+    unsigned long ulTime = 0;
+    int iReturnping = 0;
+    int iReturnValue = 1;
 
-			iReturnping = netapp_ping_send((unsigned long *) DSServerIP, ulPingAttempts, ulPingSize, ulPingTimeout);
-			sReftime = getCountValue();
-			ulPingNumber = 0;
-			while(iReturnping == 0 && ulPingNumber <= 0  && getTimeCollapse(sReftime) < 2) //Stop after 5 sec of finding the Server
-			{
-				hci_unsolicited_event_handler();
-				__delay_cycles(100);
-			}
-			//netapp_ping_stop();
-			__delay_cycles(1000);
-			if(iReturnping == 0 && ulPingNumber > 0)
-			{
-				slSocketFault = 0;
-			}
-			else //IP not existing in the network
-			{
-				slSocketFault = 1;
-				slSocketConnected = 0;
-			}
+    if(ulCC3000SocketClosed == 1)   //Server closed the socket connection
+    {
+        //closesocket (ulSocketTCP);
+        sSocketConnected = 0;
+        ulCC3000SocketClosed = 0;
+    }
 
-			//Connect to Server
-			if (slSocketConnected == 0 && slSocketFault == 0)
-			{
-				__delay_cycles(10000);
-				initSocketComm();
+    if (sSocketConnected == 0)
+    {
+        initSocketComm();
+        iReturnping = netapp_ping_send((unsigned long *) DSServerIP, PING_ATTEMPT, PING_SIZE, PING_TIMEOUT);
 
-				unsigned long aucDHCP = 14400;
-				unsigned long aucARP = 3600;
-				unsigned long aucKeepalive = 10;
-				unsigned long aucInactivity = 0;
+        ulReftime = getCountValue();
+        //Check Server IP address
+        while(iReturnping == 0 && ulPingNumber == 0 && ulTime < 40) //Stop after 5 sec of finding the Server
+        {
+            hci_unsolicited_event_handler();
+            __delay_cycles(100);
+            ulTime = getTimeCollapse(ulReftime);
+        }
 
-				netapp_timeout_values(&aucDHCP, &aucARP, &aucKeepalive, &aucInactivity);
+        if(iReturnping != 0 || ulTime >= 10) //Problem finding server IP
+        {
+            iReturnValue = 0;
+        }
+    }
 
-				//Get My IP address
-				netapp_ipconfig(&CC3000ipconfig);
+    //Connect to Server
+    if (sSocketConnected == 0 && iReturnValue == 1)
+    {
+        int iReturnConnect = connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr));
+        __delay_cycles(12500000);
 
-				//Connect to Socket Server
-				__delay_cycles(50000000); //Wait Important (Make sure all events have been received)
+        if (iReturnConnect == 0)
+        {
+            iReturnValue = 1;
+            sSocketConnected = 1;
+        }
+        else //Server present but not listening
+        {
+            //closesocket (ulSocketTCP);
+            iReturnValue = 0;
+        }
+    }
 
-				iReturnConnect = connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr));
-				__delay_cycles(12500000);
-
-				if (iReturnConnect == 0)
-				{
-					slSocketConnected = 1;
-				}
-				else //Server present but not listening
-				{
-					slSocketConnected = 0;
-				}
-			}
-		}
-
-		//Problem connecting to Network or Server
-		if (ulCC3000Connected == 0 || slSocketConnected == 0 || slSocketFault == 1)
-		{
-			sNetworkConnectAttempt++;
-			slSocketFault = 0;
-			return 0;
-		}
-		else
-		{
-			sNetworkConnectAttempt=0;
-			return 1;
-		}
-
-	}
-	else //Wait Before reconnecting to Wifi Network or Socket server
-	{
-		//Reset Variable to try to reconnect
-		sNetworkConnectAttempt = 0;
-		turnLedOn(WARNING_LED);
-		//sReftime =
-		return 0;
-
-	}
+    return (iReturnValue);
 }
 
 void initTIMERB0(void)
@@ -610,29 +604,69 @@ unsigned long getTimeCollapse(unsigned long lastcount)
 
 //Timer used to interrupt at every 500 msec
 #pragma vector=TIMER0_B1_VECTOR
-__interrupt void TIMER0_B1_ISR(void) {
-	switch (__even_in_range(TB0IV, 14))
-	{
-		case 0:                            // No interrupt
-			break;
-		case TB0IV_TB0CCR1:                            // Capture/Compare 1
-			break;
-		case TB0IV_TB0CCR2:                            // Capture/Compare 2
-			break;
-		case TB0IV_3:                            // Capture/Compare 3
-			break;
-		case TB0IV_4:                            // Capture/Compare 4
-			break;
-		case TB0IV_5:                           // Capture/Compare 5
-			break;
-		case TB0IV_6:                           // Capture/Compare 6
-			break;
-		case TB0IV_TB0IFG:                           // Timer overflow
+__interrupt void TIMER0_B1_ISR(void)
+{
+    static short sFlag = 0;
+    unsigned long ultime;
+    switch (__even_in_range(TB0IV, 14))
+    {
+        case 0:                            // No interrupt
+            break;
+        case TB0IV_TB0CCR1:                            // Capture/Compare 1
+            break;
+        case TB0IV_TB0CCR2:                            // Capture/Compare 2
+            break;
+        case TB0IV_3:                            // Capture/Compare 3
+            break;
+        case TB0IV_4:                            // Capture/Compare 4
+            break;
+        case TB0IV_5:                           // Capture/Compare 5
+            break;
+        case TB0IV_6:                           // Capture/Compare 6
+            break;
+        case TB0IV_TB0IFG:                           // Timer overflow
+            ulTimecount++;
+            if(sFlag == 0)
+            {
+                ulTimeRef = getCountValue();
+                sFlag = 1;
+                ultime = getTimeCollapse(ulTimeRef);
+            }
+            else if(sFlag == 1)
+            {
+                ultime = getTimeCollapse(ulTimeRef);
+            }
+            switch (sLedState)
+            {
+                case LED_STATE_OFF:
+                    turnLedOff(WARNING_LED);
+                    break;
+                case LED_STATE_UNCONNECTED:
+                    turnLedOn(WARNING_LED);
+                    break;
+                case LED_STATE_CONNECTED:
+                    if(ultime >= 8) // 1 Hz ON of toggle
+                    {
+                        toggleLed(WARNING_LED);
+                        sFlag = 0;
+                    }
+                    break;
+                case LED_STATE_CONFIGURING:
+                    if(ultime >= 80 )
+                    {
+                        toggleLed(WARNING_LED);
+                        sFlag = 0;
+                    }
+                    break;
+                default:
+                    sFlag = 0;
+                    break;
+            }
+            TB0CTL &= ~TBIFG;
+            break;
+        default:
+            break;
 
-			ulTimecount++;
-			TB0CTL &= ~TBIFG;
-			break;
-		default:
-			break;
-	}
+
+    }
 }
