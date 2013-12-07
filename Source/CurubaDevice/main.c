@@ -4,7 +4,6 @@
  *
  *
  *****************************************************************************/
-
 #include "evnt_handler.h"
 #include "nvmem.h"
 #include "socket.h"
@@ -17,13 +16,11 @@
 #include <string.h>
 #include <msp430.h>
 
+#include <assert.h>
+
 #include "domumapp.h"
 #include "CommsManager.h"
 #include "wifi.h"
-
-#define DISABLE                                     (0)
-#define ENABLE                                      (1)
-#define NETAPP_IPCONFIG_MAC_OFFSET              	(20)
 
 extern comms* ReceiveFirst;
 extern comms* ReceivePush;
@@ -32,9 +29,6 @@ extern comms* TransmitFirst;
 extern comms* TransmitPush;
 extern comms* TransmitPop;
 
-extern comms devices[];
-
-comms Test;
 //*****************************************************************************
 //
 //! main
@@ -47,22 +41,10 @@ comms Test;
 //
 //*****************************************************************************
 void main(void) {
-
-//	Pop(comms_transmit);
-
-//	Push(ReceiveFirst,ReceivePush,Test);
-
-	static int Test1 = 0;
-
-	int networkconnected = 0;
 	int TypeModule = 0;
 
-
-
 	initCommunication();
-
 	initDriver();
-	//initCOMMS();
 
 	//Application type of the module
 	TypeModule = ReadAppSwitch();
@@ -84,48 +66,34 @@ void main(void) {
 	CTRL_OUT |= CTRL_1;
 
 	while (1) {
-		networkconnected = connectNetwork();
-		if(networkconnected)
+		if(connectNetwork())
 		{
 			receivePayLoad();
-		}
 
-		if (Pop(&ReceiveFirst, &ReceivePush, &ReceivePop))              //Mettre la fonction Pop
-		{
-			switch (ReceivePop->payloadid)
+			if (Pop(&ReceiveFirst, &ReceivePush, &ReceivePop))
 			{
-				case PAYLOAD_INFO_REQUEST :
-					InfoCommsReceive(TypeModule); //Must be change to comms_receive.type
-					break;
-				case PAYLOAD_CONTROL_REQUEST :
-					ControlCommsReceive(TypeModule); //Must be change to comms_receive.type
-					break;
-				case PAYLOAD_CONFIG_REQUEST :
-					//Not use for now
-					break;
-				default :
-					break;
+				assert(ReceivePop != NULL);
+				switch (ReceivePop->payloadid)
+				{
+					case PAYLOAD_INFO_REQUEST :
+						InfoCommsReceive(TypeModule); //Must be change to comms_receive.type
+						break;
+					case PAYLOAD_CONTROL_REQUEST :
+						ControlCommsReceive(TypeModule); //Must be change to comms_receive.type
+						break;
+					case PAYLOAD_CONFIG_REQUEST :
+						//Not use for now
+						break;
+					default :
+						assert(0);
+						break;
+				}
 			}
-		}
 
-		if (Pop(&TransmitFirst, &TransmitPush, &TransmitPop))
-		{
-			switch (TransmitPop->payloadid)
+			if (Pop(&TransmitFirst, &TransmitPush, &TransmitPop))
 			{
-				case 0 :
-					payloadToSend(TransmitPop);
-				break;
-				case PAYLOAD_INFO_RESPONSE :
-					payloadToSend(TransmitPop);
-					break;
-				case PAYLOAD_CONTROL_RESPONSE :
-					payloadToSend(TransmitPop);
-					break;
-				case PAYLOAD_CONFIG_RESPONSE :
-					payloadToSend(TransmitPop);
-					break;
-				default :
-					break;
+				assert(TransmitPop != NULL);
+				payloadToSend(TransmitPop);
 			}
 		}
 	}
