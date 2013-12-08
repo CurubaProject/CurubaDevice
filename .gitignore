@@ -1,10 +1,31 @@
-"/CCSProject/CC3000 Board/Debug/*"
-"/CCSProject/CC3000 Board/Release/*"
-"/CCSProject/CC3000 Spi/Debug/*"
-"/CCSProject/CC3000 Spi/Release/*"
-"/CCSProject/CC3000HostDriver/Debug/*"
-"/CCSProject/CC3000HostDriver/Release/*"
-"/CCSProject/CurubaDevice/Debug/*"
-"/CCSProject/CurubaDevice/Release/*"
-"/CCSProject/CurubaDevice_OLD/Debug/*"
-"/CCSProject/CurubaDevice_OLD/Release/*"
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+/CCSProject/CC3000 Board/Debug/*
+/CCSProject/CC3000 Board/Release/*
+/CCSProject/CC3000 Spi/Debug/*
+/CCSProject/CC3000 Spi/Release/*
+/CCSProject/CC3000HostDriver/Debug/*
+/CCSProject/CC3000HostDriver/Release/*
+/CCSProject/CurubaDevice/Debug/*
+/CCSProject/CurubaDevice/Release/*
+/CCSProject/CurubaDevice_OLD/Debug/*
+/CCSProject/CurubaDevice_OLD/Release/*
