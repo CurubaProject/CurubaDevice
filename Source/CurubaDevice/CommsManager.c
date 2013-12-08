@@ -43,5 +43,13 @@ void Push(comms** PtrFirst, comms** PtrPush, comms NewStruct)
 		(*PtrPush)++;
 	}
 
-	**PtrPush = NewStruct;             //mettre la nouvelle struct recu.
+	**PtrPush = NewStruct;
+}
+
+comms* getTransmitFirst() {
+	return TransmitFirst;
+}
+
+comms* getTransmitPush() {
+	return TransmitPush;
 }

@@ -36,6 +36,31 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.h</locationURI>
 		</link>
 		<link>
+			<name>TypeDevice.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/TypeDevice.c</locationURI>
+		</link>
+		<link>
+			<name>commun.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commun.h</locationURI>
+		</link>
+		<link>
+			<name>device.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/device.h</locationURI>
+		</link>
+		<link>
+			<name>dimmer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/dimmer.c</locationURI>
+		</link>
+		<link>
+			<name>dimmer.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/dimmer.h</locationURI>
+		</link>
+		<link>
 			<name>domumapp.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.c</locationURI>
@@ -46,9 +71,44 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.h</locationURI>
 		</link>
 		<link>
+			<name>interupt.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interupt.c</locationURI>
+		</link>
+		<link>
+			<name>interupt.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interupt.h</locationURI>
+		</link>
+		<link>
 			<name>main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/main.c</locationURI>
+		</link>
+		<link>
+			<name>outlet.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/outlet.c</locationURI>
+		</link>
+		<link>
+			<name>outlet.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/outlet.h</locationURI>
+		</link>
+		<link>
+			<name>typeDevice.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/typeDevice.h</locationURI>
+		</link>
+		<link>
+			<name>util.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/util.c</locationURI>
+		</link>
+		<link>
+			<name>util.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/util.h</locationURI>
 		</link>
 		<link>
 			<name>wifi.c</name>

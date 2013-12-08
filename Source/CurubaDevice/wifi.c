@@ -7,10 +7,16 @@
 
 #include "wlan.h"
 #include "netapp.c"
-#include "wifi.h"
-#include "domumapp.h"
-#include "CommsManager.h"
+#include "evnt_handler.h"
 #include "board.h"
+#include <msp430.h>
+
+#include "host_driver_version.h"
+#include "spi.h"
+
+#include "wifi.h"
+#include "CommsManager.h"
+#include "commun.h"
 
 extern comms* ReceiveFirst;
 extern comms* ReceivePush;

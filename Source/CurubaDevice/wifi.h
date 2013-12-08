@@ -16,6 +16,10 @@
 #define LED_STATE_CONNECTED             (2)
 #define LED_STATE_CONFIGURING           (3)
 
+#define DISABLE                                     (0)
+#define ENABLE                                      (1)
+#define NETAPP_IPCONFIG_MAC_OFFSET              	(20)
+
 void initCommunication (void);
 void initDriver(void);
 void payloadReceived(unsigned char *usBuffer, signed long iReturnValue);

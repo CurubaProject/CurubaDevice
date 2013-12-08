@@ -1,26 +1,15 @@
-/*****************************************************************************
- *
- * {DomumWifi.c}
- *
- *
- *****************************************************************************/
-#include "evnt_handler.h"
-#include "nvmem.h"
-#include "socket.h"
-#include "netapp.h"
-#include "spi.h"
-#include "board.h"
-#include "host_driver_version.h"
-#include <msp430.h>
-#include "security.h"
-#include <string.h>
-#include <msp430.h>
+#include "evnt_handler.h"  // TODO REMOVE THIS
+#include "board.h"  // TODO REMOVE THIS
+#include <msp430.h>  // TODO REMOVE THIS
 
 #include <assert.h>
 
 #include "domumapp.h"
 #include "CommsManager.h"
 #include "wifi.h"
+#include "typeDevice.h"
+
+#include "commun.h"  // TODO REMOVE THIS
 
 extern comms* ReceiveFirst;
 extern comms* ReceivePush;
@@ -29,41 +18,26 @@ extern comms* TransmitFirst;
 extern comms* TransmitPush;
 extern comms* TransmitPop;
 
-//*****************************************************************************
-//
-//! main
-//!
-//!  \param  None
-//!
-//!  \return none
-//!
-//!  \brief  The main loop is executed here
-//
-//*****************************************************************************
 void main(void) {
-	int TypeModule = 0;
+	//Application type of the module
+	int typeModule = ReadAppSwitch();
+	TYPEDEVICE* device = createTypeDevice(typeModule);
 
 	initCommunication();
 	initDriver();
+	initApp(device);
 
-	//Application type of the module
-	TypeModule = ReadAppSwitch();
-
-	InitListComms(TypeModule);
+	InitListComms(device); // TODO PK BEFORE AND AFTER
 
 	InitADC10();
 	InitTIMER0();
-	InitTIMER1(TypeModule);
-	InitTIMER2(TypeModule);
+	InitTIMER1(device);
+	InitTIMER2(device);
 	initTIMERB0();
 
-	__bis_SR_register(GIE);
+	__bis_SR_register(GIE); //TODO Remove from main
 
-//	TimerStart(TIMER_1);
-
-	InitListComms(TypeModule);
-
-	CTRL_OUT |= CTRL_1;
+	CTRL_OUT |= CTRL_1; //TODO Remove from main
 
 	while (1) {
 		if(connectNetwork())
@@ -76,10 +50,10 @@ void main(void) {
 				switch (ReceivePop->payloadid)
 				{
 					case PAYLOAD_INFO_REQUEST :
-						InfoCommsReceive(TypeModule); //Must be change to comms_receive.type
+						InfoCommsReceive(device, TransmitFirst, TransmitPush); // TODO ?? Must be change to comms_receive.type
 						break;
 					case PAYLOAD_CONTROL_REQUEST :
-						ControlCommsReceive(TypeModule); //Must be change to comms_receive.type
+						ControlCommsReceive(device, ReceivePop, TransmitFirst, TransmitPush); // TODO ??Must be change to comms_receive.type
 						break;
 					case PAYLOAD_CONFIG_REQUEST :
 						//Not use for now
