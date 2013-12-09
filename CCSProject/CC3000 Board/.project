@@ -28,12 +28,12 @@
 		<link>
 			<name>board.c</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/ti/Curuba/Source/CC3000%20Board/board.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/board.c</locationURI>
 		</link>
 		<link>
 			<name>board.h</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/ti/Curuba/Source/CC3000%20Board/board.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/board.h</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
