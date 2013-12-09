@@ -27,9 +27,10 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#include "interuptDeviceControl.h"
 #include "util.h"
 #include "typeDevice.h"
-#include "domumapp.h"
+#include "deviceControl.h"
 #include "commun.h"
 
 #include "evnt_handler.h"

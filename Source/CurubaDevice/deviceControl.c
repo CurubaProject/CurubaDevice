@@ -27,12 +27,12 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "domumapp.h"
+#include "deviceControl.h"
 #include "CommsManager.h"
 #include "commun.h"
 #include "util.h"
 #include "typeDevice.h"
-#include "interupt.h"
+#include "interuptDeviceControl.h"
 
 int Tab_ADC10[64] = { 0 };   //a isoler
 
@@ -111,7 +111,6 @@ void HeartBeat(TYPEDEVICE* device)
 
 	device->heartBeat(transmitFirst, transmitPush, Tab_ADC10);
 }
-
 
 unsigned short ReadAppSwitch(void) {
 	return (SWITCH_B1_IN & 0x0F);

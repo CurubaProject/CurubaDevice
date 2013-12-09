@@ -54,6 +54,16 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/device.h</locationURI>
 		</link>
 		<link>
+			<name>deviceControl.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/deviceControl.c</locationURI>
+		</link>
+		<link>
+			<name>deviceControl.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/deviceControl.h</locationURI>
+		</link>
+		<link>
 			<name>dimmer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/dimmer.c</locationURI>
@@ -64,24 +74,14 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/dimmer.h</locationURI>
 		</link>
 		<link>
-			<name>domumapp.c</name>
+			<name>interuptDeviceControl.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interuptDeviceControl.c</locationURI>
 		</link>
 		<link>
-			<name>domumapp.h</name>
+			<name>interuptDeviceControl.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.h</locationURI>
-		</link>
-		<link>
-			<name>interupt.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interupt.c</locationURI>
-		</link>
-		<link>
-			<name>interupt.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interupt.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interuptDeviceControl.h</locationURI>
 		</link>
 		<link>
 			<name>main.c</name>

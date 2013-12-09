@@ -29,7 +29,7 @@
 // ------------------------------------------------------------------------------------------------
 #include <assert.h>
 
-#include "domumapp.h"
+#include "deviceControl.h"
 #include "CommsManager.h"
 #include "wifi.h"
 #include "typeDevice.h"
