@@ -3,6 +3,9 @@
 	<name>CurubaDevice</name>
 	<comment></comment>
 	<projects>
+		<project>CC3000 Board</project>
+		<project>CC3000 Spi</project>
+		<project>CC3000HostDriver</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -1,6 +1,7 @@
 #include "device.h"
 #include "util.h"
 #include "commun.h"
+#include "outlet.h"
 
 #include "typeDevice.h"
 
