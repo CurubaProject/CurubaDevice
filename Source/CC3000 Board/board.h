@@ -141,6 +141,4 @@ void Init_FLL_Settle(unsigned int fsystem, unsigned int ratio);
 void Init_FLL(unsigned int fsystem, unsigned int ratio);
 unsigned int SetVCore(unsigned char level);
 
-unsigned short ReadAppSwitch(void);
-
 #endif

@@ -363,21 +363,6 @@ void WlanInterruptDisable() {
 
 //*****************************************************************************
 //
-//! ReadAppSwitch
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//
-//*****************************************************************************
-
-unsigned short ReadAppSwitch(void) {
-	return (SWITCH_B1_IN & 0x0F);
-}
-
-//*****************************************************************************
-//
 //! WriteWlanPin
 //!
 //! @param  val value to write to wlan pin

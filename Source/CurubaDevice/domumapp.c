@@ -111,3 +111,8 @@ void HeartBeat(TYPEDEVICE* device)
 
 	device->heartBeat(transmitFirst, transmitPush, Tab_ADC10);
 }
+
+
+unsigned short ReadAppSwitch(void) {
+	return (SWITCH_B1_IN & 0x0F);
+}

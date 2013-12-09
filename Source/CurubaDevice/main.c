@@ -27,8 +27,6 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "board.h"  // TODO REMOVE THIS
-
 #include <assert.h>
 
 #include "domumapp.h"
@@ -73,10 +71,10 @@ void main(void) {
 				switch (ReceivePop->payloadid)
 				{
 					case PAYLOAD_INFO_REQUEST :
-						InfoCommsReceive(device, TransmitFirst, TransmitPush); // TODO ?? Must be change to comms_receive.type
+						InfoCommsReceive(device, TransmitFirst, TransmitPush);
 						break;
 					case PAYLOAD_CONTROL_REQUEST :
-						ControlCommsReceive(device, ReceivePop, TransmitFirst, TransmitPush); // TODO ??Must be change to comms_receive.type
+						ControlCommsReceive(device, ReceivePop, TransmitFirst, TransmitPush);
 						break;
 					case PAYLOAD_CONFIG_REQUEST :
 						//Not use for now
