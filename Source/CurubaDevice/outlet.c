@@ -10,6 +10,9 @@
 
 comms devices_outlet[2];
 
+void initDevice_outlet(int* Tab_ADC10){
+}
+
 void initListComms_outlet() {
 	comms d;
 
@@ -19,7 +22,6 @@ void initListComms_outlet() {
 	d.device = DEVICE_1;
 	d.type = TYPE_OUTLET;
 	d.data = 0;
-	d.change = 1;
 
 	devices_outlet[0] = d;
 
@@ -28,20 +30,18 @@ void initListComms_outlet() {
 	devices_outlet[1] = d;
 }
 
-void heartBeat_outlet(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10) { // TODO Rename
-	int state = 0; // TODO WHY NOT GET STATE (SEE OLD CODE)
+void heartBeat_outlet(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10) {
+	int state = GetState(devices_outlet[0].device, Tab_ADC10);
 	if(IsStateChange(state, devices_outlet[0].state))
 	{
 		devices_outlet[0].payloadid = 0;
 		devices_outlet[0].data = ComputationWattHour(Tab_ADC10);
-		devices_outlet[0].change = 1;
 	}
 	else
 	{
 		devices_outlet[0].payloadid = 0;
 		devices_outlet[0].state = (1^state)+1;
 		devices_outlet[0].data = ComputationWattHour(Tab_ADC10);
-		devices_outlet[0].change = 1;
 	}
 
 	Push(&transmitFirst, &transmitPush, devices_outlet[0]);//comms_transmit[0] = devices[0];
@@ -50,14 +50,12 @@ void heartBeat_outlet(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10)
 	{
 		devices_outlet[1].payloadid = 0;
 		devices_outlet[1].data = ComputationWattHour(Tab_ADC10);
-		devices_outlet[1].change = 1;
 	}
 	else
 	{
 		devices_outlet[1].payloadid = 0;
 		devices_outlet[1].state = (1^state)+1;
 		devices_outlet[1].data = ComputationWattHour(Tab_ADC10);
-		devices_outlet[1].change = 1;
 	}
 
 	Push(&transmitFirst, &transmitPush, devices_outlet[1]);//comms_transmit[1] = devices[1];
@@ -66,7 +64,7 @@ void heartBeat_outlet(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10)
 void controlCommsReceive_outlet(TYPEDEVICE* device,
 								 comms* ReceivePop, 
 								 comms* transmitFirst, comms* transmitPush, 
-								int* Tab_ADC10) { // TODO Rename
+								int* Tab_ADC10) {
 
 	if (ReceivePop->device == DEVICE_1)
 	{
@@ -76,7 +74,6 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 		devices_outlet[0].device = ReceivePop->device;
 		devices_outlet[0].type = TYPE_OUTLET;
 		devices_outlet[0].data = ComputationWattHour(Tab_ADC10);
-		devices_outlet[0].change = 1;
 
 		Push(&transmitFirst, &transmitPush, devices_outlet[0]);//comms_transmit[0] = devices[0];
 	}
@@ -88,7 +85,6 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 		devices_outlet[1].device = ReceivePop->device;
 		devices_outlet[1].type = TYPE_OUTLET;
 		devices_outlet[1].data = ComputationWattHour(Tab_ADC10);
-		devices_outlet[1].change = 1;
 
 		Push(&transmitFirst, &transmitPush, devices_outlet[1]);//comms_transmit[1] = devices[1];
 	}
@@ -126,7 +122,7 @@ void infoCommsReceive_outlet(comms* transmitFirst, comms* transmitPush) {
 }
 
 void initTIMER1_outlet() {
-	TA1CCR0 |= 0x3C00;// Value the timer count to //ps Jo veut modifier par une variable
+	TA1CCR0 |= HEARTBEAT_TIME;
 }
 
 void initTIMER2_outlet() {

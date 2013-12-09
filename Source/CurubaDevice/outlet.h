@@ -1,6 +1,9 @@
 #ifndef OUTLET_H
 #define OUTLET_H
 
+#define HEARTBEAT_TIME 0x3C00
+
+void initDevice_outlet(int* Tab_ADC10);
 void initListComms_outlet();
 void heartBeat_outlet(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10);
 void controlCommsReceive_outlet(TYPEDEVICE* device,

@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 
-int GetState(int deviceNumber, int* Tab_ADC10) // TODO RENAME Tab_ADC10
+int GetState(int deviceNumber, int* Tab_ADC10)
 {
 	static long int state = 0;
 	ADCRead(deviceNumber);
@@ -18,14 +18,16 @@ int GetState(int deviceNumber, int* Tab_ADC10) // TODO RENAME Tab_ADC10
 	return state;
 }
 
-int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab_ADC10) // TODO RENAME TAB
+int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab_ADC10)
 {
 	static long int state = STATE_OFF;
 
-	// TODO ASK JS DOUBLE GETSTATE
 	state = GetState(deviceNumber, Tab_ADC10);
 
-	device->changeIO(deviceNumber);
+	if(state != commande)
+	{
+		device->changeIO(deviceNumber);
+	}
 
 	state = GetState(deviceNumber, Tab_ADC10);
 
@@ -47,7 +49,7 @@ TYPEDEVICE* createDimmer() {
 	device->changeIO = changeIO_dimmer;
 	device->initTIMER1 = initTIMER1_dimmer;
 	device->initTIMER2 = initTIMER2_dimmer;
-
+	device->initDevice = initDevice_dimmer;
 	return device;
 }
 

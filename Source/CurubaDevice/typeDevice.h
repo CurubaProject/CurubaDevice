@@ -5,6 +5,7 @@
 #include "device.h"
 
 typedef struct typeDevice {
+	InitDevice initDevice;
 	InitListCommsDevice initListComms;
 	HeartBeatDevice heartBeat;
 	ControlCommsReceiveDevice controlCommsReceive;

@@ -13,7 +13,6 @@
 
 typedef struct comms {
 	int payloadid;
-	int change; // TODO Remove
 	int type;
 	int device;
 	int status;

@@ -25,15 +25,15 @@ void TimerStop(int timer_number)
 {
 	if (timer_number == TIMER_0)
 	{
-		TA0CTL &= 0xFFCF;                 //TODO MC_0 //variable
+		TA0CTL &= TIMER_OFF;
 	}
 	else if (timer_number == TIMER_1)
 	{
-		TA1CTL &= 0xFFCF;                 //TODO MC_0 //variable
+		TA1CTL &= TIMER_OFF;
 	}
 	else if (timer_number == TIMER_2)
 	{
-		TA2CTL &= 0xFFCF;                 //TODO MC_0 //variable
+		TA2CTL &= TIMER_OFF;
 	}
 }
 
@@ -48,7 +48,7 @@ void ADCRead(int ADC_number)
 
 	ADC10CTL0 &= ~ADC10ENC;
 
-	ADC10MCTL0 &= 0xFFF0;                  //TODO Remettre les bit s/lection ADC
+	ADC10MCTL0 &= ADC_SEL_RESET;
 
 	ADC10MCTL0 |= (0x0000 & (ADC_number - 1));
 
@@ -66,7 +66,7 @@ int IsStateChange(int State, int StateComms)
 			(State == STATE_OFF && (StateComms == STATE_OFF || StateComms == STATE_NOLOAD)));
 }
 
-int ComputationWattHour(int *Tab_ADC10) //TODO Rename
+int ComputationWattHour(int *Tab_ADC10)
 {
 	static long int sum_value_ADC = 0;
 	static long int sum_analog_value_ADC = 0;

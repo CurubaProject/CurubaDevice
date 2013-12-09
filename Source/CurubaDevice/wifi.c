@@ -264,7 +264,6 @@ void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
     {
         case PAYLOAD_INFO_REQUEST :
             comms_receive.payloadid = PAYLOAD_INFO_REQUEST;
-            comms_receive.change = 1;
 
             Push(&ReceiveFirst, &ReceivePush, comms_receive);
             break;
@@ -275,14 +274,12 @@ void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
             comms_receive.status = usBuffer[2];
             comms_receive.state = usBuffer[3];
             comms_receive.data = usBuffer[4];
-            comms_receive.change = 1;
 
             Push(&ReceiveFirst, &ReceivePush, comms_receive);
             break;
 
         case PAYLOAD_CONFIG_REQUEST:
             comms_receive.payloadid = PAYLOAD_CONFIG_REQUEST;
-            comms_receive.change = 1;
 
             //Push(ReceiveFirst, ReceivePush, comms_receive);
             break;

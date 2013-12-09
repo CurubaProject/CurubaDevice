@@ -11,6 +11,16 @@
 comms devices_dimmer[2]; // TODO IMPROVE list devices
 int SwitchDimmer = 0;
 
+void initDevice_dimmer(int* Tab_ADC10){
+
+	CTRL_OUT |= CTRL_1;
+
+	if(GetState(DEVICE_1, Tab_ADC10))
+	{
+		CTRL_OUT ^= CTRL_1 + CTRL_2;
+	}
+}
+
 void initListComms_dimmer() { // TODO REMOVE THIS FUNCTION, NOT GOOD
 	comms d;
 
@@ -20,26 +30,23 @@ void initListComms_dimmer() { // TODO REMOVE THIS FUNCTION, NOT GOOD
 	d.device = DEVICE_1;
 	d.type = TYPE_DIMMER;
 	d.data = 0;
-	d.change = 1;
 
 	devices_dimmer[0] = d;
 }
 
-void heartBeat_dimmer(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10) { // TODO Rename
-	int state = GetState(devices_dimmer[0].device, Tab_ADC10); //TODO ASK JS about getState never assign in old domumapp
+void heartBeat_dimmer(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10) {
+	int state = GetState(devices_dimmer[0].device, Tab_ADC10);
 
 	if(IsStateChange(state, devices_dimmer[0].state))
 	{
 		devices_dimmer[0].payloadid = 0;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
-		devices_dimmer[0].change = 1;
 	}
 	else
 	{
 		devices_dimmer[0].payloadid = 0;
 		devices_dimmer[0].state = (1^state)+1;                             //TODO remove ducktape
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
-		devices_dimmer[0].change = 1;
 	}
 
 	Push(&transmitFirst, &transmitPush, devices_dimmer[0]);//comms_transmit[0] = devices[0];
@@ -48,7 +55,7 @@ void heartBeat_dimmer(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10)
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
 								comms* ReceivePop, 
 								comms* transmitFirst,comms* transmitPush,
-								int* Tab_ADC10) { //TODO Rename
+								int* Tab_ADC10) {
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
 		//Enable Zero cross for dimmer function
@@ -64,11 +71,10 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		devices_dimmer[0].device = ReceivePop->device;
 		devices_dimmer[0].type = TYPE_DIMMER;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
-		devices_dimmer[0].change = 1;                   //TODO define 1
 
 		if (ReceivePop->state == STATE_ON)
 		{
-			TA2CCR0 = (int) (101 - ReceivePop->data) / 100.0 * 3253;       //TODO define 3253
+			TA2CCR0 = (int) (101 - ReceivePop->data) / 100.0 * PERIODHZ;
 		}
 		Push(&transmitFirst, &transmitPush, devices_dimmer[0]);
 	}
@@ -88,7 +94,6 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		devices_dimmer[0].device = ReceivePop->device;
 		devices_dimmer[0].type = TYPE_DIMMER;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
-		devices_dimmer[0].change = 1;                           //TODO define 1
 
 		Push(&transmitFirst, &transmitPush, devices_dimmer[0]);//comms_transmit[0] = devices[0];
 	}
@@ -110,11 +115,13 @@ void changeIO_dimmer(int deviceNumber) {
 }
 
 void initTIMER1_dimmer() {
-	TA1CCR0 |= 0x0A00; //TODO Value the timer count to //variable
+	TA1CCR0 |= HEARTBEAT_TIME;
 }
 
 void initTIMER2_dimmer() {
 	TA2CTL |= TASSEL_2 + ID_3 + TAIE;
+	TA2CCR0 = 0;
+	TA2EX0 |= TAIDEX_7;
 }
 
 // Interupt

@@ -1,6 +1,4 @@
-#include "evnt_handler.h"  // TODO REMOVE THIS
 #include "board.h"  // TODO REMOVE THIS
-#include <msp430.h>  // TODO REMOVE THIS
 
 #include <assert.h>
 
@@ -23,11 +21,7 @@ void main(void) {
 	int typeModule = ReadAppSwitch();
 	TYPEDEVICE* device = createTypeDevice(typeModule);
 
-	initCommunication();
-	initDriver();
-	initApp(device);
-
-	InitListComms(device); // TODO PK BEFORE AND AFTER
+	InitListComms(device);
 
 	InitADC10();
 	InitTIMER0();
@@ -35,9 +29,9 @@ void main(void) {
 	InitTIMER2(device);
 	initTIMERB0();
 
-	__bis_SR_register(GIE); //TODO Remove from main
-
-	CTRL_OUT |= CTRL_1; //TODO Remove from main
+	initCommunication();
+	initDriver();
+	initApp(device);
 
 	while (1) {
 		if(connectNetwork())

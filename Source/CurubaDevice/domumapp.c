@@ -9,6 +9,7 @@ int Tab_ADC10[64] = { 0 };   //a isoler
 
 void initApp(TYPEDEVICE* device) {
 	initInterupt(device,Tab_ADC10);
+	device->initDevice(Tab_ADC10);
 }
 
 void InitADC10(void)
