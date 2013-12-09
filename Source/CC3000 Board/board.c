@@ -33,17 +33,9 @@
  *
  *****************************************************************************/
 
-#include <msp430.h>
-#include "wlan.h" 
-#include "evnt_handler.h"    // callback function declaration
-#include "nvmem.h"
-#include "socket.h"
-#include "netapp.h"
 #include "board.h"
+#include <msp430.h>
 
-//#define XT1_XT2_PORT_SEL            P5SEL
-//#define XT1_ENABLE                  (BIT4 + BIT5)
-//#define XT2_ENABLE                  (BIT2 + BIT3)
 #define XT1HFOFFG   0
 #define PMM_STATUS_ERROR  1
 #define PMM_STATUS_OK     0
@@ -54,8 +46,8 @@
  * \param level     Level to which Vcore needs to be increased
  * \return status   Success/failure
  ******************************************************************************/
-static uint16_t SetVCoreUp(uint8_t level) {
-	uint16_t PMMRIE_backup, SVSMHCTL_backup, SVSMLCTL_backup;
+static unsigned int SetVCoreUp(unsigned char level) {
+	unsigned int PMMRIE_backup, SVSMHCTL_backup, SVSMLCTL_backup;
 
 	// The code flow for increasing the Vcore has been altered to work around
 	// the erratum FLASH37. 
@@ -167,8 +159,8 @@ static uint16_t SetVCoreUp(uint8_t level) {
  * \param  level    Level to which Vcore needs to be decreased
  * \return status   Success/failure
  ******************************************************************************/
-static uint16_t SetVCoreDown(uint8_t level) {
-	uint16_t PMMRIE_backup, SVSMHCTL_backup, SVSMLCTL_backup;
+static unsigned int SetVCoreDown(unsigned char level) {
+	unsigned int PMMRIE_backup, SVSMHCTL_backup, SVSMLCTL_backup;
 
 	// The code flow for decreasing the Vcore has been altered to work around
 	// the erratum FLASH37. 
@@ -331,7 +323,6 @@ void pio_init() {
 //! @brief  return wlan interrup pin
 //
 //*****************************************************************************
-
 long ReadWlanInterruptPin(void) {
 	// Return the status of IRQ
 	return (SPI_IRQ_IN & SPI_IRQ_PIN);
@@ -383,7 +374,6 @@ void WlanInterruptDisable() {
 
 unsigned short ReadAppSwitch(void) {
 	return (SWITCH_B1_IN & 0x0F);
-
 }
 
 //*****************************************************************************
@@ -398,62 +388,12 @@ unsigned short ReadAppSwitch(void) {
 //
 //*****************************************************************************
 
-void WriteWlanPin(uint8_t trueFalse) {
+void WriteWlanPin(unsigned char trueFalse) {
 	if (trueFalse) {
 		WLAN_EN_OUT |= WLAN_EN_PIN;                 // RF_EN_PIN high
 	} else {
 		WLAN_EN_OUT &= ~WLAN_EN_PIN;                // RF_EN_PIN low
 	}
-	//__delay_cycles(6000000);
-}
-
-//*****************************************************************************
-//
-//! unsolicicted_events_timer_init
-//!
-//!  @param  None
-//!
-//!  @return none
-//!
-//!  @brief  The function initializes the unsolicited events timer handler
-//
-//*****************************************************************************
-void wakeup_timer_init(void) {
-	TA1CCTL0 &= ~CCIE;
-	TA1CTL |= MC_0;
-
-	// Configure teh timer for each 500 milli to handle un-solicited events
-	TA1CCR0 = 0x4000;
-
-	// run the timer from ACLCK, and enable interrupt of Timer A
-	TA1CTL |= (TASSEL_1 + MC_1 + TACLR);
-
-	TA1CCTL0 |= CCIE;
-}
-
-//*****************************************************************************
-//
-//! unsolicicted_events_timer_init
-//!
-//!  @param  None
-//!
-//!  @return none
-//!
-//!  @brief  The function initializes a CC3000 device and triggers it to start
-//!          operation
-//
-//*****************************************************************************
-void wakeup_timer_disable(void) {
-	TA1CCTL0 &= ~CCIE;
-	TA1CTL |= MC_0;
-}
-
-// Timer A2 interrupt service routine
-#pragma vector=TIMER2_A0_VECTOR
-__interrupt void TIMER2_A0_ISR(void) {
-	/* Clear the timer interrupt flag and reload */
-	TA2CCTL0 &= ~CCIFG;
-
 }
 
 //*****************************************************************************
@@ -470,48 +410,9 @@ __interrupt void TIMER2_A0_ISR(void) {
 void initClk(void) {
 	// Set Vcore to accomodate for max. allowed system speed
 	SetVCore(3);
-	// Use 32.768kHz XTAL as reference
-	//LFXT_Start(XT1DRIVE_0);
 
 	// Set system clock to max (25MHz)
 	Init_FLL_Settle(25000, 762);
-	//SFRIFG1 = 0;
-	//SFRIE1 |= OFIE;
-}
-
-//*****************************************************************************
-//
-//! StartDebounceTimer
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  Starts timer that handles switch debouncing
-//
-//*****************************************************************************
-void StartDebounceTimer() {
-	// default delay = 0
-	// Debounce time = 1500* 1/8000 = ~200ms
-	TB0CCTL0 = CCIE;                          // TACCR0 interrupt enabled
-	TB0CCR0 = 3000;
-	TB0CTL = TBSSEL_1 + MC_1;                 // SMCLK, continuous mode
-}
-
-//*****************************************************************************
-//
-//! StopDebounceTimer
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  Stops timer that handles switch debouncing
-//
-//*****************************************************************************
-void StopDebounceTimer() {
-	// TACCR0 interrupt enabled
-	TB0CCTL0 &= ~CCIE;
 }
 
 //*****************************************************************************
@@ -579,7 +480,6 @@ void turnLedOff(char ledNum) {
 //! @brief  Toggles a board LED
 //
 //*****************************************************************************    
-
 void toggleLed(char ledNum) {
 	switch (ledNum)
 	{
@@ -589,52 +489,7 @@ void toggleLed(char ledNum) {
 	}
 }
 
-//*****************************************************************************
-//
-//! DissableSwitch
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  Dissable S2 switch interrupt
-//
-//*****************************************************************************
-void DissableSwitch() {
-
-}
-
-//*****************************************************************************
-//
-//! RestoreSwitch
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  Restore S2 switch interrupt
-//
-//*****************************************************************************
-void RestoreSwitch() {
-
-}
-
-//*****************************************************************************
-//
-//! restartMSP430
-//!
-//! @param  none
-//!
-//! @return never
-//!
-//! @brief   Restarts the MSP430 completely. One must be careful
-//
-//*****************************************************************************    
-void restartMSP430() {
-
-}
-
-void LFXT_Start(uint16_t xtdrive) {
+void LFXT_Start(unsigned int xtdrive) {
 	// If the drive setting is not already set to maximum
 	// Set it to max for LFXT startup
 	if ((UCSCTL6 & XT1DRIVE_3)!= XT1DRIVE_3) {
@@ -649,8 +504,8 @@ void LFXT_Start(uint16_t xtdrive) {
 	UCSCTL6 = (UCSCTL6 & ~(XT1DRIVE_3)) | (xtdrive); // set requested Drive mode
 }
 
-void Init_FLL_Settle(uint16_t fsystem, uint16_t ratio) {
-	volatile uint16_t x = ratio * 32;
+void Init_FLL_Settle(unsigned int fsystem, unsigned int ratio) {
+	volatile unsigned int x = ratio * 32;
 
 	Init_FLL(fsystem, ratio);
 
@@ -659,14 +514,14 @@ void Init_FLL_Settle(uint16_t fsystem, uint16_t ratio) {
 	}
 }
 
-void Init_FLL(uint16_t fsystem, uint16_t ratio) {
-	uint16_t d, dco_div_bits;
-	uint16_t mode = 0;
+void Init_FLL(unsigned int fsystem, unsigned int ratio) {
+	unsigned int d, dco_div_bits;
+	unsigned int mode = 0;
 
 	// Save actual state of FLL loop control, then disable it. This is needed to
 	// prevent the FLL from acting as we are making fundamental modifications to
 	// the clock setup.
-	uint16_t srRegisterState = __get_SR_register() & SCG0;
+	unsigned int srRegisterState = __get_SR_register() & SCG0;
 	__bic_SR_register(SCG0);
 
 	d = ratio;
@@ -721,9 +576,9 @@ void Init_FLL(uint16_t fsystem, uint16_t ratio) {
 	// Restore previous SCG0
 }
 
-uint16_t SetVCore(uint8_t level) {
-	uint16_t actlevel;
-	uint16_t status = 0;
+unsigned int SetVCore(unsigned char level) {
+	unsigned int actlevel;
+	unsigned int status = 0;
 
 	level &= PMMCOREV_3;                       // Set Mask for Max. level
 	actlevel = (PMMCTL0 & PMMCOREV_3);         // Get actual VCore
@@ -740,7 +595,6 @@ uint16_t SetVCore(uint8_t level) {
 }
 
 //Catch interrupt vectors that are not initialized.
-
 #ifdef __CCS__
 #pragma vector=WDT_VECTOR,TIMER1_A0_VECTOR, TIMER0_A0_VECTOR, COMP_B_VECTOR, UNMI_VECTOR,DMA_VECTOR, RTC_VECTOR, TIMER0_B0_VECTOR,SYSNMI_VECTOR, USCI_A0_VECTOR, USCI_A1_VECTOR, USCI_B0_VECTOR, USCI_B1_VECTOR, LDO_PWR_VECTOR
 __interrupt void Trap_ISR(void) {

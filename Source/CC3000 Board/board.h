@@ -120,39 +120,27 @@
 
 #define ADC_SEL    P6SEL
 
-
-/*  This macro is for use by other macros to form a fully valid C statement.  */
-#define st(x)      do { x } while (__LINE__ == -1)
-
-/* Select source for MCLK and SMCLK e.g. SELECT_MCLK_SMCLK(SELM__DCOCLK + SELS__DCOCLK) */
-#define SELECT_MCLK_SMCLK(sources) st(UCSCTL4 = (UCSCTL4 & ~(SELM_7 + SELS_7)) | (sources);)
-
 void pio_init();
-void StartDebounceTimer();
-void StopDebounceTimer();
 
 void initLEDs();
-long IsFTCflagSet();
-void SetFTCflag();
-void ClearFTCflag();
-void RestoreSwitch();
-long switchIsPressed();
+
 long ReadWlanInterruptPin(void);
 void WlanInterruptEnable();
 void WlanInterruptDisable();
 void WriteWlanPin( unsigned char val );
-void wakeup_timer_init(void);
-void wakeup_timer_disable(void);
+
 void initClk(void);
 void DissableSwitch();
+
 void turnLedOn(char ledNum);
 void turnLedOff(char ledNum);
 void toggleLed(char ledNum);
-void restartMSP430();
-void LFXT_Start(uint16_t xtdrive);
-void Init_FLL_Settle(uint16_t fsystem, uint16_t ratio);
-void Init_FLL(uint16_t fsystem, uint16_t ratio);
-uint16_t SetVCore(uint8_t level);
+
+void LFXT_Start(unsigned int xtdrive);
+void Init_FLL_Settle(unsigned int fsystem, unsigned int ratio);
+void Init_FLL(unsigned int fsystem, unsigned int ratio);
+unsigned int SetVCore(unsigned char level);
+
 unsigned short ReadAppSwitch(void);
 
 #endif
