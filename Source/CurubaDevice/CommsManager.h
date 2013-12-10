@@ -47,7 +47,7 @@ int Pop(comms**, comms**, comms**);
 void Push(comms**, comms**, comms);
 void payloadToSend(comms*);
 
-comms* getTransmitFirst();
-comms* getTransmitPush();
+comms** getTransmitFirst();
+comms** getTransmitPush();
 
 #endif /* COMMSMANAGER_H_ */

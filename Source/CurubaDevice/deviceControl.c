@@ -33,6 +33,7 @@
 #include "util.h"
 #include "typeDevice.h"
 #include "interuptDeviceControl.h"
+#include "board.h"
 
 int Tab_ADC10[64] = { 0 };   //a isoler
 
@@ -90,14 +91,14 @@ void InitListComms(TYPEDEVICE* device)
 	device->initListComms();
 }
 
-void InfoCommsReceive(TYPEDEVICE* device, comms* transmitFirst, comms* transmitPush)
+void InfoCommsReceive(TYPEDEVICE* device, comms** transmitFirst, comms** transmitPush)
 {
 	TimerStop(TIMER_1);
 	device->infoCommsReceive(transmitFirst, transmitPush);
 	TimerStart(TIMER_1);
 }
 
-void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms* transmitFirst,comms* transmitPush)
+void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush)
 {
 	TimerStop(TIMER_1);
 	device->controlCommsReceive(device, ReceivePop, transmitFirst, transmitPush, Tab_ADC10);
@@ -106,8 +107,8 @@ void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms* transmitF
 
 void HeartBeat(TYPEDEVICE* device)
 {
-	comms* transmitFirst = getTransmitFirst();
-	comms* transmitPush = getTransmitPush();
+	comms** transmitFirst = getTransmitFirst();
+	comms** transmitPush = getTransmitPush();
 
 	device->heartBeat(transmitFirst, transmitPush, Tab_ADC10);
 }

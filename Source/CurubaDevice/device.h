@@ -41,13 +41,13 @@ typedef struct typeDevice TYPEDEVICE;
 
 typedef void (*InitDevice)(int* Tab_ADC10);
 typedef void (*InitListCommsDevice)();
-typedef void (*HeartBeatDevice)(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10);
+typedef void (*HeartBeatDevice)(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10);
 typedef void (*ControlCommsReceiveDevice)(TYPEDEVICE* device,
 												comms* ReceivePop,
-												comms* transmitFirst, comms* transmitPush,
+												comms** transmitFirst, comms** transmitPush,
 												int* Tab_ADC10);
-typedef void (*InfoCommsReceiveDevice)(comms* transmitFirst,comms* transmitPush);
-typedef void (*ChangeIODevice)(int deviceNumber);
+typedef void (*InfoCommsReceiveDevice)(comms** transmitFirst,comms** transmitPush);
+typedef void (*ChangeIODevice)(int deviceNumber, int state);
 typedef void (*InitTIMER1Device)();
 typedef void (*InitTIMER2Device)();
 

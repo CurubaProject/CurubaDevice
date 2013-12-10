@@ -49,23 +49,23 @@ int GetState(int deviceNumber, int* Tab_ADC10)
 
 int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab_ADC10)
 {
-	static long int state = STATE_OFF;
+	static long int currentState = STATE_OFF;
 
-	state = GetState(deviceNumber, Tab_ADC10);
+	currentState = GetState(deviceNumber, Tab_ADC10);
 
-	if(state != commande)
+	if(currentState != commande)
 	{
-		device->changeIO(deviceNumber);
+		device->changeIO(deviceNumber, commande);
 	}
 
-	state = GetState(deviceNumber, Tab_ADC10);
+	currentState = GetState(deviceNumber, Tab_ADC10);
 
-	if (state != commande)
+	if (currentState != commande)
 	{
-		state = STATE_NOLOAD;
+		currentState = STATE_NOLOAD;
 	}
 
-	return state;
+	return currentState;
 }
 
 TYPEDEVICE* createDimmer() {
@@ -79,6 +79,7 @@ TYPEDEVICE* createDimmer() {
 	device->initTIMER1 = initTIMER1_dimmer;
 	device->initTIMER2 = initTIMER2_dimmer;
 	device->initDevice = initDevice_dimmer;
+
 	return device;
 }
 

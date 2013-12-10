@@ -47,8 +47,8 @@ void InitTIMER1(TYPEDEVICE* device);
 void InitTIMER2(TYPEDEVICE* device);
 
 void InitListComms(TYPEDEVICE* device);
-void InfoCommsReceive(TYPEDEVICE* device, comms* transmitFirst,comms* transmitPush);
-void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms* transmitFirst,comms* transmitPush);
+void InfoCommsReceive(TYPEDEVICE* device, comms** transmitFirst,comms** transmitPush);
+void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst, comms** transmitPush);
 void HeartBeat(TYPEDEVICE* device);
 
 unsigned short ReadAppSwitch(void);

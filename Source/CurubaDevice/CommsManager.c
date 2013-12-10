@@ -75,10 +75,10 @@ void Push(comms** PtrFirst, comms** PtrPush, comms NewStruct)
 	**PtrPush = NewStruct;
 }
 
-comms* getTransmitFirst() {
-	return TransmitFirst;
+comms** getTransmitFirst() {
+	return &TransmitFirst;
 }
 
-comms* getTransmitPush() {
-	return TransmitPush;
+comms** getTransmitPush() {
+	return &TransmitPush;
 }

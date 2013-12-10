@@ -44,6 +44,9 @@ extern comms* TransmitPush;
 extern comms* TransmitPop;
 
 void main(void) {
+	initCommunication();
+	initDriver();
+
 	//Application type of the module
 	int typeModule = ReadAppSwitch();
 	TYPEDEVICE* device = createTypeDevice(typeModule);
@@ -56,8 +59,6 @@ void main(void) {
 	InitTIMER2(device);
 	initTIMERB0();
 
-	initCommunication();
-	initDriver();
 	initApp(device);
 
 	while (1) {
@@ -71,10 +72,10 @@ void main(void) {
 				switch (ReceivePop->payloadid)
 				{
 					case PAYLOAD_INFO_REQUEST :
-						InfoCommsReceive(device, TransmitFirst, TransmitPush);
+						InfoCommsReceive(device, &TransmitFirst, &TransmitPush);
 						break;
 					case PAYLOAD_CONTROL_REQUEST :
-						ControlCommsReceive(device, ReceivePop, TransmitFirst, TransmitPush);
+						ControlCommsReceive(device, ReceivePop, &TransmitFirst, &TransmitPush);
 						break;
 					case PAYLOAD_CONFIG_REQUEST :
 						//Not use for now

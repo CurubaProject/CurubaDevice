@@ -69,7 +69,7 @@ void initListComms_dimmer() { // TODO REMOVE THIS FUNCTION, NOT GOOD
 	devices_dimmer[0] = d;
 }
 
-void heartBeat_dimmer(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10) {
+void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10) {
 	int state = GetState(devices_dimmer[0].device, Tab_ADC10);
 
 	if(IsStateChange(state, devices_dimmer[0].state))
@@ -84,12 +84,12 @@ void heartBeat_dimmer(comms* transmitFirst, comms* transmitPush, int* Tab_ADC10)
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 	}
 
-	Push(&transmitFirst, &transmitPush, devices_dimmer[0]);//comms_transmit[0] = devices[0];
+	Push(transmitFirst, transmitPush, devices_dimmer[0]);//comms_transmit[0] = devices[0];
 }
 
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
 								comms* ReceivePop, 
-								comms* transmitFirst,comms* transmitPush,
+								comms** transmitFirst,comms** transmitPush,
 								int* Tab_ADC10) {
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
@@ -111,7 +111,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		{
 			TA2CCR0 = (int) (101 - ReceivePop->data) / 100.0 * PERIODHZ;
 		}
-		Push(&transmitFirst, &transmitPush, devices_dimmer[0]);
+		Push(transmitFirst, transmitPush, devices_dimmer[0]);
 	}
 	else if (ReceivePop->status == STATUS_INACTIVE)
 	{
@@ -130,21 +130,21 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		devices_dimmer[0].type = TYPE_DIMMER;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 
-		Push(&transmitFirst, &transmitPush, devices_dimmer[0]);//comms_transmit[0] = devices[0];
+		Push(transmitFirst, transmitPush, devices_dimmer[0]);
 	}
 }
 
-void infoCommsReceive_dimmer(comms* transmitFirst,comms* transmitPush) {
+void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush) {
 	devices_dimmer[0].payloadid = PAYLOAD_INFO_RESPONSE;
 	devices_dimmer[0].status = STATUS_INACTIVE;
 	devices_dimmer[0].state = STATE_OFF;
 	devices_dimmer[0].device = DEVICE_1;
 	devices_dimmer[0].type = TYPE_DIMMER;
 
-	Push(&transmitFirst, &transmitPush, devices_dimmer[0]);
+	Push(transmitFirst, transmitPush, devices_dimmer[0]);
 }
 
-void changeIO_dimmer(int deviceNumber) {
+void changeIO_dimmer(int deviceNumber, int state) {
 	CTRL_OUT ^= CTRL_1 + CTRL_2;
 	SwitchDimmer = 0x0060 & CTRL_OUT;
 }
