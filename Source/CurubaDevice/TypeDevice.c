@@ -35,6 +35,9 @@
 #include "dimmer.h"
 #include "outlet.h"
 
+#include "board.h"
+#include <msp430.h>
+
 #include <stdlib.h>
 
 int GetState(int deviceNumber, int* Tab_ADC10)
@@ -102,12 +105,20 @@ TYPEDEVICE* createTypeDevice(int typeModule) {
 	TYPEDEVICE* device;
 
 	switch (typeModule) {
-	case TYPE_DIMMER :
-		device = createDimmer();
-		break;
-	case TYPE_OUTLET :
-		device = createOutlet();
-		break;
+		case TYPE_DIMMER :
+			device = createDimmer();
+			break;
+		case TYPE_OUTLET :
+			device = createOutlet();
+			break;
+		default :
+
+			while (1)
+			{
+				P1OUT ^= BIT4;
+				__delay_cycles(25000000);
+			}
+
 	}
 
 	return device;
