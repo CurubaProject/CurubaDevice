@@ -71,6 +71,7 @@ int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab
 TYPEDEVICE* createDimmer() {
 	TYPEDEVICE* device = (TYPEDEVICE*) malloc(sizeof *device);
 
+	device->initDevice = initDevice_dimmer;
 	device->initListComms = initListComms_dimmer;
 	device->heartBeat = heartBeat_dimmer;
 	device->controlCommsReceive = controlCommsReceive_dimmer;
@@ -78,7 +79,6 @@ TYPEDEVICE* createDimmer() {
 	device->changeIO = changeIO_dimmer;
 	device->initTIMER1 = initTIMER1_dimmer;
 	device->initTIMER2 = initTIMER2_dimmer;
-	device->initDevice = initDevice_dimmer;
 
 	return device;
 }
@@ -86,7 +86,14 @@ TYPEDEVICE* createDimmer() {
 TYPEDEVICE* createOutlet() {
 	TYPEDEVICE* device = (TYPEDEVICE*) malloc(sizeof *device);
 
-	//TODO Assign New Dimmer Method
+	device->initDevice = initDevice_outlet;
+	device->initListComms = initListComms_outlet;
+	device->heartBeat = heartBeat_outlet;
+	device->controlCommsReceive = controlCommsReceive_outlet;
+	device->infoCommsReceive = infoCommsReceive_outlet;
+	device->changeIO = changeIO_outlet;
+	device->initTIMER1 = initTIMER1_outlet;
+	device->initTIMER2 = initTIMER2_outlet;
 
 	return device;
 }
