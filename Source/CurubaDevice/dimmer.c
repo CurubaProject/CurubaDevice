@@ -50,7 +50,7 @@ void initDevice_dimmer(int* Tab_ADC10){
 
 	CTRL_OUT |= CTRL_1;
 
-	if(GetState(DEVICE_1, Tab_ADC10))
+	if(GetState(DEVICE_1, Tab_ADC10) == STATE_ON)
 	{
 		CTRL_OUT ^= CTRL_1 + CTRL_2;
 	}
@@ -94,7 +94,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
 		//Enable Zero cross for dimmer function
-		ZERO_CROSS_IE |= ZERO_CROSS;
+		//ZERO_CROSS_IE |= ZERO_CROSS;
 
 		//Timer2 count to 0
 		TA2CCR0 = 0;

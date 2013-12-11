@@ -359,6 +359,7 @@ void initSocket(void)
 	unsigned long socketTimeout = 10;
 	int iReturnValue = -1;
 
+	closesocket(ulSocketTCP);
 	ulCC3000SocketClosed = 0;
 	ulPingReceived = 0;
 	ulSocketTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);

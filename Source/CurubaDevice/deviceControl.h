@@ -39,7 +39,7 @@
 //////////////////////////////////////
 //            PROTOTYPES            //
 //////////////////////////////////////
-void initApp(TYPEDEVICE* device);
+void initApp(TYPEDEVICE** device);
 
 void initADC10(void);
 void initTIMER0(void);

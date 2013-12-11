@@ -32,18 +32,17 @@
 #include "typeDevice.h"
 #include "deviceControl.h"
 #include "commun.h"
-#include "wifi.h"
 
 #include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
-TYPEDEVICE* _device = 0x0;
+static TYPEDEVICE* _device = 0x0;
 int* _Tab_ADC10 = (void *)0;
 int* _ptr = (void *)0 ;
 
-void initInterupt(TYPEDEVICE* device, int* Tab_ADC10) {
-	_device = device;
+void initInterupt(TYPEDEVICE** device, int* Tab_ADC10) {
+	_device = *device;
 	_Tab_ADC10 = Tab_ADC10;
 	_ptr = _Tab_ADC10;
 }
@@ -71,7 +70,7 @@ __interrupt void ADC10_ISR(void) {
 			*_ptr = ADC10MEM0;
 			_ptr++;
 
-			if (*_ptr > _Tab_ADC10[63])
+			if (*_ptr > _Tab_ADC10[76])
 			{
 				_ptr = _Tab_ADC10;
 				TimerStop(TIMER_0);

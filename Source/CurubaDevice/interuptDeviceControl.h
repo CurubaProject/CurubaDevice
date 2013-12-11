@@ -32,6 +32,6 @@
 
 #include "typeDevice.h"
 
-void initInterupt(TYPEDEVICE* device, int* Tab_ADC10);
+void initInterupt(TYPEDEVICE** device, int* Tab_ADC10);
 
 #endif

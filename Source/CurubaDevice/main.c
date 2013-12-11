@@ -62,7 +62,7 @@ void main(void) {
 	initTIMER2(device);
 	initTIMERB0();
 
-	initApp(device);
+	initApp(&device);
 
 	while (1) {
 		if(connectNetwork())

@@ -82,6 +82,7 @@ TYPEDEVICE* createDimmer() {
 	device->changeIO = changeIO_dimmer;
 	device->initTIMER1 = initTIMER1_dimmer;
 	device->initTIMER2 = initTIMER2_dimmer;
+	device->timer2_execute = timer2_Execute_dimmer;
 
 	return device;
 }
@@ -97,6 +98,7 @@ TYPEDEVICE* createOutlet() {
 	device->changeIO = changeIO_outlet;
 	device->initTIMER1 = initTIMER1_outlet;
 	device->initTIMER2 = initTIMER2_outlet;
+	device->timer2_execute = timer2_Execute_outlet;
 
 	return device;
 }

@@ -37,10 +37,10 @@
 
 int Tab_ADC10[77] = { 0 };   //a isoler
 
-void initApp(TYPEDEVICE* device)
+void initApp(TYPEDEVICE** device)
 {
 	initInterupt(device,Tab_ADC10);
-	device->initDevice(Tab_ADC10);
+	(*device)->initDevice(Tab_ADC10);
 }
 
 void initADC10(void)

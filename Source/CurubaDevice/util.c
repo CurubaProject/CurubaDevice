@@ -110,7 +110,7 @@ int ComputationWattHour(int *Tab_ADC10)
 
 	int i = 0;
 
-	for (i = (sizeof(Tab_ADC10)-1); i--; )
+	for (i = 76; i--; )
 	{
 		if(max_value_ADC < Tab_ADC10[i])
 		{
@@ -125,7 +125,7 @@ int ComputationWattHour(int *Tab_ADC10)
 
 	max_analog_value_ADC = (1000 * max_value_ADC)>>10;
 	sum_analog_value_ADC = (1000 * sum_value_ADC)>>10;
-	mean = sum_analog_value_ADC>>6;
+	mean = sum_analog_value_ADC/77;
 
 	volt = ((max_analog_value_ADC - mean) * 169) / 239;                            //Volt RMS value   sqrt(2) = 1.4142
 	current = (float)volt / 37;                                                    //Magic number from IC current sensor data sheet
