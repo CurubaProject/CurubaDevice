@@ -31,8 +31,9 @@
 
 #include "deviceControl.h"
 #include "CommsManager.h"
-#include "communication.h"
 #include "typeDevice.h"
+
+#include "communication.h"
 #include "network.h"
 #include "cc3000.h"
 

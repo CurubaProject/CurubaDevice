@@ -69,11 +69,8 @@ volatile long ulSocketTCP;
 sockaddr tSocketAddr;
 netapp_pingreport_args_t pingReport;
 tNetappIpconfigRetArgs CC3000ipconfig;
-unsigned char DSServerIP[4] = { 192, 168, 20, 137 };
+unsigned char DSServerIP[4] = { 192, 168, 20, 140 };
 const unsigned char DSServerPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
-
-
-
 
 //*****************************************************************************
 //! CC3000_UsynchCallback

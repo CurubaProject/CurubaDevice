@@ -68,8 +68,8 @@ void initTIMER1(TYPEDEVICE* device)
 {
 	//Timer1 Init
 	TA1CTL |= TACLR;
-	TA1CTL |= TASSEL_1 + TAIE;
-
+	TA1CTL |= TASSEL_1 + ID_3 + TAIE;
+	TA1EX0 |= TAIDEX_7;
 	device->initTIMER1();
 }
 
@@ -78,12 +78,11 @@ void initTIMER2(TYPEDEVICE* device)
 {
 	//Timer2 Init Dimmer
 	TA2CTL |= TACLR;
-	TA2CTL |= TASSEL_2 + ID_3 + TAIE;
+	TA2CTL |= TASSEL_2 + TAIE;
 
 	device->initTIMER2();
 
 	TA2CCR0 = 0;
-	TA2EX0 |= TAIDEX_7;
 }
 
 void InitListComms(TYPEDEVICE* device)
