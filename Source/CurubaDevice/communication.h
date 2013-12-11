@@ -27,72 +27,16 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include <assert.h>
 
-#include "deviceControl.h"
+#ifndef COMMS_H_
+#define COMMS_H_
+
 #include "CommsManager.h"
-#include "communication.h"
-#include "typeDevice.h"
-#include "network.h"
-#include "cc3000.h"
 
-#include "commun.h"  // TODO REMOVE THIS
 
-extern comms* ReceiveFirst;
-extern comms* ReceivePush;
-extern comms* ReceivePop;
-extern comms* TransmitFirst;
-extern comms* TransmitPush;
-extern comms* TransmitPop;
+void payloadReceived(unsigned char *usBuffer, signed long iReturnValue);
+void payloadToSend(comms* PtrPop);
+void receivePayLoad(void);
+void sendPayLoad(char* pcData, int length);
 
-void main(void) {
-	initDriver();
-	initNetwork();
-
-	//Application type of the module
-	int typeModule = ReadAppSwitch();
-	TYPEDEVICE* device = createTypeDevice(typeModule);
-
-	InitListComms(device);
-
-	initADC10();
-	initTIMER0();
-	initTIMER1(device);
-	initTIMER2(device);
-	initTIMERB0();
-
-	initApp(device);
-
-	while (1) {
-		if(connectNetwork())
-		{
-			receivePayLoad();
-
-			if (Pop(&ReceiveFirst, &ReceivePush, &ReceivePop))
-			{
-				assert(ReceivePop != NULL);
-				switch (ReceivePop->payloadid)
-				{
-					case PAYLOAD_INFO_REQUEST :
-						InfoCommsReceive(device, &TransmitFirst, &TransmitPush);
-						break;
-					case PAYLOAD_CONTROL_REQUEST :
-						ControlCommsReceive(device, ReceivePop, &TransmitFirst, &TransmitPush);
-						break;
-					case PAYLOAD_CONFIG_REQUEST :
-						//Not use for now
-						break;
-					default :
-						assert(0);
-						break;
-				}
-			}
-
-			if (Pop(&TransmitFirst, &TransmitPush, &TransmitPop))
-			{
-				assert(TransmitPop != NULL);
-				payloadToSend(TransmitPop);
-			}
-		}
-	}
-}
+#endif /* COMMS_H_ */

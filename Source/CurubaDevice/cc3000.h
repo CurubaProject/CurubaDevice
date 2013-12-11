@@ -27,72 +27,34 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include <assert.h>
 
-#include "deviceControl.h"
-#include "CommsManager.h"
-#include "communication.h"
-#include "typeDevice.h"
-#include "network.h"
-#include "cc3000.h"
+#ifndef WIKI_H_
+#define WIKI_H_
 
-#include "commun.h"  // TODO REMOVE THIS
+#define DISABLE                                     (0)
+#define ENABLE                                      (1)
+#define NETAPP_IPCONFIG_MAC_OFFSET              	(20)
 
-extern comms* ReceiveFirst;
-extern comms* ReceivePush;
-extern comms* ReceivePop;
-extern comms* TransmitFirst;
-extern comms* TransmitPush;
-extern comms* TransmitPop;
+void initCC3000(void);
+void initDriver(void);
+void initSocket();
 
-void main(void) {
-	initDriver();
-	initNetwork();
+void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive,unsigned long aucInactivity);
+int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype, unsigned short lengthssidname, unsigned short lengthssidkey);
+int connectWifi(void);
+int connectServer(void);
+void heartBeatSent(void);
+unsigned long pingReceived(void);
+int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);
+void sendPackets(char* pcData, int length);
+int receivePackets(void);
+char *sendDriverPatch(unsigned long *Length);
+char *sendWLFWPatch(unsigned long *Length);
+char *sendBootLoaderPatch(unsigned long *Length);
+unsigned long socketclosed(void);
+void updateAsyncEvent(void);
+void updateIPinfo(void);
+void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length);
+unsigned long wifiConnected(void);
 
-	//Application type of the module
-	int typeModule = ReadAppSwitch();
-	TYPEDEVICE* device = createTypeDevice(typeModule);
-
-	InitListComms(device);
-
-	initADC10();
-	initTIMER0();
-	initTIMER1(device);
-	initTIMER2(device);
-	initTIMERB0();
-
-	initApp(device);
-
-	while (1) {
-		if(connectNetwork())
-		{
-			receivePayLoad();
-
-			if (Pop(&ReceiveFirst, &ReceivePush, &ReceivePop))
-			{
-				assert(ReceivePop != NULL);
-				switch (ReceivePop->payloadid)
-				{
-					case PAYLOAD_INFO_REQUEST :
-						InfoCommsReceive(device, &TransmitFirst, &TransmitPush);
-						break;
-					case PAYLOAD_CONTROL_REQUEST :
-						ControlCommsReceive(device, ReceivePop, &TransmitFirst, &TransmitPush);
-						break;
-					case PAYLOAD_CONFIG_REQUEST :
-						//Not use for now
-						break;
-					default :
-						assert(0);
-						break;
-				}
-			}
-
-			if (Pop(&TransmitFirst, &TransmitPush, &TransmitPop))
-			{
-				assert(TransmitPop != NULL);
-				payloadToSend(TransmitPop);
-			}
-		}
-	}
-}
+#endif /* WIKI_H_ */

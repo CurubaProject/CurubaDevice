@@ -28,8 +28,8 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-#ifndef WIKI_H_
-#define WIKI_H_
+#ifndef NETWORK_H_
+#define NETWORK_H_
 
 #define PING_ATTEMPT                    (5)
 #define PING_SIZE                       (10)
@@ -40,35 +40,14 @@
 #define LED_STATE_CONNECTED             (2)
 #define LED_STATE_CONFIGURING           (3)
 
-#define DISABLE                                     (0)
-#define ENABLE                                      (1)
-#define NETAPP_IPCONFIG_MAC_OFFSET              	(20)
-
-void initCommunication (void);
-void initDriver(void);
-void payloadReceived(unsigned char *usBuffer, signed long iReturnValue);
-void initSocketComm();
-void receivePayLoad();
-void sendPayLoad(char* pcData, int length);
-void initCOMMS(void);
-void initCC3000(void);
+void initNetwork (void);
 int connectNetwork(void);
-int connectServer(void);
-
-void heartBeatSent(void);
+int openSocket(void);
 void initTIMERB0(void);
 void StartTIMERB0(void);
 void StopTIMERB0(void);
-unsigned long getTimeCollapse(unsigned long lastcount);
-unsigned long getCountValue(void);
-
-char *sendDriverPatch(unsigned long *Length);
-char *sendWLFWPatch(unsigned long *Length);
-char *sendBootLoaderPatch(unsigned long *Length);
-void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length);
+unsigned long getTimeElapsed(unsigned long lastcount);
+unsigned long getRefTime(void);
 
 
-//Test Mohamed
-int recvComm(void);
-
-#endif /* WIKI_H_ */
+#endif /* NETWORK_H_ */

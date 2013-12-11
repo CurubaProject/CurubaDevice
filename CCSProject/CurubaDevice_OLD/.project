@@ -44,9 +44,29 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/TypeDevice.c</locationURI>
 		</link>
 		<link>
+			<name>cc3000.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/cc3000.c</locationURI>
+		</link>
+		<link>
+			<name>cc3000.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/cc3000.h</locationURI>
+		</link>
+		<link>
 			<name>commun.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commun.h</locationURI>
+		</link>
+		<link>
+			<name>communication.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/communication.c</locationURI>
+		</link>
+		<link>
+			<name>communication.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/communication.h</locationURI>
 		</link>
 		<link>
 			<name>device.h</name>
@@ -89,6 +109,16 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/main.c</locationURI>
 		</link>
 		<link>
+			<name>network.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/network.c</locationURI>
+		</link>
+		<link>
+			<name>network.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/network.h</locationURI>
+		</link>
+		<link>
 			<name>outlet.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/outlet.c</locationURI>
@@ -112,16 +142,6 @@
 			<name>util.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/util.h</locationURI>
-		</link>
-		<link>
-			<name>wifi.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/wifi.c</locationURI>
-		</link>
-		<link>
-			<name>wifi.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/wifi.h</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
