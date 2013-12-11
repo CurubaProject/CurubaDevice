@@ -33,10 +33,10 @@
 #define ZONE_AMERICA
 #ifdef ZONE_AMERICA
 	#define GRID_VOLTAGE 120
-	#define PERIODHZ 3253
+	#define PERIODHZ 26042
 #elif ZONE_EUROPE
 	#define GRID_VOLTAGE 240
-	#define PERIODHZ 3906
+	#define PERIODHZ 31250
 #endif
 
 #define TIMER_OFF 0xFFCF

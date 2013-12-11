@@ -110,7 +110,7 @@ int ComputationWattHour(int *Tab_ADC10)
 
 	int i = 0;
 
-	for (i = 63; i--; )
+	for (i = (sizeof(Tab_ADC10)-1); i--; )
 	{
 		if(max_value_ADC < Tab_ADC10[i])
 		{

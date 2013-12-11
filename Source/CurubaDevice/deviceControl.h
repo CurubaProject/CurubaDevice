@@ -41,10 +41,10 @@
 //////////////////////////////////////
 void initApp(TYPEDEVICE* device);
 
-void InitADC10(void);
-void InitTIMER0(void);
-void InitTIMER1(TYPEDEVICE* device);
-void InitTIMER2(TYPEDEVICE* device);
+void initADC10(void);
+void initTIMER0(void);
+void initTIMER1(TYPEDEVICE* device);
+void initTIMER2(TYPEDEVICE* device);
 
 void InitListComms(TYPEDEVICE* device);
 void InfoCommsReceive(TYPEDEVICE* device, comms** transmitFirst,comms** transmitPush);

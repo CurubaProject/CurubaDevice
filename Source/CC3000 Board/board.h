@@ -101,6 +101,7 @@
 #define ZERO_CROSS_IN       P1IN
 #define ZERO_CROSS_IE       P1IE
 #define ZERO_CROSS_IES      P1IES
+#define ZERO_CROSS_IFG      P1IFG
 
 // PIN from MSP430 connected to CTRL
 #define CTRL_1      BIT5	//P1.5
@@ -115,6 +116,7 @@
 #define ADC_1      BIT0		//P6.0
 #define ADC_2      BIT1		//P6.1
 
+// PIN from MSP430 in option for I/O or ADC
 #define OPTION1    BIT2		//P6.2
 #define OPTION2    BIT3		//P6.3
 

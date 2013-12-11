@@ -44,7 +44,7 @@
 #include <msp430.h>
 
 comms devices_dimmer[2]; // TODO IMPROVE list devices
-int SwitchDimmer = 0;
+static int SwitchDimmer = 0;
 
 void initDevice_dimmer(int* Tab_ADC10){
 
@@ -74,17 +74,17 @@ void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC1
 
 	if(IsStateChange(state, devices_dimmer[0].state))
 	{
-		devices_dimmer[0].payloadid = 0;
+		devices_dimmer[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 	}
 	else
 	{
-		devices_dimmer[0].payloadid = 0;
+		devices_dimmer[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
 		devices_dimmer[0].state = (1^state)+1;                             //TODO remove ducktape
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 	}
 
-	Push(transmitFirst, transmitPush, devices_dimmer[0]);//comms_transmit[0] = devices[0];
+	Push(transmitFirst, transmitPush, devices_dimmer[0]);
 }
 
 void controlCommsReceive_dimmer(TYPEDEVICE* device,

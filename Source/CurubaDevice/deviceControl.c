@@ -35,14 +35,15 @@
 #include "interuptDeviceControl.h"
 #include "board.h"
 
-int Tab_ADC10[64] = { 0 };   //a isoler
+int Tab_ADC10[77] = { 0 };   //a isoler
 
-void initApp(TYPEDEVICE* device) {
+void initApp(TYPEDEVICE* device)
+{
 	initInterupt(device,Tab_ADC10);
 	device->initDevice(Tab_ADC10);
 }
 
-void InitADC10(void)
+void initADC10(void)
 {
 	//ADC10 Init
 	ADC10CTL0 |= ADC10SHT_2 + ADC10ON;
@@ -54,31 +55,30 @@ void InitADC10(void)
 	ADC10CTL0 |= ADC10ENC;                            // ADC enable conversion
 }
 
-void InitTIMER0(void)
+void initTIMER0(void)
 {
 	//Timer0 Init (pour ADC)
 	TA0CTL |= TACLR;
-	TA0CTL |= TASSEL_2 + ID_3 + TAIE;
-	TA0CCR0 |= 0x00A4;                  // Value the timer count to //ps Jo veut modifier par une variable
-	TA0EX0 |= TAIDEX_4;
+	TA0CTL |= TASSEL_2 + TAIE;
+	TA0CCR0 &= 0x0000;
+	TA0CCR0 = 812;
 }
 
-void InitTIMER1(TYPEDEVICE* device)
+void initTIMER1(TYPEDEVICE* device)
 {
 	//Timer1 Init
 	TA1CTL |= TACLR;
-	TA1CTL |= TASSEL_1 + ID_3 + TAIE;
+	TA1CTL |= TASSEL_1 + TAIE;
 
 	device->initTIMER1();
-
-	TA1EX0 |= TAIDEX_7;
 }
 
 //DOIT etre modifier badly en accordance avec MO
-void InitTIMER2(TYPEDEVICE* device)
+void initTIMER2(TYPEDEVICE* device)
 {
 	//Timer2 Init Dimmer
 	TA2CTL |= TACLR;
+	TA2CTL |= TASSEL_2 + ID_3 + TAIE;
 
 	device->initTIMER2();
 

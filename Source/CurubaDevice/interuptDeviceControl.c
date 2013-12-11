@@ -32,6 +32,7 @@
 #include "typeDevice.h"
 #include "deviceControl.h"
 #include "commun.h"
+#include "wifi.h"
 
 #include "evnt_handler.h"
 #include "board.h"
@@ -128,6 +129,7 @@ __interrupt void TIMER1_A1_ISR(void) {
 			break;
 		case TA1IV_TA1IFG:                 // Timer overflow
 			HeartBeat(_device);
+			//heartBeatSent();
 			TA1CTL &= ~TAIFG;
 			break;
 		default:
@@ -155,6 +157,7 @@ __interrupt void TIMER2_A1_ISR(void) {
 			break;
 		case TA2IV_TA2IFG:                       // Timer overflow
 			_device->timer2_execute();
+			ZERO_CROSS_IE |= ZERO_CROSS;
 			break;
 		default:
 			break;
@@ -169,7 +172,8 @@ __interrupt void IntGPIOHandler(void)
 	case P1IV_P1IFG7:
 		CTRL_OUT &= ~CTRL_1 & ~CTRL_2;
 		TA2CTL |= MC_1;
-		P1IFG &= ~ZERO_CROSS;
+		ZERO_CROSS_IE &= ~ZERO_CROSS;
+		ZERO_CROSS_IFG &= ~ZERO_CROSS;
 		break;
 	default:
 		break;

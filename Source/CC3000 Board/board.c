@@ -553,8 +553,10 @@ void Init_FLL(unsigned int fsystem, unsigned int ratio) {
 
 	if (mode == 1) {                                        // fsystem > 16000
 		UCSCTL4 = 0x0233; //ACLK = REF0 = 32768 Hz // MCLK = SMCLK = DCOCLK (Select DCOCLK)
+		UCSCTL5 = DIVS_3;
 	} else {
 		UCSCTL4 = 0x0244;  //ACLK = REF0 = 32768 Hz // MCLK = SMCLK = DCOCLK (Select DCODIVCLK)
+		UCSCTL5 = DIVS_3;
 	}
 
 	__bis_SR_register(srRegisterState);

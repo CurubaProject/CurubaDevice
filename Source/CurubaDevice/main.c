@@ -53,10 +53,10 @@ void main(void) {
 
 	InitListComms(device);
 
-	InitADC10();
-	InitTIMER0();
-	InitTIMER1(device);
-	InitTIMER2(device);
+	initADC10();
+	initTIMER0();
+	initTIMER1(device);
+	initTIMER2(device);
 	initTIMERB0();
 
 	initApp(device);

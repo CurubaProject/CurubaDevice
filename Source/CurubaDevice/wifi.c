@@ -328,8 +328,8 @@ void payloadToSend(comms* PtrPop)
 
     switch (comms_transmit.payloadid)
     {
-    	case 0 :
-    		szResponse[0] = 5;
+    	case PAYLOAD_HEARTBEAT_RESPONSE :
+    		szResponse[0] = PAYLOAD_HEARTBEAT_RESPONSE;
     		szResponse[1] = CC3000ipconfig.uaMacAddr[2];
     		szResponse[2] = CC3000ipconfig.uaMacAddr[1];
     		szResponse[3] = CC3000ipconfig.uaMacAddr[0];
@@ -338,9 +338,8 @@ void payloadToSend(comms* PtrPop)
     		szResponse[6] = comms_transmit.status;
     		szResponse[7] = comms_transmit.state;
     		szResponse[8] = comms_transmit.data;
-    		sendPayLoad(szResponse, strlen(szResponse));
-//          comms_transmit.change = 0;                     //???
 
+    		sendPayLoad(szResponse, 9);
     		break;
         case PAYLOAD_INFO_RESPONSE :
             szResponse[0] = PAYLOAD_INFO_RESPONSE;
@@ -352,9 +351,8 @@ void payloadToSend(comms* PtrPop)
             szResponse[6] = comms_transmit.status;
             szResponse[7] = comms_transmit.state;
             szResponse[8] = comms_transmit.data;
-            sendPayLoad(szResponse, strlen(szResponse));
-//          comms_transmit.change = 0;                     //???
 
+            sendPayLoad(szResponse, 9);
             break;
         case PAYLOAD_CONTROL_RESPONSE :
             szResponse[0] = PAYLOAD_CONTROL_RESPONSE;
@@ -366,9 +364,8 @@ void payloadToSend(comms* PtrPop)
             szResponse[6] = comms_transmit.status;
             szResponse[7] = comms_transmit.state;
             szResponse[8] = comms_transmit.data;
-            sendPayLoad(szResponse, strlen(szResponse));
-//          comms_transmit.change = 0;                     //???
 
+            sendPayLoad(szResponse, 9);
             break;
         case PAYLOAD_CONFIG_RESPONSE:
 
@@ -403,9 +400,9 @@ void payloadToSend(comms* PtrPop)
 
             szResponse[23] = DSServerPort[0];
             szResponse[24] = DSServerPort[1];
-            sendPayLoad(szResponse, strlen(szResponse));
-            break;
 
+            sendPayLoad(szResponse, 25);
+            break;
         default:
             break;
     }

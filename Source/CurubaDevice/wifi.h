@@ -55,6 +55,7 @@ void initCC3000(void);
 int connectNetwork(void);
 int connectServer(void);
 
+void heartBeatSent(void);
 void initTIMERB0(void);
 void StartTIMERB0(void);
 void StopTIMERB0(void);
