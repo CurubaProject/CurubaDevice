@@ -91,6 +91,8 @@ void ADCRead(int ADC_number)
 
 	ADC10CTL0 |= ADC10ENC;
 
+	__delay_cycles(12500000);
+
 	TimerStart(TIMER_0);
 
 	while((TA0CTL>>4 & 0x0001) == 1)
@@ -109,7 +111,7 @@ int IsStateChange(int State, int StateComms)
 int ComputationWattHour(int *Tab_ADC10)
 {
 	static long int sum_value_ADC = 0;
-	static long int sum_analog_value_ADC = 0;
+	static long long int sum_analog_value_ADC = 0;
 	static long int mean = 0;
 	static long int max_value_ADC = 0;
 	static long int max_analog_value_ADC = 0;
@@ -120,6 +122,8 @@ int ComputationWattHour(int *Tab_ADC10)
 	static long int pente = 2;
 
 	int i = 0;
+
+	sum_value_ADC = 0;
 
 	for (i = MAXTABADC-1; i >= 77; i--)
 	{
@@ -135,8 +139,8 @@ int ComputationWattHour(int *Tab_ADC10)
 	}
 
 	max_analog_value_ADC = (1050 * max_value_ADC)>>10;
-	sum_analog_value_ADC = (1050 * sum_value_ADC)>>10;
-	mean = sum_analog_value_ADC/(MAXTABADC-77);
+	sum_analog_value_ADC = (((long long int)1050) * sum_value_ADC)>>10;
+	mean = (long int)(sum_analog_value_ADC/(MAXTABADC-77));
 
 	volt = ((max_analog_value_ADC - mean) * 169) / 239;                            //Volt RMS value   sqrt(2) = 1.4142
 	current = (float)volt / 37;    //                                                //Magic number from IC current sensor data sheet

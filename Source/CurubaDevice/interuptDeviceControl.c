@@ -38,7 +38,7 @@
 #include <msp430.h>
 
 static TYPEDEVICE* _device = 0x0;
-int* _Tab_ADC10 = (void *)0;
+static int* _Tab_ADC10 = (void *)0;
 int* _ptr = (void *)0 ;
 
 void initInterupt(TYPEDEVICE** device, int* Tab_ADC10) {

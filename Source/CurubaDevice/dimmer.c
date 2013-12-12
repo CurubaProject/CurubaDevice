@@ -50,8 +50,6 @@ void initDevice_dimmer(int* Tab_ADC10){
 
 	CTRL_OUT |= CTRL_1;
 
-	__delay_cycles(500000);
-
 	if(GetState(DEVICE_1, Tab_ADC10) == STATE_ON)
 	{
 		CTRL_OUT ^= CTRL_1 + CTRL_2;
@@ -82,7 +80,7 @@ void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC1
 	else
 	{
 		devices_dimmer[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_dimmer[0].state = (1^state)+1;                             //TODO remove ducktape
+		devices_dimmer[0].state = state;                             //TODO remove ducktape
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 	}
 
@@ -136,12 +134,13 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 	}
 }
 
-void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush) {
+void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10) {
 	devices_dimmer[0].payloadid = PAYLOAD_INFO_RESPONSE;
-	devices_dimmer[0].status = STATUS_INACTIVE;
-	devices_dimmer[0].state = STATE_OFF;
+	devices_dimmer[0].status = STATUS_ACTIVE;
+	devices_dimmer[0].state = GetState(DEVICE_1, Tab_ADC10);
 	devices_dimmer[0].device = DEVICE_1;
 	devices_dimmer[0].type = TYPE_DIMMER;
+	devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 
 	Push(transmitFirst, transmitPush, devices_dimmer[0]);
 }

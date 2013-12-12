@@ -144,7 +144,7 @@ void changeIO_outlet(int deviceNumber, int state) {
 	}
 }
 
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush) {
+void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10) {
 	Push(transmitFirst, transmitPush, devices_outlet[0]);
 	Push(transmitFirst, transmitPush, devices_outlet[1]);
 }

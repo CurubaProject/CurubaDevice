@@ -39,7 +39,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 								comms* ReceivePop, 
 								comms** transmitFirst,comms** transmitPush,
 								int* Tab_ADC10);
-void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush);
+void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10);
 void changeIO_dimmer(int deviceNumber, int state);
 void initTIMER1_dimmer();
 void initTIMER2_dimmer() ;

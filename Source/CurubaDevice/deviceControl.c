@@ -93,7 +93,7 @@ void InitListComms(TYPEDEVICE* device)
 void InfoCommsReceive(TYPEDEVICE* device, comms** transmitFirst, comms** transmitPush)
 {
 	TimerStop(TIMER_1);
-	device->infoCommsReceive(transmitFirst, transmitPush);
+	device->infoCommsReceive(transmitFirst, transmitPush, Tab_ADC10);
 	TimerStart(TIMER_1);
 }
 
