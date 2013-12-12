@@ -70,7 +70,7 @@ __interrupt void ADC10_ISR(void) {
 			*_ptr = ADC10MEM0;
 			_ptr++;
 
-			if (*_ptr > _Tab_ADC10[76])
+			if (_ptr > _Tab_ADC10+MAXTABADC)
 			{
 				_ptr = _Tab_ADC10;
 				TimerStop(TIMER_0);
@@ -127,9 +127,11 @@ __interrupt void TIMER1_A1_ISR(void) {
 		case TA1IV_6:                      // Capture/Compare 6
 			break;
 		case TA1IV_TA1IFG:                 // Timer overflow
+			__bis_SR_register(GIE);		//ToDo: fixed and removed this
 			HeartBeat(_device);
 			//heartBeatSent();
 			TA1CTL &= ~TAIFG;
+
 			break;
 		default:
 			break;

@@ -50,6 +50,8 @@ void initDevice_dimmer(int* Tab_ADC10){
 
 	CTRL_OUT |= CTRL_1;
 
+	__delay_cycles(500000);
+
 	if(GetState(DEVICE_1, Tab_ADC10) == STATE_ON)
 	{
 		CTRL_OUT ^= CTRL_1 + CTRL_2;

@@ -35,7 +35,7 @@
 #include "interuptDeviceControl.h"
 #include "board.h"
 
-int Tab_ADC10[77] = { 0 };   //a isoler
+int Tab_ADC10[MAXTABADC] = { 0 };   //a isoler
 
 void initApp(TYPEDEVICE** device)
 {

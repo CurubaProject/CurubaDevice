@@ -64,6 +64,7 @@ void main(void) {
 
 	initApp(&device);
 
+	__bis_SR_register(GIE);
 	while (1) {
 		if(connectNetwork())
 		{

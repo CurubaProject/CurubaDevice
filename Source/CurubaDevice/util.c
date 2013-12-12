@@ -30,6 +30,8 @@
 #include "util.h"
 #include "commun.h"
 
+#include "deviceControl.h"
+
 #include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
@@ -38,14 +40,20 @@ void TimerStart(int timer_number)
 {
 	if (timer_number == TIMER_0)
 	{
+		TA0R = 0;
+		//__bis_SR_register(GIE);
 		TA0CTL |= MC_1;
 	}
 	else if (timer_number == TIMER_1)
 	{
+		TA1R = 0;
+		//__bis_SR_register(GIE);
 		TA1CTL |= MC_1;
 	}
 	else if (timer_number == TIMER_2)
 	{
+		TA2R = 0;
+		//__bis_SR_register(GIE);
 		TA2CTL |= MC_1;
 	}
 }
@@ -72,7 +80,7 @@ void ADCRead(int ADC_number)
 	if ((TA0CTL>>4 & 0x0001) == 1) //(TA0CTL == MC_1)
 	{
 		//Wait for the end of sampling
-		__delay_cycles(500000);
+		__delay_cycles(525000);
 	}
 
 	ADC10CTL0 &= ~ADC10ENC;
@@ -85,7 +93,10 @@ void ADCRead(int ADC_number)
 
 	TimerStart(TIMER_0);
 
-	__delay_cycles(500000);
+	while((TA0CTL>>4 & 0x0001) == 1)
+	{
+
+	}
 }
 
 // TODO ADD NOLOAD RETURN
@@ -110,7 +121,7 @@ int ComputationWattHour(int *Tab_ADC10)
 
 	int i = 0;
 
-	for (i = 76; i--; )
+	for (i = MAXTABADC-1; i >= 77; i--)
 	{
 		if(max_value_ADC < Tab_ADC10[i])
 		{
@@ -123,15 +134,15 @@ int ComputationWattHour(int *Tab_ADC10)
 		sum_value_ADC += Tab_ADC10[i];
 	}
 
-	max_analog_value_ADC = (1000 * max_value_ADC)>>10;
-	sum_analog_value_ADC = (1000 * sum_value_ADC)>>10;
-	mean = sum_analog_value_ADC/77;
+	max_analog_value_ADC = (1050 * max_value_ADC)>>10;
+	sum_analog_value_ADC = (1050 * sum_value_ADC)>>10;
+	mean = sum_analog_value_ADC/(MAXTABADC-77);
 
 	volt = ((max_analog_value_ADC - mean) * 169) / 239;                            //Volt RMS value   sqrt(2) = 1.4142
-	current = (float)volt / 37;                                                    //Magic number from IC current sensor data sheet
+	current = (float)volt / 37;    //                                                //Magic number from IC current sensor data sheet
 	power = GRID_VOLTAGE * current;
 
-	if (power < 30)
+	if (power < 8)
 	{
 		power = 0;
 	}
