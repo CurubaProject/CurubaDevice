@@ -120,7 +120,7 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 	}
 }
 
-void changeIO_outlet(int deviceNumber, int state) {
+void changeIO_outlet(int deviceNumber, int state, int* Tab_ADC10) {
 	if (deviceNumber == DEVICE_1) {
 		if (state == STATE_ON)
 		{

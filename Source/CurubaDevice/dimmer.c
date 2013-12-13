@@ -46,7 +46,8 @@
 comms devices_dimmer[2]; // TODO IMPROVE list devices
 static int SwitchDimmer = 0;
 
-void initDevice_dimmer(int* Tab_ADC10){
+void initDevice_dimmer(int* Tab_ADC10)
+{
 
 	CTRL_OUT |= CTRL_1;
 
@@ -56,7 +57,8 @@ void initDevice_dimmer(int* Tab_ADC10){
 	}
 }
 
-void initListComms_dimmer() { // TODO REMOVE THIS FUNCTION, NOT GOOD
+void initListComms_dimmer()
+{ // TODO REMOVE THIS FUNCTION, NOT GOOD
 	comms d;
 
 	d.payloadid = PAYLOAD_INFO_RESPONSE;
@@ -69,7 +71,8 @@ void initListComms_dimmer() { // TODO REMOVE THIS FUNCTION, NOT GOOD
 	devices_dimmer[0] = d;
 }
 
-void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10) {
+void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10)
+{
 	int state = GetState(devices_dimmer[0].device, Tab_ADC10);
 
 	if(IsStateChange(state, devices_dimmer[0].state))
@@ -90,14 +93,12 @@ void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC1
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
 								comms* ReceivePop, 
 								comms** transmitFirst,comms** transmitPush,
-								int* Tab_ADC10) {
+								int* Tab_ADC10)
+{
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
 		//Enable Zero cross for dimmer function
-		P1IE |= BIT7;
-
-		//Timer2 count to 0
-		TA2CCR0 = 0;
+		ZERO_CROSS_IE |= ZERO_CROSS;
 
 		//Status of the module
 		devices_dimmer[0].payloadid = PAYLOAD_CONTROL_RESPONSE;
@@ -116,8 +117,8 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 	else if (ReceivePop->status == STATUS_INACTIVE)
 	{
 		//Disable Zero cross for dimmer function
-		P1IE &= ~BIT7;
-		P1IFG &= 0x0000;
+		ZERO_CROSS_IE &= ~ZERO_CROSS;
+		ZERO_CROSS_IFG &= ~ZERO_CROSS;
 
 		//Timer2 count to 0
 		TA2CCR0 = 0;
@@ -134,7 +135,8 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 	}
 }
 
-void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10) {
+void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10)
+{
 	devices_dimmer[0].payloadid = PAYLOAD_INFO_RESPONSE;
 	devices_dimmer[0].status = STATUS_INACTIVE;
 	devices_dimmer[0].state = GetState(DEVICE_1, Tab_ADC10);
@@ -145,25 +147,35 @@ void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Ta
 	Push(transmitFirst, transmitPush, devices_dimmer[0]);
 }
 
-void changeIO_dimmer(int deviceNumber, int state) {
-	CTRL_OUT ^= CTRL_1;
-	CTRL_OUT ^= CTRL_2;
-	SwitchDimmer = P1OUT;//0x0060 & P1OUT;
+void changeIO_dimmer(int deviceNumber, int state, int* Tab_ADC10)
+{
+
+	int current_state = GetState(deviceNumber, Tab_ADC10);
+	if (current_state == STATE_ON)
+	{
+		SwitchDimmer = (CTRL_1 + CTRL_2) & CTRL_OUT;
+	}
+	else
+	{
+		SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
+	}
 }
 
-void initTIMER1_dimmer() {
-	TA1CCR0 |= HEARTBEAT_TIME;
+void initTIMER1_dimmer()
+{
+	TA1CCR0 |= HEARTBEAT_5SEC;
 }
 
-void initTIMER2_dimmer() {
-	TA2CTL |= TASSEL_2 + ID_3 + TAIE;
+void initTIMER2_dimmer()
+{
+	//TA2CTL |= TASSEL_2 + ID_3 + TAIE;
 	TA2CCR0 = 0;
-	TA2EX0 |= TAIDEX_7;
 }
 
 // Interupt
 
-void timer2_Execute_dimmer(void) {
+void timer2_Execute_dimmer(void)
+{
 	CTRL_OUT |= SwitchDimmer;
 	TimerStop(TIMER_2);
 	// Reset the count

@@ -41,19 +41,16 @@ void TimerStart(int timer_number)
 	if (timer_number == TIMER_0)
 	{
 		TA0R = 0;
-		//__bis_SR_register(GIE);
 		TA0CTL |= MC_1;
 	}
 	else if (timer_number == TIMER_1)
 	{
 		TA1R = 0;
-		//__bis_SR_register(GIE);
 		TA1CTL |= MC_1;
 	}
 	else if (timer_number == TIMER_2)
 	{
 		TA2R = 0;
-		//__bis_SR_register(GIE);
 		TA2CTL |= MC_1;
 	}
 }

@@ -36,11 +36,23 @@
 #include "board.h"
 
 int Tab_ADC10[MAXTABADC] = { 0 };   //a isoler
+volatile unsigned short ulHeartbeatflag;
 
 void initApp(TYPEDEVICE** device)
 {
+	ulHeartbeatflag = 0;
 	initInterupt(device,Tab_ADC10);
 	(*device)->initDevice(Tab_ADC10);
+}
+
+void setHeartbeatflag(void)
+{
+	ulHeartbeatflag = 1;
+}
+
+unsigned short getHeartbeatflag(void)
+{
+	return (ulHeartbeatflag);
 }
 
 void initADC10(void)
@@ -57,7 +69,7 @@ void initADC10(void)
 
 void initTIMER0(void)
 {
-	//Timer0 Init (pour ADC)
+	//Timer0 Init (for ADC)
 	TA0CTL |= TACLR;
 	TA0CTL |= TASSEL_2 + TAIE;
 	TA0CCR0 &= 0x0000;
@@ -66,7 +78,7 @@ void initTIMER0(void)
 
 void initTIMER1(TYPEDEVICE* device)
 {
-	//Timer1 Init
+	//Timer1 Init (for Heartbeat)
 	TA1CTL |= TACLR;
 	TA1CTL |= TASSEL_1 + ID_3 + TAIE;
 	TA1EX0 |= TAIDEX_7;
@@ -76,7 +88,8 @@ void initTIMER1(TYPEDEVICE* device)
 //DOIT etre modifier badly en accordance avec MO
 void initTIMER2(TYPEDEVICE* device)
 {
-	//Timer2 Init Dimmer
+	//Timer2 Init (for Dimmer)
+	TA2CTL &= MC_0;
 	TA2CTL |= TACLR;
 	TA2CTL |= TASSEL_2 + TAIE;
 
@@ -106,6 +119,7 @@ void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmit
 
 void HeartBeat(TYPEDEVICE* device)
 {
+	ulHeartbeatflag = 0;
 	comms** transmitFirst = getTransmitFirst();
 	comms** transmitPush = getTransmitPush();
 

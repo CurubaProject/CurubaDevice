@@ -95,6 +95,11 @@ void main(void) {
 				assert(TransmitPop != NULL);
 				payloadToSend(TransmitPop);
 			}
+			if(getHeartbeatflag())
+			{
+				HeartBeat(device);
+
+			}
 		}
 	}
 }

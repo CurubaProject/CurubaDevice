@@ -58,7 +58,7 @@ int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab
 
 	if(currentState != commande)
 	{
-		device->changeIO(deviceNumber, commande);
+		device->changeIO(deviceNumber, commande, Tab_ADC10);
 	}
 
 	currentState = GetState(deviceNumber, Tab_ADC10);

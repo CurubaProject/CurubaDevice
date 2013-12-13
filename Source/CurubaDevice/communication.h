@@ -28,8 +28,8 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-#ifndef COMMS_H_
-#define COMMS_H_
+#ifndef COMMUNICATION_H_
+#define COMMUNICATION_H_
 
 #include "CommsManager.h"
 
@@ -38,4 +38,4 @@ void payloadToSend(comms* PtrPop);
 void receivePayLoad(void);
 void sendPayLoad(char* pcData, int length);
 
-#endif /* COMMS_H_ */
+#endif /* COMMUNICATION_H_ */

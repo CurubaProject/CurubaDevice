@@ -47,7 +47,7 @@ typedef void (*ControlCommsReceiveDevice)(TYPEDEVICE* device,
 												comms** transmitFirst, comms** transmitPush,
 												int* Tab_ADC10);
 typedef void (*InfoCommsReceiveDevice)(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10);
-typedef void (*ChangeIODevice)(int deviceNumber, int state);
+typedef void (*ChangeIODevice)(int deviceNumber, int state, int* Tab_ADC10);
 typedef void (*InitTIMER1Device)();
 typedef void (*InitTIMER2Device)();
 

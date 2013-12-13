@@ -41,11 +41,13 @@ static TYPEDEVICE* _device = 0x0;
 static int* _Tab_ADC10 = (void *)0;
 int* _ptr = (void *)0 ;
 
-void initInterupt(TYPEDEVICE** device, int* Tab_ADC10) {
+void initInterupt(TYPEDEVICE** device, int* Tab_ADC10)
+{
 	_device = *device;
 	_Tab_ADC10 = Tab_ADC10;
 	_ptr = _Tab_ADC10;
 }
+
 
 /*********************
  *  UNTERUPT VERTOR  *
@@ -127,9 +129,7 @@ __interrupt void TIMER1_A1_ISR(void) {
 		case TA1IV_6:                      // Capture/Compare 6
 			break;
 		case TA1IV_TA1IFG:                 // Timer overflow
-			__bis_SR_register(GIE);		//ToDo: fixed and removed this
-			HeartBeat(_device);
-			//heartBeatSent();
+			setHeartbeatflag();
 			TA1CTL &= ~TAIFG;
 
 			break;

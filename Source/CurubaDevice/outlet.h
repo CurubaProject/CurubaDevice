@@ -39,7 +39,7 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 								 comms* ReceivePop, 
 								 comms** transmitFirst, comms** transmitPush,
 								int* Tab_ADC10);
-void changeIO_outlet(int deviceNumber, int state);
+void changeIO_outlet(int deviceNumber, int state, int* Tab_ADC10);
 void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10);
 void initTIMER1_outlet();
 void initTIMER2_outlet();
