@@ -94,7 +94,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
 		//Enable Zero cross for dimmer function
-		//ZERO_CROSS_IE |= ZERO_CROSS;
+		P1IE |= BIT7;
 
 		//Timer2 count to 0
 		TA2CCR0 = 0;
@@ -136,7 +136,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 
 void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10) {
 	devices_dimmer[0].payloadid = PAYLOAD_INFO_RESPONSE;
-	devices_dimmer[0].status = STATUS_ACTIVE;
+	devices_dimmer[0].status = STATUS_INACTIVE;
 	devices_dimmer[0].state = GetState(DEVICE_1, Tab_ADC10);
 	devices_dimmer[0].device = DEVICE_1;
 	devices_dimmer[0].type = TYPE_DIMMER;
@@ -146,8 +146,9 @@ void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Ta
 }
 
 void changeIO_dimmer(int deviceNumber, int state) {
-	CTRL_OUT ^= CTRL_1 + CTRL_2;
-	SwitchDimmer = 0x0060 & CTRL_OUT;
+	CTRL_OUT ^= CTRL_1;
+	CTRL_OUT ^= CTRL_2;
+	SwitchDimmer = P1OUT;//0x0060 & P1OUT;
 }
 
 void initTIMER1_dimmer() {

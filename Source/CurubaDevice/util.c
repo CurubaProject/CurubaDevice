@@ -110,16 +110,16 @@ int IsStateChange(int State, int StateComms)
 
 int ComputationWattHour(int *Tab_ADC10)
 {
-	static long int sum_value_ADC = 0;
-	static long long int sum_analog_value_ADC = 0;
-	static long int mean = 0;
-	static long int max_value_ADC = 0;
-	static long int max_analog_value_ADC = 0;
-	static long int volt = 0;
-	static float current = 0;
-	static long int power = 0;
-	static long int temp_max = 0;
-	static long int pente = 2;
+	long int sum_value_ADC = 0;
+	long long int sum_analog_value_ADC = 0;
+	long int mean = 0;
+	long int max_value_ADC = 0;
+	long int max_analog_value_ADC = 0;
+	long int volt = 0;
+	float current = 0;
+	long int power = 0;
+	long int temp_max = 0;
+	long int pente = 2;
 
 	int i = 0;
 
