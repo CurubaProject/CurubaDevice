@@ -70,7 +70,7 @@ void heartBeat_outlet(comms** transmitFirst, comms** transmitPush, int* Tab_ADC1
 	else
 	{
 		devices_outlet[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_outlet[0].state = (1^state)+1;
+		devices_outlet[0].state = state;
 		devices_outlet[0].data = ComputationWattHour(Tab_ADC10);
 	}
 
@@ -78,13 +78,13 @@ void heartBeat_outlet(comms** transmitFirst, comms** transmitPush, int* Tab_ADC1
 
 	if(IsStateChange(state, devices_outlet[1].state))
 	{
-		devices_outlet[1].payloadid = 0;
+		devices_outlet[1].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
 		devices_outlet[1].data = ComputationWattHour(Tab_ADC10);
 	}
 	else
 	{
-		devices_outlet[1].payloadid = 0;
-		devices_outlet[1].state = (1^state)+1;
+		devices_outlet[1].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
+		devices_outlet[1].state = state;
 		devices_outlet[1].data = ComputationWattHour(Tab_ADC10);
 	}
 

@@ -108,9 +108,14 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		devices_dimmer[0].type = TYPE_DIMMER;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 
-		if (ReceivePop->state == STATE_ON)
+		if (ReceivePop->state == STATE_ON && ReceivePop->data > 10)
 		{
 			TA2CCR0 = (int) (101 - ReceivePop->data) / 100.0 * PERIODHZ;
+		}
+		else
+		{
+			ZERO_CROSS_IE &= ~ZERO_CROSS;
+			CTRL_OUT ^= SwitchDimmer;
 		}
 		Push(transmitFirst, transmitPush, devices_dimmer[0]);
 	}
