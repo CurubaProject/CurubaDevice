@@ -40,6 +40,9 @@
 #define LED_STATE_CONNECTED             (2)
 #define LED_STATE_CONFIGURING           (3)
 
+#define DELAY5SEC						(40)
+#define DELAY2SEC						(20)
+
 void initNetwork (void);
 int connectNetwork(void);
 int openSocket(void);

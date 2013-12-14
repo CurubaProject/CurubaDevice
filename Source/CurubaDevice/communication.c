@@ -29,8 +29,9 @@
 // ------------------------------------------------------------------------------------------------
 #include "communication.h"
 #include <msp430.h>
-#include "netapp.c"
+#include "netapp.h"
 #include "cc3000.h"
+#include "string.h"
 #include "wlan.h"
 
 #include "CommsManager.h"
@@ -45,9 +46,12 @@ extern comms* TransmitFirst;
 extern comms* TransmitPush;
 extern comms* TransmitPop;
 
-extern tNetappIpconfigRetArgs CC3000ipconfig;
-extern unsigned char DSServerIP[];
-extern unsigned char DSServerPort[];
+tNetappIpconfigRetArgs* CC3000config;
+unsigned char* serverIP;
+unsigned char* serverPort;
+unsigned short usHeartBeatSent = 0;
+
+
 
 
 //*****************************************************************************
@@ -77,12 +81,35 @@ void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
             break;
         case PAYLOAD_CONFIG_REQUEST:
             comms_receive.payloadid = PAYLOAD_CONFIG_REQUEST;
+            break;
 
+        case PAYLOAD_HEARTBEAT_REQUEST:
+        	usHeartBeatSent = 0;
             break;
         default:
             break;
     }
 }
+
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+unsigned short getHeartbeatsentflag(void)
+{
+	return(usHeartBeatSent);
+}
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+void clearHeartbeatsentflag(void)
+{
+	usHeartBeatSent = 0;
+}
+
 
 //*****************************************************************************
 //
@@ -96,27 +123,29 @@ void payloadToSend(comms* PtrPop)
     comms comms_transmit;
 
     comms_transmit = *PtrPop;
+    getConfigInfo(serverIP, serverPort, CC3000config);
 
     switch (comms_transmit.payloadid)
     {
     	case PAYLOAD_HEARTBEAT_RESPONSE :
     		szResponse[0] = PAYLOAD_HEARTBEAT_RESPONSE;
-    		szResponse[1] = CC3000ipconfig.uaMacAddr[2];
-    		szResponse[2] = CC3000ipconfig.uaMacAddr[1];
-    		szResponse[3] = CC3000ipconfig.uaMacAddr[0];
+    		szResponse[1] = CC3000config->uaMacAddr[2];
+    		szResponse[2] = CC3000config->uaMacAddr[1];
+    		szResponse[3] = CC3000config->uaMacAddr[0];
     		szResponse[4] = comms_transmit.type;
     		szResponse[5] = comms_transmit.device;
     		szResponse[6] = comms_transmit.status;
     		szResponse[7] = comms_transmit.state;
     		szResponse[8] = comms_transmit.data;
 
+    		usHeartBeatSent = 1;
     		sendPayLoad(szResponse, 9);
     		break;
         case PAYLOAD_INFO_RESPONSE :
             szResponse[0] = PAYLOAD_INFO_RESPONSE;
-            szResponse[1] = CC3000ipconfig.uaMacAddr[2];
-            szResponse[2] = CC3000ipconfig.uaMacAddr[1];
-            szResponse[3] = CC3000ipconfig.uaMacAddr[0];
+            szResponse[1] = CC3000config->uaMacAddr[2];
+            szResponse[2] = CC3000config->uaMacAddr[1];
+            szResponse[3] = CC3000config->uaMacAddr[0];
             szResponse[4] = comms_transmit.type;
             szResponse[5] = comms_transmit.device;
             szResponse[6] = comms_transmit.status;
@@ -127,9 +156,9 @@ void payloadToSend(comms* PtrPop)
             break;
         case PAYLOAD_CONTROL_RESPONSE :
             szResponse[0] = PAYLOAD_CONTROL_RESPONSE;
-            szResponse[1] = CC3000ipconfig.uaMacAddr[2];
-            szResponse[2] = CC3000ipconfig.uaMacAddr[1];
-            szResponse[3] = CC3000ipconfig.uaMacAddr[0];
+            szResponse[1] = CC3000config->uaMacAddr[2];
+            szResponse[2] = CC3000config->uaMacAddr[1];
+            szResponse[3] = CC3000config->uaMacAddr[0];
             szResponse[4] = comms_transmit.type;
             szResponse[5] = comms_transmit.device;
             szResponse[6] = comms_transmit.status;
@@ -142,35 +171,35 @@ void payloadToSend(comms* PtrPop)
 
             szResponse[0] = PAYLOAD_CONFIG_RESPONSE;
 
-            szResponse[1] = CC3000ipconfig.uaMacAddr[5];
-            szResponse[2] = CC3000ipconfig.uaMacAddr[4];
-            szResponse[3] = CC3000ipconfig.uaMacAddr[3];
-            szResponse[4] = CC3000ipconfig.uaMacAddr[2];
-            szResponse[5] = CC3000ipconfig.uaMacAddr[1];
-            szResponse[6] = CC3000ipconfig.uaMacAddr[0];
+            szResponse[1] = CC3000config->uaMacAddr[5];
+            szResponse[2] = CC3000config->uaMacAddr[4];
+            szResponse[3] = CC3000config->uaMacAddr[3];
+            szResponse[4] = CC3000config->uaMacAddr[2];
+            szResponse[5] = CC3000config->uaMacAddr[1];
+            szResponse[6] = CC3000config->uaMacAddr[0];
 
-            szResponse[7] = CC3000ipconfig.aucIP[3];
-            szResponse[8] = CC3000ipconfig.aucIP[2];
-            szResponse[9] = CC3000ipconfig.aucIP[1];
-            szResponse[10] = CC3000ipconfig.aucIP[0];
+            szResponse[7] = CC3000config->aucIP[3];
+            szResponse[8] = CC3000config->aucIP[2];
+            szResponse[9] = CC3000config->aucIP[1];
+            szResponse[10] = CC3000config->aucIP[0];
 
-            szResponse[11] = CC3000ipconfig.aucSubnetMask[3];
-            szResponse[12] = CC3000ipconfig.aucSubnetMask[2];
-            szResponse[13] = CC3000ipconfig.aucSubnetMask[1];
-            szResponse[14] = CC3000ipconfig.aucSubnetMask[0];
+            szResponse[11] = CC3000config->aucSubnetMask[3];
+            szResponse[12] = CC3000config->aucSubnetMask[2];
+            szResponse[13] = CC3000config->aucSubnetMask[1];
+            szResponse[14] = CC3000config->aucSubnetMask[0];
 
-            szResponse[15] = CC3000ipconfig.aucDefaultGateway[3];
-            szResponse[16] = CC3000ipconfig.aucDefaultGateway[2];
-            szResponse[17] = CC3000ipconfig.aucDefaultGateway[1];
-            szResponse[18] = CC3000ipconfig.aucDefaultGateway[0];
+            szResponse[15] = CC3000config->aucDefaultGateway[3];
+            szResponse[16] = CC3000config->aucDefaultGateway[2];
+            szResponse[17] = CC3000config->aucDefaultGateway[1];
+            szResponse[18] = CC3000config->aucDefaultGateway[0];
 
-            szResponse[19] = DSServerIP[0];
-            szResponse[20] = DSServerIP[1];
-            szResponse[21] = DSServerIP[2];
-            szResponse[22] = DSServerIP[3];
+            szResponse[19] = serverIP[0];
+            szResponse[20] = serverIP[1];
+            szResponse[21] = serverIP[2];
+            szResponse[22] = serverIP[3];
 
-            szResponse[23] = DSServerPort[0];
-            szResponse[24] = DSServerPort[1];
+            szResponse[23] = serverPort[0];
+            szResponse[24] = serverPort[1];
 
             sendPayLoad(szResponse, 25);
             break;

@@ -28,8 +28,10 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-#ifndef WIKI_H_
-#define WIKI_H_
+#ifndef CC3000_H
+#define CC3000_H
+
+#include "netapp.h"
 
 #define DISABLE                                     (0)
 #define ENABLE                                      (1)
@@ -43,6 +45,7 @@ void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKe
 int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype, unsigned short lengthssidname, unsigned short lengthssidkey);
 int connectWifi(void);
 int connectServer(void);
+void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs* cc3000config);
 void heartBeatSent(void);
 unsigned long pingReceived(void);
 int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);
@@ -57,4 +60,4 @@ void updateIPinfo(void);
 void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length);
 unsigned long wifiConnected(void);
 
-#endif /* WIKI_H_ */
+#endif /* CC3000_H */

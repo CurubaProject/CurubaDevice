@@ -29,12 +29,15 @@
 // ------------------------------------------------------------------------------------------------
 #include "board.h"
 #include "cc3000.h"
+#include "communication.h"
 #include <msp430.h>
 #include "network.h"
 
 
+
 volatile unsigned long ulTimecount;
-volatile unsigned long ulTimeRef;
+volatile unsigned long ulTimeRef,		//use for Timer LED
+						ulHbTimeref;	//use to asset heartbeat response delay
 volatile short  sSocketConnected,
                 sNetworkConnectAttempt;
 volatile short sLedState;
@@ -72,7 +75,7 @@ int connectNetwork(void)
         	iReturnConnect = connectWifi();
 
             ulReftime = getRefTime(); //Wait until connected to Network
-            while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(ulReftime) < 40) //Wait 5 sec
+            while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(ulReftime) < DELAY5SEC) //Wait 5 sec
             {
             	updateAsyncEvent();
             }
@@ -94,10 +97,33 @@ int connectNetwork(void)
                 iReturnValue = 1;
                 sNetworkConnectAttempt = 0;
                 sLedState = LED_STATE_CONNECTED;
+                static short sflag = 0;
+                if(getHeartbeatsentflag())	//Heartsent - Server must response back
+                {
+                	if(sflag == 0)
+                	{
+                		sflag = 1;
+                		ulHbTimeref = getRefTime(); //Get time ref heartbeart sent
+                	}
+                	else
+                	{
+                		if(getTimeElapsed(ulHbTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
+                		{
+                			sSocketConnected = 0; 	//close socket and retry to reconnect
+                			clearHeartbeatsentflag();
+                			sflag = 0;
+                		}
+                	}
+                }
+                else
+                {
+                	sflag = 0;
+                }
             }
             else
             {
                 sLedState = LED_STATE_UNCONNECTED;
+                clearHeartbeatsentflag();
             }
         }
     }
@@ -132,7 +158,7 @@ int openSocket(void)
         iReturnping = pingServer(PING_ATTEMPT, PING_SIZE, PING_TIMEOUT);
         ulReftime = getRefTime();
         //Check Server IP address
-        while(iReturnping == 0 && pingReceived() == 0 && ulTime < 40) //Stop after 5 sec of finding the Server
+        while(iReturnping == 0 && pingReceived() == 0 && ulTime < DELAY5SEC) //Stop after 5 sec of finding the Server
         {
         	updateAsyncEvent();
             ulTime = getTimeElapsed(ulReftime);
@@ -145,7 +171,7 @@ int openSocket(void)
         else //Connect to Server
         {
         	 int iReturnConnect = connectServer();
-			__delay_cycles(12500000);
+			__delay_cycles(100000); //__delay_cycles(12500000);
 
 			if (iReturnConnect == 0)
 			{

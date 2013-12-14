@@ -70,7 +70,7 @@ sockaddr tSocketAddr;
 netapp_pingreport_args_t pingReport;
 tNetappIpconfigRetArgs CC3000ipconfig;
 unsigned char DSServerIP[4] = { 192, 168, 20, 140 };
-const unsigned char DSServerPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
+unsigned char DSServerPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
 
 //*****************************************************************************
 //! CC3000_UsynchCallback
@@ -284,8 +284,8 @@ int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned 
 //*****************************************************************************
 void updateIPinfo(void)
 {
+	__delay_cycles(3000000); //Wait Important the CC3000 get IP from DHCP //__delay_cycles(50000000);
 	netapp_ipconfig(&CC3000ipconfig); //Get My IP address
-	__delay_cycles(50000000); //Wait Important (Make sure all events have been received)
 }
 
 
@@ -338,6 +338,7 @@ unsigned long pingReceived(void)
 int connectServer(void)
 {
 	return (connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr)));
+
 }
 
 //*****************************************************************************
@@ -404,6 +405,17 @@ int receivePackets(void)
 void sendPackets(char* pcData, int length)
 {
 	send(ulSocketTCP, pcData, length, 0);
-	__delay_cycles(100000);
+	__delay_cycles(1000);//__delay_cycles(100000);
 }
 
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs* cc3000config)
+{
+	dsServerIP = DSServerIP;
+	dsServerPort = DSServerPort;
+	cc3000config = &CC3000ipconfig;
+}

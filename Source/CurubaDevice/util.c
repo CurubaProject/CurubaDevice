@@ -88,7 +88,7 @@ void ADCRead(int ADC_number)
 
 	ADC10CTL0 |= ADC10ENC;
 
-	__delay_cycles(12500000);
+	__delay_cycles(2000000);
 
 	TimerStart(TIMER_0);
 
