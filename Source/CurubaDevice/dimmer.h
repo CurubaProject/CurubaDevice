@@ -45,6 +45,9 @@ void initTIMER1_dimmer();
 void initTIMER2_dimmer() ;
 
 // Interupt
-void timer2_Execute_dimmer(void);
+void timer2_Execute_dimmer(int* Tab_ADC10);
+void turnOffligth(void);
+void toggleControl(void);
+void turnOnlight(int* Tab_ADC10);
 
 #endif

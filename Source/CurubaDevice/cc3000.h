@@ -41,11 +41,12 @@ void initCC3000(void);
 void initDriver(void);
 void initSocket();
 
+void clearpingReceived(void);
 void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive,unsigned long aucInactivity);
 int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype, unsigned short lengthssidname, unsigned short lengthssidkey);
 int connectWifi(void);
 int connectServer(void);
-void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs* cc3000config);
+void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config);
 void heartBeatSent(void);
 unsigned long pingReceived(void);
 int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);

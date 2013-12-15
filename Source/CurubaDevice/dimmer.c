@@ -53,8 +53,9 @@ void initDevice_dimmer(int* Tab_ADC10)
 
 	if(GetState(DEVICE_1, Tab_ADC10) == STATE_ON)
 	{
-		CTRL_OUT ^= CTRL_1 + CTRL_2;
+		toggleControl();
 	}
+	SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
 }
 
 void initListComms_dimmer()
@@ -97,9 +98,6 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 {
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
-		//Enable Zero cross for dimmer function
-		ZERO_CROSS_IE |= ZERO_CROSS;
-
 		//Status of the module
 		devices_dimmer[0].payloadid = PAYLOAD_CONTROL_RESPONSE;
 		devices_dimmer[0].status = STATUS_ACTIVE;
@@ -108,6 +106,8 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		devices_dimmer[0].type = TYPE_DIMMER;
 		devices_dimmer[0].data = ComputationWattHour(Tab_ADC10);
 
+		//Enable Zero cross for dimmer function
+		ZERO_CROSS_IE |= ZERO_CROSS;
 		if (ReceivePop->state == STATE_ON && ReceivePop->data > 10)
 		{
 			TA2CCR0 = (int) (101 - ReceivePop->data) / 100.0 * PERIODHZ;
@@ -115,7 +115,8 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		else
 		{
 			ZERO_CROSS_IE &= ~ZERO_CROSS;
-			CTRL_OUT ^= SwitchDimmer;
+			TimerStop(TIMER_2);
+			turnOffligth();
 		}
 		Push(transmitFirst, transmitPush, devices_dimmer[0]);
 	}
@@ -160,7 +161,7 @@ void changeIO_dimmer(int deviceNumber, int state, int* Tab_ADC10)
 	{
 		SwitchDimmer = (CTRL_1 + CTRL_2) & CTRL_OUT;
 	}
-	else
+	else if(CTRL_OUT & (CTRL_1 + CTRL_2) != 0)
 	{
 		SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
 	}
@@ -173,17 +174,80 @@ void initTIMER1_dimmer()
 
 void initTIMER2_dimmer()
 {
-	//TA2CTL |= TASSEL_2 + ID_3 + TAIE;
 	TA2CCR0 = 0;
 }
 
 // Interupt
 
-void timer2_Execute_dimmer(void)
+void timer2_Execute_dimmer(int* Tab_ADC10)
 {
-	CTRL_OUT |= SwitchDimmer;
+	turnOnlight(Tab_ADC10);
 	TimerStop(TIMER_2);
 	// Reset the count
 	TA2R &= 0x0000;
 	TA2CTL &= ~TAIFG;
+}
+
+void turnOffligth(void)
+{
+	if(CTRL_OUT & CTRL_1)
+	{
+		CTRL_OUT &= (~SwitchDimmer & CTRL_1);
+	}
+	else
+	{
+		CTRL_OUT |= (~SwitchDimmer & CTRL_1);
+	}
+
+	if(CTRL_OUT & CTRL_2)
+	{
+		CTRL_OUT &= (~SwitchDimmer & CTRL_2);
+	}
+	else
+	{
+		CTRL_OUT |= (~SwitchDimmer & CTRL_2);
+	}
+}
+
+
+void toggleControl(void)
+{
+	if(CTRL_OUT & CTRL_1)
+	{
+		CTRL_OUT &= ~CTRL_1;
+	}
+	else
+	{
+		CTRL_OUT |= CTRL_1;
+	}
+
+	if(CTRL_OUT & CTRL_2)
+	{
+		CTRL_OUT &= ~CTRL_2;
+	}
+	else
+	{
+		CTRL_OUT |= CTRL_2;
+	}
+}
+
+void turnOnlight(int* Tab_ADC10)
+{
+		if(CTRL_OUT & CTRL_1)
+		{
+			CTRL_OUT &= (SwitchDimmer & CTRL_1);
+		}
+		else
+		{
+			CTRL_OUT |= (SwitchDimmer & CTRL_1);
+		}
+
+		if(CTRL_OUT & CTRL_2)
+		{
+			CTRL_OUT &= (SwitchDimmer & CTRL_2);
+		}
+		else
+		{
+			CTRL_OUT |= (SwitchDimmer & CTRL_2);
+		}
 }

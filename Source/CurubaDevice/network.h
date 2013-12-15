@@ -31,9 +31,9 @@
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
-#define PING_ATTEMPT                    (5)
+#define PING_ATTEMPT                    (2)
 #define PING_SIZE                       (10)
-#define PING_TIMEOUT                    (20)
+#define PING_TIMEOUT                    (10)
 
 #define LED_STATE_OFF                   (0)
 #define LED_STATE_UNCONNECTED           (1)

@@ -37,6 +37,8 @@
 #include "board.h"
 #include <msp430.h>
 
+#include "dimmer.h"
+
 static TYPEDEVICE* _device = 0x0;
 static int* _Tab_ADC10 = (void *)0;
 int* _ptr = (void *)0 ;
@@ -157,7 +159,7 @@ __interrupt void TIMER2_A1_ISR(void) {
 		case TA2IV_6:                            // Capture/Compare 6
 			break;
 		case TA2IV_TA2IFG:                       // Timer overflow
-			_device->timer2_execute();
+			_device->timer2_execute(_Tab_ADC10);
 			ZERO_CROSS_IE |= ZERO_CROSS;
 			break;
 		default:
@@ -171,6 +173,7 @@ __interrupt void IntGPIOHandler(void)
 	switch(__even_in_range(P1IV, P1IV_P1IFG7))
 	{
 	case P1IV_P1IFG7:
+
 		CTRL_OUT &= ~CTRL_1 & ~CTRL_2;
 		TA2CTL |= MC_1;
 		ZERO_CROSS_IE &= ~ZERO_CROSS;

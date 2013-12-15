@@ -123,7 +123,7 @@ void payloadToSend(comms* PtrPop)
     comms comms_transmit;
 
     comms_transmit = *PtrPop;
-    getConfigInfo(serverIP, serverPort, CC3000config);
+    getConfigInfo(serverIP, serverPort, &CC3000config);
 
     switch (comms_transmit.payloadid)
     {
