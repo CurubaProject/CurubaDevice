@@ -54,7 +54,7 @@ void InfoCommsReceive(TYPEDEVICE* device, comms** transmitFirst,comms** transmit
 void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst, comms** transmitPush);
 void HeartBeat(TYPEDEVICE* device);
 unsigned short getHeartbeatflag(void);
-void setHeartbeatflag(void);
+void setHeartbeatflag(unsigned short flagvalue);
 unsigned short ReadAppSwitch(void);
 
 #endif

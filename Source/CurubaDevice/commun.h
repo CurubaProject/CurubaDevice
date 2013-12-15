@@ -44,6 +44,9 @@
 #define DEVICE_1 1
 #define DEVICE_2 2
 
+#define TRUE 	(1)
+#define FALSE	(0)
+
 #define PAYLOAD_INFO_REQUEST		(10)
 #define PAYLOAD_INFO_RESPONSE		(20)
 #define PAYLOAD_CONTROL_REQUEST		(30)

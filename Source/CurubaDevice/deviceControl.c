@@ -45,9 +45,9 @@ void initApp(TYPEDEVICE** device)
 	(*device)->initDevice(Tab_ADC10);
 }
 
-void setHeartbeatflag(void)
+void setHeartbeatflag(unsigned short flagvalue)
 {
-	ulHeartbeatflag = 1;
+	ulHeartbeatflag = flagvalue;
 }
 
 unsigned short getHeartbeatflag(void)
