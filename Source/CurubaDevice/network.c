@@ -98,7 +98,7 @@ int connectNetwork(void)
                 sNetworkConnectAttempt = 0;
                 sLedState = LED_STATE_CONNECTED;
                 static short sflag = 0;
-                if(getHeartbeatsentflag())	//Heartsent - Server must response back
+                if(getHeartbeatsentflag())	//Heartbeat sent - Server must response back
                 {
                 	if(sflag == 0)
                 	{
@@ -109,6 +109,7 @@ int connectNetwork(void)
                 	{
                 		if(getTimeElapsed(ulHbTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
                 		{
+                			callCloseSocket();
                 			sSocketConnected = 0; 	//close socket and retry to reconnect
                 			clearHeartbeatsentflag();
                 			sflag = 0;
@@ -150,7 +151,14 @@ int openSocket(void)
     int iReturnping = 0;
     int iReturnValue = 1; //Default fucntion return value
 
-    if (sSocketConnected == 0  || socketclosed() == 1)
+    if(socketclosed() == 1)
+    {
+    	callCloseSocket();
+    	clearSocketClosedflag();
+    	sSocketConnected  = 0;
+
+    }
+    if (sSocketConnected == 0)
     {
         initSocket();
         sSocketConnected = 0;
