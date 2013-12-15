@@ -131,7 +131,7 @@ __interrupt void TIMER1_A1_ISR(void) {
 		case TA1IV_6:                      // Capture/Compare 6
 			break;
 		case TA1IV_TA1IFG:                 // Timer overflow
-			setHeartbeatflag();
+			setHeartbeatflag(TRUE);
 			TA1CTL &= ~TAIFG;
 
 			break;

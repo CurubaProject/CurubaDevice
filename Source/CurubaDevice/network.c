@@ -32,6 +32,9 @@
 #include "communication.h"
 #include <msp430.h>
 #include "network.h"
+#include "util.h"
+#include "commun.h"
+#include "deviceControl.h"// TODO: to remove
 
 
 
@@ -160,7 +163,9 @@ int openSocket(void)
     }
     if (sSocketConnected == 0)
     {
-        initSocket();
+    	TimerStop(TIMER_1);
+    	setHeartbeatflag(FALSE);
+    	initSocket();
         sSocketConnected = 0;
 
         clearpingReceived();

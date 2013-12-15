@@ -145,7 +145,21 @@ void changeIO_outlet(int deviceNumber, int state, int* Tab_ADC10) {
 }
 
 void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10) {
+
+	devices_outlet[0].payloadid = PAYLOAD_INFO_RESPONSE;
+	devices_outlet[0].status = STATUS_INACTIVE;
+	devices_outlet[0].state = STATE_OFF;
+	devices_outlet[0].device = DEVICE_1;
+	devices_outlet[0].type = TYPE_OUTLET;
+	devices_outlet[0].data = 0;
 	Push(transmitFirst, transmitPush, devices_outlet[0]);
+
+	devices_outlet[1].payloadid = PAYLOAD_INFO_RESPONSE;
+	devices_outlet[1].status = STATUS_INACTIVE;
+	devices_outlet[1].state = STATE_OFF;
+	devices_outlet[1].device = DEVICE_2;
+	devices_outlet[1].type = TYPE_OUTLET;
+	devices_outlet[1].data = 0;
 	Push(transmitFirst, transmitPush, devices_outlet[1]);
 }
 
