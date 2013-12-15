@@ -118,6 +118,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 			TimerStop(TIMER_2);
 			turnOffligth();
 		}
+
 		Push(transmitFirst, transmitPush, devices_dimmer[0]);
 	}
 	else if (ReceivePop->status == STATUS_INACTIVE)
@@ -157,7 +158,7 @@ void changeIO_dimmer(int deviceNumber, int state, int* Tab_ADC10)
 {
 
 	int current_state = GetState(deviceNumber, Tab_ADC10);
-	if (current_state == STATE_ON)
+	if (current_state == STATE_ON && (CTRL_OUT & (CTRL_1 + CTRL_2)) != 0)
 	{
 		SwitchDimmer = (CTRL_1 + CTRL_2) & CTRL_OUT;
 	}

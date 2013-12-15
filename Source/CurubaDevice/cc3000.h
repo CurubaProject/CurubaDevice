@@ -41,7 +41,9 @@ void initCC3000(void);
 void initDriver(void);
 void initSocket();
 
+void callCloseSocket(void);
 void clearpingReceived(void);
+void clearSocketClosedflag(void);
 void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive,unsigned long aucInactivity);
 int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype, unsigned short lengthssidname, unsigned short lengthssidkey);
 int connectWifi(void);

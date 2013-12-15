@@ -372,19 +372,19 @@ void initSocket(void)
 	unsigned long socketTimeout = 10;
 	int iReturnValue = -1;
 
-	closesocket(ulSocketTCP);
-	ulCC3000SocketClosed = 0;
+	//closesocket(ulSocketTCP);
+	//ulCC3000SocketClosed = 0;
 	ulPingReceived = 0;
 	ulSocketTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	while (iReturnValue != 0)
 	{
 		iReturnValue = setsockopt(ulSocketTCP,
-								SOL_SOCKET,
-								SOCKOPT_RECV_TIMEOUT,
-								&socketTimeout,
-								sizeof(socketTimeout));
-		__delay_cycles(1000);
+											SOL_SOCKET,
+											SOCKOPT_RECV_TIMEOUT,
+											&socketTimeout,
+											sizeof(socketTimeout));
+		__delay_cycles(10000);
 	}
 
 	// the family is always AF_INET
@@ -400,6 +400,28 @@ void initSocket(void)
 	tSocketAddr.sa_data[4] = DSServerIP[2];
 	tSocketAddr.sa_data[5] = DSServerIP[3];
 }
+
+
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+void clearSocketClosedflag(void)
+{
+	ulCC3000SocketClosed = 0;
+}
+
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+void callCloseSocket(void)
+{
+	closesocket(ulSocketTCP);
+}
+
 
 //*****************************************************************************
 //
