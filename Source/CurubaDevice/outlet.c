@@ -159,6 +159,6 @@ void initTIMER2_outlet() {
 
 // Interupt
 
-void timer2_Execute_outlet(void) {
+void timer2_Execute_outlet(int* Tab_ADC10) {
 	//Nothing to do
 }

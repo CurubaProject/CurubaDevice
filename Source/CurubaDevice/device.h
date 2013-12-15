@@ -52,6 +52,6 @@ typedef void (*InitTIMER1Device)();
 typedef void (*InitTIMER2Device)();
 
 // Interupt
-typedef void (*TIMER2_Execute)();
+typedef void (*TIMER2_Execute)(int* Tab_ADC10);
 
 #endif

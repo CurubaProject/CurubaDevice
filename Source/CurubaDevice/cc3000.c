@@ -273,7 +273,9 @@ void updateAsyncEvent(void)
 //*****************************************************************************
 int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout)
 {
-	 return(netapp_ping_send((unsigned long *) DSServerIP, ulPingAttempts, ulPingSize, ulPingTimeout));
+	int iReturnping = netapp_ping_send((unsigned long *) DSServerIP, ulPingAttempts, ulPingSize, ulPingTimeout);
+	__delay_cycles(100000);
+	return(iReturnping);
 
 }
 
@@ -328,6 +330,16 @@ unsigned long socketclosed(void)
 unsigned long pingReceived(void)
 {
 	return (ulPingReceived);
+}
+
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+void clearpingReceived(void)
+{
+	ulPingReceived = 0;
 }
 
 
@@ -413,9 +425,9 @@ void sendPackets(char* pcData, int length)
 //
 //
 //*****************************************************************************
-void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs* cc3000config)
+void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config)
 {
 	dsServerIP = DSServerIP;
 	dsServerPort = DSServerPort;
-	cc3000config = &CC3000ipconfig;
+	*cc3000config = &CC3000ipconfig;
 }

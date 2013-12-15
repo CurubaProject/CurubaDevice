@@ -155,6 +155,7 @@ int openSocket(void)
         initSocket();
         sSocketConnected = 0;
 
+        clearpingReceived();
         iReturnping = pingServer(PING_ATTEMPT, PING_SIZE, PING_TIMEOUT);
         ulReftime = getRefTime();
         //Check Server IP address
@@ -163,8 +164,8 @@ int openSocket(void)
         	updateAsyncEvent();
             ulTime = getTimeElapsed(ulReftime);
         }
-
-        if(iReturnping != 0 || ulTime >= 10) //Problem finding server IP
+        clearpingReceived();
+        if(iReturnping != 0 || ulTime >= DELAY5SEC) //Problem finding server IP
         {
             iReturnValue = 0;
         }
