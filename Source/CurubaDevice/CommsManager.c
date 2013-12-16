@@ -47,7 +47,7 @@ int Pop(comms** PtrFirst, comms** PtrPush, comms** PtrPop)
 	{
 		StateComms = NOCOMMS;
 	}
-	else if (*PtrPop == ((*PtrFirst)+5))
+	else if (*PtrPop == ((*PtrFirst)+4))
 	{
 		*PtrPop = *PtrFirst;
 		StateComms = NEWCOMMS;
@@ -63,7 +63,7 @@ int Pop(comms** PtrFirst, comms** PtrPush, comms** PtrPop)
 
 void Push(comms** PtrFirst, comms** PtrPush, comms NewStruct)
 {
-	if (*PtrPush == ((*PtrFirst)+5))
+	if (*PtrPush == ((*PtrFirst)+4))
 	{
 		*PtrPush = *PtrFirst;
 	}

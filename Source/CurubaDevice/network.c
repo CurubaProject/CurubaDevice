@@ -40,7 +40,8 @@
 
 volatile unsigned long ulTimecount;
 volatile unsigned long ulTimeRef,		//use for Timer LED
-						ulHbTimeref;	//use to asset heartbeat response delay
+						ulHbTimeref,	//use to asset heartbeat response delay
+						ulIrTimeref;	//use to asset inforesquest delay time
 volatile short  sSocketConnected,
                 sNetworkConnectAttempt;
 volatile short sLedState;
@@ -101,6 +102,7 @@ int connectNetwork(void)
                 sNetworkConnectAttempt = 0;
                 sLedState = LED_STATE_CONNECTED;
                 static short sflag = 0;
+                static short sinfoflag = 0;
                 if(getHeartbeatsentflag())	//Heartbeat sent - Server must response back
                 {
                 	if(sflag == 0)
@@ -122,6 +124,30 @@ int connectNetwork(void)
                 else
                 {
                 	sflag = 0;
+
+                }
+
+                if(getInfoResquestflag() == 0)
+				{
+					if(sinfoflag == 0)
+					{
+						sinfoflag = 1;
+						ulIrTimeref = getRefTime(); //Get time ref heartbeart sent
+					}
+					else
+					{
+						if(getTimeElapsed(ulIrTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
+						{
+							callCloseSocket();
+							sSocketConnected = 0; 	//close socket and retry to reconnect
+							clearInfoResquestflag();
+							sinfoflag = 0;
+						}
+					}
+				}
+                else
+                {
+                	sinfoflag = 0;
                 }
             }
             else
@@ -163,6 +189,7 @@ int openSocket(void)
     }
     if (sSocketConnected == 0)
     {
+    	clearInfoResquestflag();
     	TimerStop(TIMER_1);
     	setHeartbeatflag(FALSE);
     	initSocket();

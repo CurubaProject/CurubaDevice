@@ -50,6 +50,7 @@ tNetappIpconfigRetArgs* CC3000config;
 unsigned char* serverIP;
 unsigned char* serverPort;
 unsigned short usHeartBeatSent = 0;
+unsigned short usInfoResquestReceived = 0;
 
 
 
@@ -67,6 +68,7 @@ void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
     switch (usBuffer[0])
     {
         case PAYLOAD_INFO_REQUEST :
+        	usInfoResquestReceived = 1;
             comms_receive.payloadid = PAYLOAD_INFO_REQUEST;
             Push(&ReceiveFirst, &ReceivePush, comms_receive);
             break;
@@ -99,6 +101,24 @@ void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
 unsigned short getHeartbeatsentflag(void)
 {
 	return(usHeartBeatSent);
+}
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+unsigned short getInfoResquestflag(void)
+{
+	return(usInfoResquestReceived);
+}
+
+//*****************************************************************************
+//
+//
+//*****************************************************************************
+void clearInfoResquestflag(void)
+{
+	usInfoResquestReceived = 0;
 }
 
 //*****************************************************************************
@@ -231,5 +251,6 @@ void receivePayLoad(void)
 void sendPayLoad(char* pcData, int length)
 {
 	sendPackets(pcData, length); // data pointer
+	__delay_cycles(7500000); //Important to make sure All packet sent
 }
 
