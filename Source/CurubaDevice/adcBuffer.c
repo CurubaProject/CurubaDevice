@@ -27,23 +27,35 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#ifndef OUTLET_H
-#define OUTLET_H
+#include "adcBuffer.h"
+#include "commun.h"
 
-#define HEARTBEAT_TIME 0x3C00
+static int tab_ADC10[MAXTABADC] = { 0 };
+static int* ptr = (void *)0;
 
-void initDevice_outlet();
-void initListComms_outlet();
-void heartBeat_outlet(comms** transmitFirst, comms** transmitPush);
-void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop, 
-								 comms** transmitFirst, comms** transmitPush);
-void changeIO_outlet(int deviceNumber, int state);
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush);
-void initTIMER1_outlet();
-void initTIMER2_outlet();
+int* getValues()
+{
+	return tab_ADC10;
+}
 
-// Interupt
-void timer2_Execute_outlet();
+void setValue(int value)
+{
+	*ptr = value;
+}
 
-#endif
+int next()
+{
+	int result = 1;
+
+	if (ptr > (tab_ADC10+MAXTABADC))
+	{
+		ptr = tab_ADC10;
+		result = 0;
+	}
+	else
+	{
+		ptr++;
+	}
+
+	return result;
+}

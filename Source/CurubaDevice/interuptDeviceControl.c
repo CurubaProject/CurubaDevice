@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -29,33 +29,28 @@
 // ------------------------------------------------------------------------------------------------
 #include "interuptDeviceControl.h"
 #include "util.h"
-#include "typeDevice.h"
-#include "deviceControl.h"
 #include "commun.h"
+
+#include "heartbeat.h"
+#include "adcBuffer.h"
 
 #include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
-#include "dimmer.h"
-
 static TYPEDEVICE* _device = 0x0;
-static int* _Tab_ADC10 = (void *)0;
-int* _ptr = (void *)0 ;
 
-void initInterupt(TYPEDEVICE** device, int* Tab_ADC10)
+void initInterupt(TYPEDEVICE** device)
 {
 	_device = *device;
-	_Tab_ADC10 = Tab_ADC10;
-	_ptr = _Tab_ADC10;
 }
-
 
 /*********************
  *  UNTERUPT VERTOR  *
  ********************/
 #pragma vector=ADC10_VECTOR
-__interrupt void ADC10_ISR(void) {
+__interrupt void ADC10_ISR(void)
+{
 	switch (__even_in_range(ADC10IV, 12))  // For the 12 RTFM
 	{
 		case 0:                            // No interrupt
@@ -71,14 +66,22 @@ __interrupt void ADC10_ISR(void) {
 		case ADC10INIFG:                   // conversion result is within the treshold
 			break;
 		case 12:
-			*_ptr = ADC10MEM0;
+			setValue(ADC10MEM0);
+
+			if ( ! next() )
+			{
+				TimerStop(TIMER_0);
+			}
+
+			/*
+			 *_ptr = ADC10MEM0;
 			_ptr++;
 
 			if (_ptr > _Tab_ADC10+MAXTABADC)
 			{
 				_ptr = _Tab_ADC10;
-				TimerStop(TIMER_0);
-			}
+
+			}*/
 			break;
 		default:
 			break;
@@ -86,7 +89,8 @@ __interrupt void ADC10_ISR(void) {
 }
 
 #pragma vector=TIMER0_A1_VECTOR
-__interrupt void TIMER0_A1_ISR(void) {
+__interrupt void TIMER0_A1_ISR(void)
+{
 	switch (__even_in_range(TA0IV, 14))    // For the 14 RTFM
 	{
 		case 0:                            // No interrupt
@@ -113,7 +117,8 @@ __interrupt void TIMER0_A1_ISR(void) {
 }
 
 #pragma vector=TIMER1_A1_VECTOR
-__interrupt void TIMER1_A1_ISR(void) {
+__interrupt void TIMER1_A1_ISR(void)
+{
 	switch (__even_in_range(TA1IV, 14))    // For the 14 RTFM
 	{
 		case 0:                            // No interrupt
@@ -133,7 +138,6 @@ __interrupt void TIMER1_A1_ISR(void) {
 		case TA1IV_TA1IFG:                 // Timer overflow
 			setHeartbeatflag(TRUE);
 			TA1CTL &= ~TAIFG;
-
 			break;
 		default:
 			break;
@@ -141,7 +145,8 @@ __interrupt void TIMER1_A1_ISR(void) {
 }
 
 #pragma vector=TIMER2_A1_VECTOR
-__interrupt void TIMER2_A1_ISR(void) {
+__interrupt void TIMER2_A1_ISR(void)
+{
 	switch (__even_in_range(TA2IV, 14))          // For the 14 RTFM
 	{
 		case 0:                                  // No interrupt
@@ -159,7 +164,7 @@ __interrupt void TIMER2_A1_ISR(void) {
 		case TA2IV_6:                            // Capture/Compare 6
 			break;
 		case TA2IV_TA2IFG:                       // Timer overflow
-			_device->timer2_execute(_Tab_ADC10);
+			_device->timer2_execute();
 			ZERO_CROSS_IE |= ZERO_CROSS;
 			break;
 		default:
@@ -172,14 +177,13 @@ __interrupt void IntGPIOHandler(void)
 {
 	switch(__even_in_range(P1IV, P1IV_P1IFG7))
 	{
-	case P1IV_P1IFG7:
-
-		CTRL_OUT &= ~CTRL_1 & ~CTRL_2;
-		TA2CTL |= MC_1;
-		ZERO_CROSS_IE &= ~ZERO_CROSS;
-		ZERO_CROSS_IFG &= ~ZERO_CROSS;
-		break;
-	default:
-		break;
+		case P1IV_P1IFG7:
+			CTRL_OUT &= ~CTRL_1 & ~CTRL_2;
+			TA2CTL |= MC_1;
+			ZERO_CROSS_IE &= ~ZERO_CROSS;
+			ZERO_CROSS_IFG &= ~ZERO_CROSS;
+			break;
+		default:
+			break;
 	}
 }

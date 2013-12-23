@@ -27,23 +27,44 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#ifndef OUTLET_H
-#define OUTLET_H
+#include "CommsReceive.h"
+#include "commun.h"
+#include "util.h"
+#include "typeDevice.h"
+#include "CommsManager.h"
 
-#define HEARTBEAT_TIME 0x3C00
+void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst, comms** transmitPush)
+{
+	TimerStop(TIMER_1);
+	device->infoCommsReceive(transmitFirst, transmitPush);
+	TimerStart(TIMER_1);
+}
 
-void initDevice_outlet();
-void initListComms_outlet();
-void heartBeat_outlet(comms** transmitFirst, comms** transmitPush);
-void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop, 
-								 comms** transmitFirst, comms** transmitPush);
-void changeIO_outlet(int deviceNumber, int state);
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush);
-void initTIMER1_outlet();
-void initTIMER2_outlet();
+void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush)
+{
+	TimerStop(TIMER_1);
+	device->controlCommsReceive(device, ReceivePop, transmitFirst, transmitPush);
+	TimerStart(TIMER_1);
+}
 
-// Interupt
-void timer2_Execute_outlet();
+CommsReceive reveiceComms(int payloadId)
+{
+	CommsReceive result;
 
-#endif
+	switch (payloadId)
+	{
+		case PAYLOAD_INFO_REQUEST :
+			result = &infoCommsReceive;
+			break;
+		case PAYLOAD_CONTROL_REQUEST :
+			result = &controlCommsReceive;
+			break;
+		case PAYLOAD_CONFIG_REQUEST :
+			//Not use for now
+			break;
+		default :
+			break;
+	}
+
+	return result;
+}

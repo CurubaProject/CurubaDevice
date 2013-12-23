@@ -27,23 +27,15 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#ifndef OUTLET_H
-#define OUTLET_H
 
-#define HEARTBEAT_TIME 0x3C00
+volatile unsigned short ulHeartbeatflag;
 
-void initDevice_outlet();
-void initListComms_outlet();
-void heartBeat_outlet(comms** transmitFirst, comms** transmitPush);
-void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop, 
-								 comms** transmitFirst, comms** transmitPush);
-void changeIO_outlet(int deviceNumber, int state);
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush);
-void initTIMER1_outlet();
-void initTIMER2_outlet();
+void setHeartbeatflag(unsigned short flagvalue)
+{
+	ulHeartbeatflag = flagvalue;
+}
 
-// Interupt
-void timer2_Execute_outlet();
-
-#endif
+unsigned short getHeartbeatflag(void)
+{
+	return (ulHeartbeatflag);
+}

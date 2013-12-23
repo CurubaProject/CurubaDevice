@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -26,7 +26,7 @@
 // for a non-source form of such a combination shall include the source code
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
-// ------------------------------------------------------------------------------------------------¸
+// ------------------------------------------------------------------------------------------------
 #ifndef TYPEDEVICE_H
 #define TYPEDEVICE_H
 
@@ -45,8 +45,8 @@ typedef struct typeDevice {
     TIMER2_Execute timer2_execute;
 } TYPEDEVICE;
 
-int GetState(int deviceNumber, int* Tab_ADC10);
-int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab_ADC10);
+int GetState(int deviceNumber);
+int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber);
 TYPEDEVICE* createTypeDevice(int typeModule);
 TYPEDEVICE* createDimmer();
 

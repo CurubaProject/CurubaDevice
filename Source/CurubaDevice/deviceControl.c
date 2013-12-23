@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -28,31 +28,21 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 #include "deviceControl.h"
-#include "CommsManager.h"
-#include "commun.h"
-#include "util.h"
-#include "typeDevice.h"
 #include "interuptDeviceControl.h"
-#include "board.h"
+#include "commun.h"
 
-int Tab_ADC10[MAXTABADC] = { 0 };   //a isoler
-volatile unsigned short ulHeartbeatflag;
+#include "typeDevice.h"
+
+#include "CommsManager.h"
+#include "heartbeat.h"
+
+#include "board.h"
 
 void initApp(TYPEDEVICE** device)
 {
-	ulHeartbeatflag = 0;
-	initInterupt(device,Tab_ADC10);
-	(*device)->initDevice(Tab_ADC10);
-}
-
-void setHeartbeatflag(unsigned short flagvalue)
-{
-	ulHeartbeatflag = flagvalue;
-}
-
-unsigned short getHeartbeatflag(void)
-{
-	return (ulHeartbeatflag);
+	setHeartbeatflag(0);  // TODO Change 0 to ON
+	initInterupt(device);
+	(*device)->initDevice();
 }
 
 void initADC10(void)
@@ -103,27 +93,14 @@ void InitListComms(TYPEDEVICE* device)
 	device->initListComms();
 }
 
-void InfoCommsReceive(TYPEDEVICE* device, comms** transmitFirst, comms** transmitPush)
-{
-	TimerStop(TIMER_1);
-	device->infoCommsReceive(transmitFirst, transmitPush, Tab_ADC10);
-	TimerStart(TIMER_1);
-}
-
-void ControlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush)
-{
-	TimerStop(TIMER_1);
-	device->controlCommsReceive(device, ReceivePop, transmitFirst, transmitPush, Tab_ADC10);
-	TimerStart(TIMER_1);
-}
-
+//TODO REMOVE
 void HeartBeat(TYPEDEVICE* device)
 {
-	ulHeartbeatflag = 0;
+	setHeartbeatflag(0); // TODO Change 0 to ON
 	comms** transmitFirst = getTransmitFirst();
 	comms** transmitPush = getTransmitPush();
 
-	device->heartBeat(transmitFirst, transmitPush, Tab_ADC10);
+	device->heartBeat(transmitFirst, transmitPush);
 }
 
 unsigned short ReadAppSwitch(void) {

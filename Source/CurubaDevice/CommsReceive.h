@@ -27,31 +27,15 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#ifndef DOMUMAPP_H
-#define DOMUMAPP_H
+#ifndef COMMSRECEIVE_H
+#define COMMSRECEIVE_H
 
-#include "evnt_handler.h"
-#include "board.h"
-#include <msp430.h>
-
+#include "CommsManager.h"
 #include "typeDevice.h"
-#include "CommsReceive.h"
 
-//////////////////////////////////////
-//            PROTOTYPES            //
-//////////////////////////////////////
-void initApp(TYPEDEVICE** device);
+typedef void (*CommsReceive)(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush);
 
-void initADC10(void);
-void initTIMER0(void);
-void initTIMER1(TYPEDEVICE* device);
-void initTIMER2(TYPEDEVICE* device);
-
-void InitListComms(TYPEDEVICE* device);
-void HeartBeat(TYPEDEVICE* device);
-
-unsigned short ReadAppSwitch(void);
-
-CommsReceive reveiceComms(int payloadId);
+void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush);
+void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst, comms** transmitPush);
 
 #endif

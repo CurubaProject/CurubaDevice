@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -30,24 +30,26 @@
 #ifndef DIMMER_H
 #define DIMMER_H
 
+#include "CommsManager.h"
+#include "typeDevice.h"
+
 #define HEARTBEAT_5SEC 0x0A00 //5 sec //0A00
 
-void initDevice_dimmer(int* Tab_ADC10);
+void initDevice_dimmer();
 void initListComms_dimmer();
-void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush, int* Tab_ADC10);
+void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush);
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
 								comms* ReceivePop, 
-								comms** transmitFirst,comms** transmitPush,
-								int* Tab_ADC10);
-void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush, int* Tab_ADC10);
-void changeIO_dimmer(int deviceNumber, int state, int* Tab_ADC10);
+								comms** transmitFirst, comms** transmitPush);
+void infoCommsReceive_dimmer(comms** transmitFirst, comms** transmitPush);
+void changeIO_dimmer(int deviceNumber, int state);
 void initTIMER1_dimmer();
 void initTIMER2_dimmer() ;
 
 // Interupt
-void timer2_Execute_dimmer(int* Tab_ADC10);
-void turnOffligth(void);
-void toggleControl(void);
-void turnOnlight(int* Tab_ADC10);
+void timer2_Execute_dimmer();
+void turnOffligth();
+void toggleControl();
+void turnOnlight();
 
 #endif

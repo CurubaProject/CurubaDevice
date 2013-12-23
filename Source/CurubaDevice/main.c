@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -33,6 +33,8 @@
 #include "CommsManager.h"
 #include "typeDevice.h"
 
+#include "heartbeat.h"
+
 #include "communication.h"
 #include "network.h"
 #include "cc3000.h"
@@ -51,8 +53,7 @@ void main(void) {
 	initNetwork();
 
 	//Application type of the module
-	int typeModule = ReadAppSwitch();
-	TYPEDEVICE* device = createTypeDevice(typeModule);
+	TYPEDEVICE* device = createTypeDevice(ReadAppSwitch());
 
 	InitListComms(device);
 
@@ -65,40 +66,27 @@ void main(void) {
 	initApp(&device);
 
 	__bis_SR_register(GIE);
-	while (1) {
-		if(connectNetwork())
+	while (1)
+	{
+		if( connectNetwork() )
 		{
 			receivePayLoad();
 
-			if (Pop(&ReceiveFirst, &ReceivePush, &ReceivePop))
+			if ( Pop(&ReceiveFirst, &ReceivePush, &ReceivePop) )
 			{
 				assert(ReceivePop != NULL);
-				switch (ReceivePop->payloadid)
-				{
-					case PAYLOAD_INFO_REQUEST :
-						InfoCommsReceive(device, &TransmitFirst, &TransmitPush);
-						break;
-					case PAYLOAD_CONTROL_REQUEST :
-						ControlCommsReceive(device, ReceivePop, &TransmitFirst, &TransmitPush);
-						break;
-					case PAYLOAD_CONFIG_REQUEST :
-						//Not use for now
-						break;
-					default :
-						assert(0);
-						break;
-				}
+				(reveiceComms(ReceivePop->payloadid))(device, ReceivePop, &TransmitFirst, &TransmitPush);
 			}
 
-			if (Pop(&TransmitFirst, &TransmitPush, &TransmitPop))
+			if ( Pop(&TransmitFirst, &TransmitPush, &TransmitPop) )
 			{
 				assert(TransmitPop != NULL);
 				payloadToSend(TransmitPop);
 			}
-			if(getHeartbeatflag())
+
+			if( getHeartbeatflag() )
 			{
 				HeartBeat(device);
-
 			}
 		}
 	}

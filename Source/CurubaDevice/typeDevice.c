@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -32,6 +32,8 @@
 #include "CommsManager.h"
 #include "util.h"
 
+#include "adcBuffer.h"
+
 #include "dimmer.h"
 #include "outlet.h"
 
@@ -40,23 +42,23 @@
 
 #include <stdlib.h>
 
-int GetState(int deviceNumber, int* Tab_ADC10)
+int GetState(int deviceNumber)
 {
 	static long int state = 0;
 	ADCRead(deviceNumber);
 
-	state = ComputationWattHour(Tab_ADC10) > 1 ? STATE_ON : STATE_OFF;
+	state = ComputationWattHour(getValues()) > 1 ? STATE_ON : STATE_OFF;
 
 	return state;
 }
 
-int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber, int* Tab_ADC10)
+int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber)
 {
 	static long int currentState = STATE_OFF;
 
-	device->changeIO(deviceNumber, commande, Tab_ADC10);
+	device->changeIO(deviceNumber, commande);
 
-	currentState = GetState(deviceNumber, Tab_ADC10);
+	currentState = GetState(deviceNumber);
 
 	if (currentState != commande)
 	{
