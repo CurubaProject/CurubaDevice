@@ -39,8 +39,6 @@
 #include "network.h"
 #include "cc3000.h"
 
-#include "commun.h"  // TODO REMOVE THIS
-
 extern comms* ReceiveFirst;
 extern comms* ReceivePush;
 extern comms* ReceivePop;
@@ -53,15 +51,7 @@ void main(void) {
 	initNetwork();
 
 	//Application type of the module
-	TYPEDEVICE* device = createTypeDevice(ReadAppSwitch());
-
-	InitListComms(device);
-
-	initADC10();
-	initTIMER0();
-	initTIMER1(device);
-	initTIMER2(device);
-	initTIMERB0();
+	TYPEDEVICE* device = createTypeDevice(readAppSwitch());
 
 	initApp(&device);
 
@@ -84,9 +74,10 @@ void main(void) {
 				payloadToSend(TransmitPop);
 			}
 
-			if( getHeartbeatflag() )
+			if( getHeartbeatFlag() )
 			{
-				HeartBeat(device);
+				setHeartbeatFlag(0);
+				device->heartBeat(&TransmitFirst, &TransmitPush);
 			}
 		}
 	}

@@ -72,7 +72,6 @@ TYPEDEVICE* createDimmer() {
 	TYPEDEVICE* device = (TYPEDEVICE*) malloc(sizeof *device);
 
 	device->initDevice = initDevice_dimmer;
-	device->initListComms = initListComms_dimmer;
 	device->heartBeat = heartBeat_dimmer;
 	device->controlCommsReceive = controlCommsReceive_dimmer;
 	device->infoCommsReceive = infoCommsReceive_dimmer;
@@ -88,7 +87,6 @@ TYPEDEVICE* createOutlet() {
 	TYPEDEVICE* device = (TYPEDEVICE*) malloc(sizeof *device);
 
 	device->initDevice = initDevice_outlet;
-	device->initListComms = initListComms_outlet;
 	device->heartBeat = heartBeat_outlet;
 	device->controlCommsReceive = controlCommsReceive_outlet;
 	device->infoCommsReceive = infoCommsReceive_outlet;

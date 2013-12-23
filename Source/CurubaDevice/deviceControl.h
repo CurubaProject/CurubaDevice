@@ -47,10 +47,7 @@ void initTIMER0(void);
 void initTIMER1(TYPEDEVICE* device);
 void initTIMER2(TYPEDEVICE* device);
 
-void InitListComms(TYPEDEVICE* device);
-void HeartBeat(TYPEDEVICE* device);
-
-unsigned short ReadAppSwitch(void);
+unsigned short readAppSwitch(void);
 
 CommsReceive reveiceComms(int payloadId);
 

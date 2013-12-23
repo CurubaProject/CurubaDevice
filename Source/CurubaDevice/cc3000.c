@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -27,14 +27,15 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#include "cc3000.h"
 
 #include "board.h"
 #include "evnt_handler.h"
 #include "host_driver_version.h"
 #include <msp430.h>
 #include "netapp.h"
+
 #include "spi.h"
-#include "cc3000.h"
 #include "wlan.h"
 
 #include "CommsManager.h"
@@ -48,7 +49,7 @@
 #endif
 
 
-#define JO_DEBUG								//ToDo: Remove after test
+#define JO_DEBUG //ToDo: Remove after test
 #ifdef AJC_DEBUG
 	unsigned long SSIDType = WLAN_SEC_WPA2;
 	unsigned char SSIDKey[] = "domumservuskey00";
@@ -77,19 +78,27 @@ tNetappIpconfigRetArgs CC3000ipconfig;
 unsigned char DSServerIP[4] = { 192, 168, 0, 104 };
 unsigned char DSServerPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
 
-//*****************************************************************************
-//! CC3000_UsynchCallback
-//!
-//! @param  lEventType   Event type
-//! @param  data
-//! @param  length
-//!
-//! @return none
-//!
-//! @brief  The function handles asynchronous events that come from CC3000
-//!           device and operates a LED1 to have an on-board indication
-//
-//*****************************************************************************
+void initDriver(void)
+{
+	WDTCTL = WDTPW + WDTHOLD;
+
+	//  Board Initialization start
+	ulCC3000DHCP = 0;
+	ulCC3000Connected = 0;
+	ulCC3000SocketClosed = 0;
+	ulPingReceived = 0;
+
+	// Initialize the RX Buffer
+	memset(requestBuffer, 0, sizeof(requestBuffer));
+
+	// Init GPIO's
+	pio_init();
+
+	//init all layers
+	init_spi();
+
+	initCC3000();
+}
 
 int _system_pre_init(void)
 {
@@ -97,17 +106,20 @@ int _system_pre_init(void)
 	return 1;
 }
 
-char *sendDriverPatch(unsigned long *Length) {
+char *sendDriverPatch(unsigned long *Length)
+{
 	*Length = 0;
 	return NULL;
 }
 
-char *sendWLFWPatch(unsigned long *Length) {
+char *sendWLFWPatch(unsigned long *Length)
+{
 	*Length = 0;
 	return NULL;
 }
 
-char *sendBootLoaderPatch(unsigned long *Length) {
+char *sendBootLoaderPatch(unsigned long *Length)
+{
 	*Length = 0;
 	return NULL;
 }
@@ -154,63 +166,14 @@ void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
 
 }
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype,
 		unsigned short lengthssidname, unsigned short lengthssidkey)
 {
-
 	return 0;
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-void heartBeatSent(void) //ToDo: Décommenter dans le code à "dommumapp.c"
-{
-
-
-}
-
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-void initDriver(void)
-{
-	WDTCTL = WDTPW + WDTHOLD;
-
-	//  Board Initialization start
-	ulCC3000DHCP = 0;
-	ulCC3000Connected = 0;
-	ulCC3000SocketClosed = 0;
-	ulPingReceived = 0;
-
-	// Initialize the RX Buffer
-	memset(requestBuffer, 0, sizeof(requestBuffer));
-
-	// Init GPIO's
-	pio_init();
-
-	//init all layers
-	init_spi();
-
-	initCC3000();
-}
-
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void initCC3000(void)
 {
-
 	const unsigned char pucIP_Addr[4] = { 0, 0, 0, 0 };
 	const unsigned char pucIP_DefaultGWAddr[4] = { 0, 0, 0, 0 };
 	const unsigned char pucSubnetMask[4] = { 0, 0, 0, 0 };
@@ -247,6 +210,7 @@ void initCC3000(void)
 		__delay_cycles(100);
 		hci_unsolicited_event_handler();
 	}
+
 	ulCC3000Connected = 0;
 	ulCC3000DHCP = 0;
 
@@ -259,23 +223,12 @@ void initCC3000(void)
 	wlan_set_event_mask(HCI_EVNT_WLAN_KEEPALIVE | HCI_EVNT_WLAN_UNSOL_INIT);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void updateAsyncEvent(void)
 {
 	hci_unsolicited_event_handler();
 	__delay_cycles(100);
 }
 
-
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout)
 {
 	int iReturnping = netapp_ping_send((unsigned long *) DSServerIP, ulPingAttempts, ulPingSize, ulPingTimeout);
@@ -284,101 +237,54 @@ int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned 
 
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void updateIPinfo(void)
 {
 	__delay_cycles(3000000); //Wait Important the CC3000 get IP from DHCP //__delay_cycles(50000000);
 	netapp_ipconfig(&CC3000ipconfig); //Get My IP address
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void configDHCP(unsigned long aucDHCP, unsigned long aucARP,
 		unsigned long aucKeepalive,unsigned long aucInactivity)
 {
 	netapp_timeout_values(&aucDHCP, &aucARP, &aucKeepalive, &aucInactivity);
-
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 unsigned long wifiConnected(void)
 {
 	return(ulCC3000Connected);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 unsigned long socketclosed(void)
 {
 	return(ulCC3000SocketClosed);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 unsigned long pingReceived(void)
 {
 	return (ulPingReceived);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void clearpingReceived(void)
 {
 	ulPingReceived = 0;
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int connectServer(void)
 {
 	return (connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr)));
-
 }
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int connectWifi(void)
 {
 	return(wlan_connect(SSIDType, SSIDName, strlen(SSIDName),
-			NULL, SSIDKey, strlen((char *) SSIDKey)));
+						NULL, SSIDKey, strlen((char *) SSIDKey)));
 }
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void initSocket(void)
 {
 	unsigned long socketTimeout = 10;
 	int iReturnValue = -1;
 
-	//closesocket(ulSocketTCP);
-	//ulCC3000SocketClosed = 0;
 	ulPingReceived = 0;
 	ulSocketTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -406,53 +312,28 @@ void initSocket(void)
 	tSocketAddr.sa_data[5] = DSServerIP[3];
 }
 
-
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void clearSocketClosedflag(void)
 {
 	ulCC3000SocketClosed = 0;
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void callCloseSocket(void)
 {
 	closesocket(ulSocketTCP);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int receivePackets(void)
 {
 	return (recv(ulSocketTCP, requestBuffer, sizeof(requestBuffer), 0));
 }
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void sendPackets(char* pcData, int length)
 {
 	send(ulSocketTCP, pcData, length, 0);
-	__delay_cycles(1000);//__delay_cycles(100000);
+	__delay_cycles(1000);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config)
+void getConfigInfo(unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config)
 {
 	dsServerIP = DSServerIP;
 	dsServerPort = DSServerPort;

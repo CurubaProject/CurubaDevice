@@ -27,11 +27,13 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#include "network.h"
 #include "board.h"
+#include <msp430.h>
+
 #include "cc3000.h"
 #include "communication.h"
-#include <msp430.h>
-#include "network.h"
+
 #include "util.h"
 #include "commun.h"
 
@@ -47,22 +49,15 @@ volatile short  sSocketConnected,
 volatile short sLedState;
 
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-void initNetwork (void)  //ToDo: Add into main.c
+void initNetwork(void)
 {
+	initTIMERB0();
+
     sSocketConnected = 0;
     sNetworkConnectAttempt = 0;
     ulTimecount = 0;
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int connectNetwork(void)
 {
     int iReturnConnect;
@@ -103,7 +98,7 @@ int connectNetwork(void)
                 sLedState = LED_STATE_CONNECTED;
                 static short sflag = 0;
                 static short sinfoflag = 0;
-                if(getHeartbeatsentflag())	//Heartbeat sent - Server must response back
+                if(getHeartbeatSentFlag())	//Heartbeat sent - Server must response back
                 {
                 	if(sflag == 0)
                 	{
@@ -116,7 +111,7 @@ int connectNetwork(void)
                 		{
                 			callCloseSocket();
                 			sSocketConnected = 0; 	//close socket and retry to reconnect
-                			clearHeartbeatsentflag();
+                			clearHeartbeatSentFlag();
                 			sflag = 0;
                 		}
                 	}
@@ -153,7 +148,7 @@ int connectNetwork(void)
             else
             {
                 sLedState = LED_STATE_UNCONNECTED;
-                clearHeartbeatsentflag();
+                clearHeartbeatSentFlag();
             }
         }
     }
@@ -168,11 +163,6 @@ int connectNetwork(void)
     return (iReturnValue);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 int openSocket(void)
 {
     unsigned long ulReftime;
@@ -185,13 +175,13 @@ int openSocket(void)
     	callCloseSocket();
     	clearSocketClosedflag();
     	sSocketConnected  = 0;
-
     }
+
     if (sSocketConnected == 0)
     {
     	clearInfoResquestflag();
     	TimerStop(TIMER_1);
-    	setHeartbeatflag(FALSE);
+    	setHeartbeatFlag(FALSE);
     	initSocket();
         sSocketConnected = 0;
 
@@ -212,7 +202,7 @@ int openSocket(void)
         else //Connect to Server
         {
         	 int iReturnConnect = connectServer();
-			__delay_cycles(100000); //__delay_cycles(12500000);
+			__delay_cycles(100000); //TODO remove??__delay_cycles(12500000);
 
 			if (iReturnConnect == 0)
 			{
@@ -229,11 +219,6 @@ int openSocket(void)
     return (iReturnValue);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void initTIMERB0(void)
 {
 	//Timer for Server connection delay time
@@ -244,42 +229,22 @@ void initTIMERB0(void)
 	StartTIMERB0(); //Never stop this timer
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void StartTIMERB0(void)
 {
 	TB0CTL |= MC_1; //Start timer in Up-mode
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void StopTIMERB0(void)
 {
 	TB0CTL &= 0xFFCF; //Halt timer
 	TB0R = 0;
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 unsigned long getRefTime(void)
 {
 	return(ulTimecount);
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 unsigned long getTimeElapsed(unsigned long lastcount)
 {
 	if(getRefTime() >= lastcount)
@@ -292,11 +257,6 @@ unsigned long getTimeElapsed(unsigned long lastcount)
 	}
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 //Timer used to interrupt at every 500 msec
 #pragma vector=TIMER0_B1_VECTOR
 __interrupt void TIMER0_B1_ISR(void)
@@ -361,8 +321,5 @@ __interrupt void TIMER0_B1_ISR(void)
             break;
         default:
             break;
-
-
     }
 }
-

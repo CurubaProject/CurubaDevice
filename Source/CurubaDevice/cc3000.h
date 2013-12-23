@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -49,7 +49,6 @@ int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype, unsigne
 int connectWifi(void);
 int connectServer(void);
 void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config);
-void heartBeatSent(void);
 unsigned long pingReceived(void);
 int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);
 void sendPackets(char* pcData, int length);

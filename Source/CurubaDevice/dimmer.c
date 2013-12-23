@@ -45,7 +45,6 @@
 #include "board.h"
 #include <msp430.h>
 
-comms devices_dimmer[2]; // TODO IMPROVE list devices
 static int SwitchDimmer = 0;
 
 void initDevice_dimmer()
@@ -60,37 +59,30 @@ void initDevice_dimmer()
 	SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
 }
 
-void initListComms_dimmer()
-{ // TODO REMOVE THIS FUNCTION, NOT GOOD
-	comms d;
-
-	d.payloadid = PAYLOAD_INFO_RESPONSE;
-	d.status = STATUS_INACTIVE;
-	d.state = STATE_OFF;
-	d.device = DEVICE_1;
-	d.type = TYPE_DIMMER;
-	d.data = 0;
-
-	devices_dimmer[0] = d;
-}
-
 void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush)
 {
-	int state = GetState(devices_dimmer[0].device);
+	comms payload;
 
-	if(IsStateChange(state, devices_dimmer[0].state))
+	payload.payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
+	payload.device = DEVICE_1;
+	payload.type = TYPE_DIMMER;
+
+	payload.status = STATUS_INACTIVE; // TODO ADD OLD STATUS
+	payload.state = STATE_OFF; // TODO ADD OLD STATUS
+
+	int state = GetState(DEVICE_1);
+
+	if(IsStateChange(state, payload.state)) // TODO OLD STATE
 	{
-		devices_dimmer[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_dimmer[0].data = ComputationWattHour(getValues());
+		payload.data = ComputationWattHour(getValues());
 	}
 	else
 	{
-		devices_dimmer[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_dimmer[0].state = state;                             //TODO remove ducktape
-		devices_dimmer[0].data = ComputationWattHour(getValues());
+		payload.state = state;                             //TODO remove ducktape
+		payload.data = ComputationWattHour(getValues());
 	}
 
-	Push(transmitFirst, transmitPush, devices_dimmer[0]);
+	Push(transmitFirst, transmitPush, payload);
 }
 
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
@@ -99,13 +91,14 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 {
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
-		//Status of the module
-		devices_dimmer[0].payloadid = PAYLOAD_CONTROL_RESPONSE;
-		devices_dimmer[0].status = STATUS_ACTIVE;
-		devices_dimmer[0].state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
-		devices_dimmer[0].device = ReceivePop->device;
-		devices_dimmer[0].type = TYPE_DIMMER;
-		devices_dimmer[0].data = ComputationWattHour(getValues());
+		comms payload;
+
+		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
+		payload.status = STATUS_ACTIVE;
+		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
+		payload.device = DEVICE_1;
+		payload.type = TYPE_DIMMER;
+		payload.data = ComputationWattHour(getValues());
 
 		//Enable Zero cross for dimmer function
 		ZERO_CROSS_IE |= ZERO_CROSS;
@@ -120,7 +113,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 			turnOffligth();
 		}
 
-		Push(transmitFirst, transmitPush, devices_dimmer[0]);
+		Push(transmitFirst, transmitPush, payload);
 	}
 	else if (ReceivePop->status == STATUS_INACTIVE)
 	{
@@ -131,28 +124,31 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		//Timer2 count to 0
 		TA2CCR0 = 0;
 
-		//Status of the module
-		devices_dimmer[0].payloadid = PAYLOAD_CONTROL_RESPONSE;
-		devices_dimmer[0].status = STATUS_INACTIVE;
-		devices_dimmer[0].state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
-		devices_dimmer[0].device = ReceivePop->device;
-		devices_dimmer[0].type = TYPE_DIMMER;
-		devices_dimmer[0].data = ComputationWattHour(getValues());
+		comms payload;
 
-		Push(transmitFirst, transmitPush, devices_dimmer[0]);
+		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
+		payload.status = STATUS_INACTIVE;
+		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
+		payload.device = DEVICE_1;
+		payload.type = TYPE_DIMMER;
+		payload.data = ComputationWattHour(getValues());
+
+		Push(transmitFirst, transmitPush, payload);
 	}
 }
 
 void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush)
 {
-	devices_dimmer[0].payloadid = PAYLOAD_INFO_RESPONSE;
-	devices_dimmer[0].status = STATUS_INACTIVE;
-	devices_dimmer[0].state = GetState(DEVICE_1);
-	devices_dimmer[0].device = DEVICE_1;
-	devices_dimmer[0].type = TYPE_DIMMER;
-	devices_dimmer[0].data = ComputationWattHour(getValues());
+	comms payload;
 
-	Push(transmitFirst, transmitPush, devices_dimmer[0]);
+	payload.payloadid = PAYLOAD_INFO_RESPONSE;
+	payload.status = STATUS_INACTIVE;
+	payload.state = GetState(DEVICE_1);
+	payload.device = DEVICE_1;
+	payload.type = TYPE_DIMMER;
+	payload.data = ComputationWattHour(getValues());
+
+	Push(transmitFirst, transmitPush, payload);
 }
 
 void changeIO_dimmer(int deviceNumber, int state)

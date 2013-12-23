@@ -40,7 +40,6 @@
 typedef struct typeDevice TYPEDEVICE;
 
 typedef void (*InitDevice)();
-typedef void (*InitListCommsDevice)();
 typedef void (*HeartBeatDevice)(comms** transmitFirst, comms** transmitPush);
 typedef void (*ControlCommsReceiveDevice)(TYPEDEVICE* device,
 										comms* ReceivePop,

@@ -35,7 +35,6 @@
 
 typedef struct typeDevice {
 	InitDevice initDevice;
-	InitListCommsDevice initListComms;
 	HeartBeatDevice heartBeat;
 	ControlCommsReceiveDevice controlCommsReceive;
 	InfoCommsReceiveDevice infoCommsReceive;

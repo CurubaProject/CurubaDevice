@@ -40,91 +40,91 @@
 #include "board.h"
 #include <msp430.h>
 
-comms devices_outlet[2];
-
-void initDevice_outlet(){
+void initDevice_outlet()
+{
+	//Nothing to do
 }
 
-void initListComms_outlet() {
-	comms d;
+void heartBeat_outlet(comms** transmitFirst, comms** transmitPush)
+{
+	comms payload;
 
-	d.payloadid = PAYLOAD_INFO_RESPONSE;
-	d.status = STATUS_INACTIVE;
-	d.state = STATE_OFF;
-	d.device = DEVICE_1;
-	d.type = TYPE_OUTLET;
-	d.data = 0;
+	payload.payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
+	payload.status = STATUS_INACTIVE; // TODO OLD STATUS
+	payload.state = STATE_OFF; // TODO OLD STATE
+	payload.device = DEVICE_1;
+	payload.type = TYPE_OUTLET;
 
-	devices_outlet[0] = d;
-
-	d.device = DEVICE_2;
-
-	devices_outlet[1] = d;
-}
-
-void heartBeat_outlet(comms** transmitFirst, comms** transmitPush) {
-	int state = GetState(devices_outlet[0].device);
-	if(IsStateChange(state, devices_outlet[0].state))
+	int state = GetState(DEVICE_1);
+	if(IsStateChange(state, payload.state)) // TODO OLD STATE
 	{
-		devices_outlet[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_outlet[0].data = ComputationWattHour(getValues());
+		payload.data = ComputationWattHour(getValues());
 	}
 	else
 	{
-		devices_outlet[0].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_outlet[0].state = state;
-		devices_outlet[0].data = ComputationWattHour(getValues());
+		payload.state = state;
+		payload.data = ComputationWattHour(getValues());
 	}
 
-	Push(transmitFirst, transmitPush, devices_outlet[0]);//comms_transmit[0] = devices[0];
+	Push(transmitFirst, transmitPush, payload);
 
-	if(IsStateChange(state, devices_outlet[1].state))
+	payload.payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
+	payload.status = STATUS_INACTIVE; // TODO OLD STATUS
+	payload.state = STATE_OFF; // TODO OLD STATE
+	payload.device = DEVICE_2;
+	payload.type = TYPE_OUTLET;
+
+	state = GetState(DEVICE_2);
+	if(IsStateChange(state, payload.state)) // TODO OLD STATE
 	{
-		devices_outlet[1].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_outlet[1].data = ComputationWattHour(getValues());
+		payload.data = ComputationWattHour(getValues()); //TODO ComputationWattHour depend on GetState call ADCREAD PROBLEM!
 	}
 	else
 	{
-		devices_outlet[1].payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
-		devices_outlet[1].state = state;
-		devices_outlet[1].data = ComputationWattHour(getValues());
+		payload.state = state;
+		payload.data = ComputationWattHour(getValues());
 	}
 
-	Push(transmitFirst, transmitPush, devices_outlet[1]);//comms_transmit[1] = devices[1];
+	Push(transmitFirst, transmitPush, payload);
 }
 
 void controlCommsReceive_outlet(TYPEDEVICE* device,
 								 comms* ReceivePop, 
 								 comms** transmitFirst, comms** transmitPush)
 {
-
+	//TODO REMOVE IF AND PASS ReceivePop->device as DEVICE NUMBER
 	if (ReceivePop->device == DEVICE_1)
 	{
-		devices_outlet[0].payloadid = PAYLOAD_CONTROL_RESPONSE;
-		devices_outlet[0].status = ReceivePop->status;
-		devices_outlet[0].state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
-		devices_outlet[0].device = ReceivePop->device;
-		devices_outlet[0].type = TYPE_OUTLET;
-		devices_outlet[0].data = ComputationWattHour(getValues());
+		comms payload;
 
-		Push(transmitFirst, transmitPush, devices_outlet[0]);
+		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
+		payload.status = ReceivePop->status;
+		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
+		payload.device = DEVICE_1;
+		payload.type = TYPE_OUTLET;
+		payload.data = ComputationWattHour(getValues());
+
+		Push(transmitFirst, transmitPush, payload);
 	}
 	else if (ReceivePop->device == DEVICE_2)
 	{
-		devices_outlet[1].payloadid = PAYLOAD_CONTROL_RESPONSE;
-		devices_outlet[1].status = ReceivePop->status;
-		devices_outlet[1].state = ChangeIO_Device(device, ReceivePop->state, DEVICE_2);
-		devices_outlet[1].device = ReceivePop->device;
-		devices_outlet[1].type = TYPE_OUTLET;
-		devices_outlet[1].data = ComputationWattHour(getValues());
+		comms payload;
 
-		Push(transmitFirst, transmitPush, devices_outlet[1]);
+		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
+		payload.status = ReceivePop->status;
+		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_2);
+		payload.device = DEVICE_2;
+		payload.type = TYPE_OUTLET;
+		payload.data = ComputationWattHour(getValues());
+
+		Push(transmitFirst, transmitPush, payload);
 	}
 }
 
 void changeIO_outlet(int deviceNumber, int state)
 {
-	if (deviceNumber == DEVICE_1) {
+	if (deviceNumber == DEVICE_1)
+	{
 		if (state == STATE_ON)
 		{
 			CTRL_OUT |= CTRL_1;
@@ -147,35 +147,36 @@ void changeIO_outlet(int deviceNumber, int state)
 	}
 }
 
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush) {
+void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush)
+{
+	comms payload;
 
-	devices_outlet[0].payloadid = PAYLOAD_INFO_RESPONSE;
-	devices_outlet[0].status = STATUS_INACTIVE;
-	devices_outlet[0].state = STATE_OFF;
-	devices_outlet[0].device = DEVICE_1;
-	devices_outlet[0].type = TYPE_OUTLET;
-	devices_outlet[0].data = 0;
-	Push(transmitFirst, transmitPush, devices_outlet[0]);
+	payload.payloadid = PAYLOAD_INFO_RESPONSE;
+	payload.status = STATUS_INACTIVE;
+	payload.state = STATE_OFF;
+	payload.device = DEVICE_1;
+	payload.type = TYPE_OUTLET;
+	payload.data = 0;
 
-	devices_outlet[1].payloadid = PAYLOAD_INFO_RESPONSE;
-	devices_outlet[1].status = STATUS_INACTIVE;
-	devices_outlet[1].state = STATE_OFF;
-	devices_outlet[1].device = DEVICE_2;
-	devices_outlet[1].type = TYPE_OUTLET;
-	devices_outlet[1].data = 0;
-	Push(transmitFirst, transmitPush, devices_outlet[1]);
+	Push(transmitFirst, transmitPush, payload);
+
+	payload.device = DEVICE_2;
+	Push(transmitFirst, transmitPush, payload);
 }
 
-void initTIMER1_outlet() {
+void initTIMER1_outlet()
+{
 	TA1CCR0 |= HEARTBEAT_TIME;
 }
 
-void initTIMER2_outlet() {
+void initTIMER2_outlet()
+{
 	//Nothing to do
 }
 
 // Interupt
 
-void timer2_Execute_outlet() {
+void timer2_Execute_outlet()
+{
 	//Nothing to do
 }

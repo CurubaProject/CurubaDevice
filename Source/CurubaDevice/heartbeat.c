@@ -28,14 +28,31 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-static volatile unsigned short ulHeartbeatflag;
+static volatile unsigned short usHeartbeatFlag = 0;
+static volatile unsigned short usHeartbeatSentFlag = 0;
 
-void setHeartbeatflag(unsigned short flagvalue)
+
+void setHeartbeatFlag(unsigned short flagvalue)
 {
-	ulHeartbeatflag = flagvalue;
+	usHeartbeatFlag = flagvalue;
 }
 
-unsigned short getHeartbeatflag(void)
+unsigned short getHeartbeatFlag(void)
 {
-	return (ulHeartbeatflag);
+	return (usHeartbeatFlag);
+}
+
+unsigned short getHeartbeatSentFlag()
+{
+	return usHeartbeatSentFlag;
+}
+
+void setHeartbeatSentFlag(unsigned short flagvalue)
+{
+	usHeartbeatSentFlag = flagvalue;
+}
+
+void clearHeartbeatSentFlag()
+{
+	usHeartbeatSentFlag = 0;
 }

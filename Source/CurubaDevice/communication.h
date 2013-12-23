@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -33,11 +33,11 @@
 
 #include "CommsManager.h"
 
-void clearHeartbeatsentflag(void);
+void clearHeartbeatSentFlag(void);
 void clearInfoResquestflag(void);
-unsigned short getHeartbeatsentflag(void);
+unsigned short getHeartbeatSentFlag(void);
 unsigned short getInfoResquestflag(void);
-void payloadReceived(unsigned char *usBuffer, signed long iReturnValue);
+void payloadReceived(unsigned char *usBuffer);
 void payloadToSend(comms* PtrPop);
 void receivePayLoad(void);
 void sendPayLoad(char* pcData, int length);

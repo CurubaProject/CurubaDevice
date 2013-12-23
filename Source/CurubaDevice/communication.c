@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -28,42 +28,32 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 #include "communication.h"
-#include <msp430.h>
-#include "netapp.h"
 #include "cc3000.h"
-#include "string.h"
-#include "wlan.h"
 
 #include "CommsManager.h"
 #include "commun.h"
+
+#include "heartbeat.h"
+
+#include "string.h"
+
+#define PAYLOAD_SIZE (25)
+#define SIZE (sizeof(char) * 25)
 
 extern unsigned char requestBuffer[];
 
 extern comms* ReceiveFirst;
 extern comms* ReceivePush;
 extern comms* ReceivePop;
-extern comms* TransmitFirst;
-extern comms* TransmitPush;
-extern comms* TransmitPop;
 
-tNetappIpconfigRetArgs* CC3000config;
-unsigned char* serverIP;
-unsigned char* serverPort;
-unsigned short usHeartBeatSent = 0;
 unsigned short usInfoResquestReceived = 0;
 
-
-
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
+void payloadReceived(unsigned char *usBuffer)
 {
-    char szResponse[25];
-    comms comms_receive;
+    char szResponse[PAYLOAD_SIZE];
     memset(szResponse, 0, sizeof(szResponse));
+
+    comms comms_receive;
 
     switch (usBuffer[0])
     {
@@ -84,83 +74,38 @@ void payloadReceived(unsigned char *usBuffer, signed long iReturnValue)
         case PAYLOAD_CONFIG_REQUEST:
             comms_receive.payloadid = PAYLOAD_CONFIG_REQUEST;
             break;
-
         case PAYLOAD_HEARTBEAT_REQUEST:
-        	usHeartBeatSent = 0;
+        	setHeartbeatSentFlag(0);
             break;
         default:
             break;
     }
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-unsigned short getHeartbeatsentflag(void)
-{
-	return(usHeartBeatSent);
-}
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 unsigned short getInfoResquestflag(void)
 {
 	return(usInfoResquestReceived);
 }
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void clearInfoResquestflag(void)
 {
 	usInfoResquestReceived = 0;
 }
 
-//*****************************************************************************
-//
-//
-//*****************************************************************************
-void clearHeartbeatsentflag(void)
-{
-	usHeartBeatSent = 0;
-}
-
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void payloadToSend(comms* PtrPop)
 {
-    char szResponse[25];
+	tNetappIpconfigRetArgs* CC3000config;
+	unsigned char* serverIP;
+	unsigned char* serverPort;
+	getConfigInfo(serverIP, serverPort, &CC3000config);
+
+    char szResponse[PAYLOAD_SIZE];
     memset(szResponse, 0, sizeof(szResponse));
 
-    comms comms_transmit;
-
-    comms_transmit = *PtrPop;
-    getConfigInfo(serverIP, serverPort, &CC3000config);
+    comms comms_transmit = *PtrPop; // TODO USEFUL?
 
     switch (comms_transmit.payloadid)
     {
-    	case PAYLOAD_HEARTBEAT_RESPONSE :
-    		szResponse[0] = PAYLOAD_HEARTBEAT_RESPONSE;
-    		szResponse[1] = CC3000config->uaMacAddr[2];
-    		szResponse[2] = CC3000config->uaMacAddr[1];
-    		szResponse[3] = CC3000config->uaMacAddr[0];
-    		szResponse[4] = comms_transmit.type;
-    		szResponse[5] = comms_transmit.device;
-    		szResponse[6] = comms_transmit.status;
-    		szResponse[7] = comms_transmit.state;
-    		szResponse[8] = comms_transmit.data;
-
-    		usHeartBeatSent = 1;
-    		sendPayLoad(szResponse, 9);
-    		break;
         case PAYLOAD_INFO_RESPONSE :
             szResponse[0] = PAYLOAD_INFO_RESPONSE;
             szResponse[1] = CC3000config->uaMacAddr[2];
@@ -223,34 +168,36 @@ void payloadToSend(comms* PtrPop)
 
             sendPayLoad(szResponse, 25);
             break;
+    	case PAYLOAD_HEARTBEAT_RESPONSE :
+    		szResponse[0] = PAYLOAD_HEARTBEAT_RESPONSE;
+    		szResponse[1] = CC3000config->uaMacAddr[2];
+    		szResponse[2] = CC3000config->uaMacAddr[1];
+    		szResponse[3] = CC3000config->uaMacAddr[0];
+    		szResponse[4] = comms_transmit.type;
+    		szResponse[5] = comms_transmit.device;
+    		szResponse[6] = comms_transmit.status;
+    		szResponse[7] = comms_transmit.state;
+    		szResponse[8] = comms_transmit.data;
+
+    		setHeartbeatSentFlag(1);
+    		sendPayLoad(szResponse, 9);
+    		break;
         default:
+        	//TODO SOMETHING
             break;
     }
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void receivePayLoad(void)
 {
-	int iReturnValue = receivePackets();
-
-	if (iReturnValue > 0)
+	if (receivePackets() > 0)
 	{
-		payloadReceived(requestBuffer, iReturnValue);
+		payloadReceived(requestBuffer);
 	}
 }
 
-
-//*****************************************************************************
-//
-//
-//*****************************************************************************
 void sendPayLoad(char* pcData, int length)
 {
 	sendPackets(pcData, length); // data pointer
 	__delay_cycles(7500000); //Important to make sure All packet sent
 }
-

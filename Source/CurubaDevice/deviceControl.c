@@ -29,18 +29,18 @@
 // ------------------------------------------------------------------------------------------------
 #include "deviceControl.h"
 #include "interuptDeviceControl.h"
-#include "commun.h"
 
 #include "typeDevice.h"
-
-#include "CommsManager.h"
-#include "heartbeat.h"
 
 #include "board.h"
 
 void initApp(TYPEDEVICE** device)
 {
-	setHeartbeatflag(0);  // TODO Change 0 to ON
+	initADC10();
+	initTIMER0();
+	initTIMER1(*device);
+	initTIMER2(*device);
+
 	initInterupt(device);
 	(*device)->initDevice();
 }
@@ -88,21 +88,6 @@ void initTIMER2(TYPEDEVICE* device)
 	TA2CCR0 = 0;
 }
 
-void InitListComms(TYPEDEVICE* device)
-{
-	device->initListComms();
-}
-
-//TODO REMOVE
-void HeartBeat(TYPEDEVICE* device)
-{
-	setHeartbeatflag(0); // TODO Change 0 to ON
-	comms** transmitFirst = getTransmitFirst();
-	comms** transmitPush = getTransmitPush();
-
-	device->heartBeat(transmitFirst, transmitPush);
-}
-
-unsigned short ReadAppSwitch(void) {
+unsigned short readAppSwitch(void) {
 	return (SWITCH_B1_IN & 0x0F);
 }
