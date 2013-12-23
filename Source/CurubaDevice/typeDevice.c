@@ -29,7 +29,7 @@
 // ------------------------------------------------------------------------------------------------
 #include "typeDevice.h"
 #include "commun.h"
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "util.h"
 
 #include "adcBuffer.h"

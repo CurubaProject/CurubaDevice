@@ -30,12 +30,12 @@
 #ifndef COMMSRECEIVE_H
 #define COMMSRECEIVE_H
 
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "typeDevice.h"
 
-typedef void (*CommsReceive)(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush);
+typedef void (*CommsReceive)(TYPEDEVICE* device, comms* ReceivePop);
 
-void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush);
-void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst, comms** transmitPush);
+void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop);
+void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop);
 
 #endif

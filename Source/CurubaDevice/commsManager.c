@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -27,27 +27,77 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#include "commsManager.h"
 
-#ifndef COMMSMANAGER_H_
-#define COMMSMANAGER_H_
+/* Private Function */
 
-#define NEWCOMMS    1
-#define NOCOMMS     0
+int pop(comms**, comms**, comms**);
+void push(comms**, comms**, comms*);
 
-typedef struct comms {
-	int payloadid;
-	int type;
-	int device;
-	int status;
-	int state;
-	long int data;
-} comms;
+/* End Private Function */
 
-int Pop(comms**, comms**, comms**);
-void Push(comms**, comms**, comms);
-void payloadToSend(comms*);
+comms comms_receive_array[5];
+comms comms_transmit_array[5];
 
-comms** getTransmitFirst();
-comms** getTransmitPush();
+comms* ReceiveFirst = comms_receive_array;
+comms* ReceivePush = comms_receive_array;
+comms* ReceivePop = comms_receive_array;
+comms* TransmitFirst = comms_transmit_array;
+comms* TransmitPush = comms_transmit_array;
+comms* TransmitPop = comms_transmit_array;
 
-#endif /* COMMSMANAGER_H_ */
+int pop(comms** PtrFirst, comms** PtrPush, comms** PtrPop)
+{
+	int StateComms = 0;
+
+	if (*PtrPop == *PtrPush)
+	{
+		StateComms = NOCOMMS;
+	}
+	else if (*PtrPop == ((*PtrFirst)+4))
+	{
+		*PtrPop = *PtrFirst;
+		StateComms = NEWCOMMS;
+	}
+	else
+	{
+		(*PtrPop)++;
+		StateComms = NEWCOMMS;
+	}
+
+	return StateComms;
+}
+
+void push(comms** PtrFirst, comms** PtrPush, comms* NewStruct)
+{
+	if (*PtrPush == ((*PtrFirst)+4))
+	{
+		*PtrPush = *PtrFirst;
+	}
+	else
+	{
+		(*PtrPush)++;
+	}
+
+	**PtrPush = *NewStruct;
+}
+
+int popTransmit(comms** PtrPop)
+{
+	return pop(&TransmitFirst, &TransmitPush, PtrPop);
+}
+
+void pushTransmit(comms newComms)
+{
+	push(&TransmitFirst, &TransmitPush, &newComms);
+}
+
+int popReceive(comms** PtrPop)
+{
+	return pop(&ReceiveFirst, &ReceivePush, PtrPop);
+}
+
+void pushReceive(comms newComms)
+{
+	push(&ReceiveFirst, &ReceivePush, &newComms);
+}

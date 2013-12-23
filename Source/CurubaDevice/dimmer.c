@@ -34,7 +34,7 @@
 *****************************************************************************/
 #include "dimmer.h"
 #include "device.h"
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "util.h"
 #include "typeDevice.h"
 #include "commun.h"
@@ -49,7 +49,6 @@ static int SwitchDimmer = 0;
 
 void initDevice_dimmer()
 {
-
 	CTRL_OUT |= CTRL_1;
 
 	if(GetState(DEVICE_1) == STATE_ON)
@@ -59,7 +58,7 @@ void initDevice_dimmer()
 	SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
 }
 
-void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush)
+void heartBeat_dimmer()
 {
 	comms payload;
 
@@ -82,12 +81,11 @@ void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush)
 		payload.data = ComputationWattHour(getValues());
 	}
 
-	Push(transmitFirst, transmitPush, payload);
+	pushTransmit(payload);
 }
 
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
-								comms* ReceivePop, 
-								comms** transmitFirst,comms** transmitPush)
+								comms* ReceivePop)
 {
 	if (ReceivePop->status == STATUS_ACTIVE)
 	{
@@ -113,7 +111,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 			turnOffligth();
 		}
 
-		Push(transmitFirst, transmitPush, payload);
+		pushTransmit(payload);
 	}
 	else if (ReceivePop->status == STATUS_INACTIVE)
 	{
@@ -133,11 +131,11 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		payload.type = TYPE_DIMMER;
 		payload.data = ComputationWattHour(getValues());
 
-		Push(transmitFirst, transmitPush, payload);
+		pushTransmit(payload);
 	}
 }
 
-void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush)
+void infoCommsReceive_dimmer()
 {
 	comms payload;
 
@@ -148,7 +146,7 @@ void infoCommsReceive_dimmer(comms** transmitFirst,comms** transmitPush)
 	payload.type = TYPE_DIMMER;
 	payload.data = ComputationWattHour(getValues());
 
-	Push(transmitFirst, transmitPush, payload);
+	pushTransmit(payload);
 }
 
 void changeIO_dimmer(int deviceNumber, int state)

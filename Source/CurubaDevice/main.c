@@ -30,7 +30,7 @@
 #include <assert.h>
 
 #include "deviceControl.h"
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "typeDevice.h"
 
 #include "heartbeat.h"
@@ -39,14 +39,10 @@
 #include "network.h"
 #include "cc3000.h"
 
-extern comms* ReceiveFirst;
-extern comms* ReceivePush;
-extern comms* ReceivePop;
-extern comms* TransmitFirst;
-extern comms* TransmitPush;
-extern comms* TransmitPop;
-
 void main(void) {
+	comms* receivePop;
+	comms* transmitPop;
+
 	initDriver();
 	initNetwork();
 
@@ -62,22 +58,22 @@ void main(void) {
 		{
 			receivePayLoad();
 
-			if ( Pop(&ReceiveFirst, &ReceivePush, &ReceivePop) )
+			if ( popReceive(&receivePop) )
 			{
-				assert(ReceivePop != NULL);
-				(reveiceComms(ReceivePop->payloadid))(device, ReceivePop, &TransmitFirst, &TransmitPush);
+				assert(receivePop != NULL);
+				(reveiceComms(receivePop->payloadid))(device, receivePop);
 			}
 
-			if ( Pop(&TransmitFirst, &TransmitPush, &TransmitPop) )
+			if ( popTransmit(&transmitPop) )
 			{
-				assert(TransmitPop != NULL);
-				payloadToSend(TransmitPop);
+				assert(transmitPop != NULL);
+				payloadToSend(transmitPop);
 			}
 
 			if( getHeartbeatFlag() )
 			{
 				setHeartbeatFlag(0);
-				device->heartBeat(&TransmitFirst, &TransmitPush);
+				device->heartBeat();
 			}
 		}
 	}

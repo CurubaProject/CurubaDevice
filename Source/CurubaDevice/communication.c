@@ -30,7 +30,7 @@
 #include "communication.h"
 #include "cc3000.h"
 
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "commun.h"
 
 #include "heartbeat.h"
@@ -41,10 +41,6 @@
 #define SIZE (sizeof(char) * 25)
 
 extern unsigned char requestBuffer[];
-
-extern comms* ReceiveFirst;
-extern comms* ReceivePush;
-extern comms* ReceivePop;
 
 unsigned short usInfoResquestReceived = 0;
 
@@ -60,7 +56,7 @@ void payloadReceived(unsigned char *usBuffer)
         case PAYLOAD_INFO_REQUEST :
         	usInfoResquestReceived = 1;
             comms_receive.payloadid = PAYLOAD_INFO_REQUEST;
-            Push(&ReceiveFirst, &ReceivePush, comms_receive);
+            pushReceive(comms_receive);
             break;
         case PAYLOAD_CONTROL_REQUEST :
             comms_receive.payloadid = PAYLOAD_CONTROL_REQUEST;
@@ -69,7 +65,7 @@ void payloadReceived(unsigned char *usBuffer)
             comms_receive.state = usBuffer[3];
             comms_receive.data = usBuffer[4];
 
-            Push(&ReceiveFirst, &ReceivePush, comms_receive);
+            pushReceive(comms_receive);
             break;
         case PAYLOAD_CONFIG_REQUEST:
             comms_receive.payloadid = PAYLOAD_CONFIG_REQUEST;

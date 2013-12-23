@@ -30,7 +30,7 @@
 #ifndef TYPEDEVICE_H
 #define TYPEDEVICE_H
 
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "device.h"
 
 typedef struct typeDevice {

@@ -45,7 +45,7 @@ void initDevice_outlet()
 	//Nothing to do
 }
 
-void heartBeat_outlet(comms** transmitFirst, comms** transmitPush)
+void heartBeat_outlet()
 {
 	comms payload;
 
@@ -66,7 +66,7 @@ void heartBeat_outlet(comms** transmitFirst, comms** transmitPush)
 		payload.data = ComputationWattHour(getValues());
 	}
 
-	Push(transmitFirst, transmitPush, payload);
+	pushTransmit(payload);
 
 	payload.payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
 	payload.status = STATUS_INACTIVE; // TODO OLD STATUS
@@ -85,12 +85,11 @@ void heartBeat_outlet(comms** transmitFirst, comms** transmitPush)
 		payload.data = ComputationWattHour(getValues());
 	}
 
-	Push(transmitFirst, transmitPush, payload);
+	pushTransmit(payload);
 }
 
 void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop, 
-								 comms** transmitFirst, comms** transmitPush)
+								 comms* ReceivePop)
 {
 	//TODO REMOVE IF AND PASS ReceivePop->device as DEVICE NUMBER
 	if (ReceivePop->device == DEVICE_1)
@@ -104,7 +103,7 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 		payload.type = TYPE_OUTLET;
 		payload.data = ComputationWattHour(getValues());
 
-		Push(transmitFirst, transmitPush, payload);
+		pushTransmit(payload);
 	}
 	else if (ReceivePop->device == DEVICE_2)
 	{
@@ -117,7 +116,7 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 		payload.type = TYPE_OUTLET;
 		payload.data = ComputationWattHour(getValues());
 
-		Push(transmitFirst, transmitPush, payload);
+		pushTransmit(payload);
 	}
 }
 
@@ -147,7 +146,7 @@ void changeIO_outlet(int deviceNumber, int state)
 	}
 }
 
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush)
+void infoCommsReceive_outlet()
 {
 	comms payload;
 
@@ -158,10 +157,10 @@ void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush)
 	payload.type = TYPE_OUTLET;
 	payload.data = 0;
 
-	Push(transmitFirst, transmitPush, payload);
+	pushTransmit(payload);
 
 	payload.device = DEVICE_2;
-	Push(transmitFirst, transmitPush, payload);
+	pushTransmit(payload);
 }
 
 void initTIMER1_outlet()

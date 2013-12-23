@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -27,58 +27,26 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "CommsManager.h"
 
-comms comms_receive_array[5];
-comms comms_transmit_array[5];
+#ifndef COMMSMANAGER_H_
+#define COMMSMANAGER_H_
 
-comms* ReceiveFirst = comms_receive_array;
-comms* ReceivePush = comms_receive_array;
-comms* ReceivePop = comms_receive_array;
-comms* TransmitFirst = comms_transmit_array;
-comms* TransmitPush = comms_transmit_array;
-comms* TransmitPop = comms_transmit_array;
+#define NEWCOMMS    1
+#define NOCOMMS     0
 
-int Pop(comms** PtrFirst, comms** PtrPush, comms** PtrPop)
-{
-	int StateComms = 0;
+typedef struct comms {
+	int payloadid;
+	int type;
+	int device;
+	int status;
+	int state;
+	long int data;
+} comms;
 
-	if (*PtrPop == *PtrPush)
-	{
-		StateComms = NOCOMMS;
-	}
-	else if (*PtrPop == ((*PtrFirst)+4))
-	{
-		*PtrPop = *PtrFirst;
-		StateComms = NEWCOMMS;
-	}
-	else
-	{
-		(*PtrPop)++;
-		StateComms = NEWCOMMS;
-	}
+int popTransmit(comms** PtrPop);
+void pushTransmit(comms newComms);
 
-	return StateComms;
-}
+int popReceive(comms** PtrPop);
+void pushReceive(comms newComms);
 
-void Push(comms** PtrFirst, comms** PtrPush, comms NewStruct)
-{
-	if (*PtrPush == ((*PtrFirst)+4))
-	{
-		*PtrPush = *PtrFirst;
-	}
-	else
-	{
-		(*PtrPush)++;
-	}
-
-	**PtrPush = NewStruct;
-}
-
-comms** getTransmitFirst() {
-	return &TransmitFirst;
-}
-
-comms** getTransmitPush() {
-	return &TransmitPush;
-}
+#endif /* COMMSMANAGER_H_ */

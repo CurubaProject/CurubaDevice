@@ -35,16 +35,15 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include "CommsManager.h"
+#include "commsManager.h"
 
 typedef struct typeDevice TYPEDEVICE;
 
 typedef void (*InitDevice)();
-typedef void (*HeartBeatDevice)(comms** transmitFirst, comms** transmitPush);
+typedef void (*HeartBeatDevice)();
 typedef void (*ControlCommsReceiveDevice)(TYPEDEVICE* device,
-										comms* ReceivePop,
-										comms** transmitFirst, comms** transmitPush);
-typedef void (*InfoCommsReceiveDevice)(comms** transmitFirst,comms** transmitPush);
+										comms* ReceivePop);
+typedef void (*InfoCommsReceiveDevice)();
 typedef void (*ChangeIODevice)(int deviceNumber, int state);
 typedef void (*InitTIMER1Device)();
 typedef void (*InitTIMER2Device)();

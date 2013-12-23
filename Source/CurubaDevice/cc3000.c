@@ -38,7 +38,7 @@
 #include "spi.h"
 #include "wlan.h"
 
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "commun.h"
 
 #define REQ_BUFFER_SIZE 100

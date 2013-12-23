@@ -31,7 +31,7 @@
 #ifndef COMMUNICATION_H_
 #define COMMUNICATION_H_
 
-#include "CommsManager.h"
+#include "commsManager.h"
 
 void clearHeartbeatSentFlag(void);
 void clearInfoResquestflag(void);

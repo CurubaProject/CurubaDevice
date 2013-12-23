@@ -34,12 +34,11 @@
 
 void initDevice_outlet();
 void initListComms_outlet();
-void heartBeat_outlet(comms** transmitFirst, comms** transmitPush);
+void heartBeat_outlet();
 void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop, 
-								 comms** transmitFirst, comms** transmitPush);
+								 comms* ReceivePop);
 void changeIO_outlet(int deviceNumber, int state);
-void infoCommsReceive_outlet(comms** transmitFirst, comms** transmitPush);
+void infoCommsReceive_outlet();
 void initTIMER1_outlet();
 void initTIMER2_outlet();
 

@@ -31,19 +31,19 @@
 #include "commun.h"
 #include "util.h"
 #include "typeDevice.h"
-#include "CommsManager.h"
+#include "commsManager.h"
 
-void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst, comms** transmitPush)
+void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop)
 {
 	TimerStop(TIMER_1);
-	device->infoCommsReceive(transmitFirst, transmitPush);
+	device->infoCommsReceive();
 	TimerStart(TIMER_1);
 }
 
-void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop, comms** transmitFirst,comms** transmitPush)
+void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop)
 {
 	TimerStop(TIMER_1);
-	device->controlCommsReceive(device, ReceivePop, transmitFirst, transmitPush);
+	device->controlCommsReceive(device, ReceivePop);
 	TimerStart(TIMER_1);
 }
 

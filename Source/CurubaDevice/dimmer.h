@@ -30,18 +30,17 @@
 #ifndef DIMMER_H
 #define DIMMER_H
 
-#include "CommsManager.h"
+#include "commsManager.h"
 #include "typeDevice.h"
 
 #define HEARTBEAT_5SEC 0x0A00 //5 sec //0A00
 
 void initDevice_dimmer();
 void initListComms_dimmer();
-void heartBeat_dimmer(comms** transmitFirst, comms** transmitPush);
+void heartBeat_dimmer();
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
-								comms* ReceivePop, 
-								comms** transmitFirst, comms** transmitPush);
-void infoCommsReceive_dimmer(comms** transmitFirst, comms** transmitPush);
+								comms* ReceivePop);
+void infoCommsReceive_dimmer();
 void changeIO_dimmer(int deviceNumber, int state);
 void initTIMER1_dimmer();
 void initTIMER2_dimmer() ;

@@ -144,16 +144,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/typeDevice.h</locationURI>
 		</link>
 		<link>
-			<name>Util/CommsManager.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.c</locationURI>
-		</link>
-		<link>
-			<name>Util/CommsManager.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.h</locationURI>
-		</link>
-		<link>
 			<name>Util/adcBuffer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/adcBuffer.c</locationURI>
@@ -162,6 +152,16 @@
 			<name>Util/adcBuffer.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/adcBuffer.h</locationURI>
+		</link>
+		<link>
+			<name>Util/commsManager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsManager.c</locationURI>
+		</link>
+		<link>
+			<name>Util/commsManager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsManager.h</locationURI>
 		</link>
 		<link>
 			<name>Util/util.c</name>
