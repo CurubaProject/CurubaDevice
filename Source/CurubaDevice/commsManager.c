@@ -32,7 +32,7 @@
 /* Private Function */
 
 int pop(comms**, comms**, comms**);
-void push(comms**, comms**, comms*);
+void push(comms*, comms**, comms**, comms*);
 
 /* End Private Function */
 
@@ -41,55 +41,54 @@ comms comms_transmit_array[5];
 
 comms* ReceiveFirst = comms_receive_array;
 comms* ReceivePush = comms_receive_array;
-comms* ReceivePop = comms_receive_array;
 comms* TransmitFirst = comms_transmit_array;
 comms* TransmitPush = comms_transmit_array;
-comms* TransmitPop = comms_transmit_array;
 
-int pop(comms** PtrFirst, comms** PtrPush, comms** PtrPop)
+int pop(comms** ptrFirst, comms** ptrLast, comms** ptrPop)
 {
-	int StateComms = 0;
+	int StateComms = NOCOMMS;
 
-	if (*PtrPop == *PtrPush)
+	if (*ptrFirst == *ptrLast)
 	{
 		StateComms = NOCOMMS;
 	}
-	else if (*PtrPop == ((*PtrFirst)+4))
-	{
-		*PtrPop = *PtrFirst;
-		StateComms = NEWCOMMS;
-	}
 	else
 	{
-		(*PtrPop)++;
+		*ptrPop = *ptrFirst;
+		(*ptrFirst)++;
 		StateComms = NEWCOMMS;
 	}
 
 	return StateComms;
 }
 
-void push(comms** PtrFirst, comms** PtrPush, comms* NewStruct)
+void push(comms* tab, comms** ptrFirst, comms** ptrLast, comms* newComms)
 {
-	if (*PtrPush == ((*PtrFirst)+4))
+	**ptrLast = *newComms;
+
+	if (*ptrLast == (tab+4))
 	{
-		*PtrPush = *PtrFirst;
+		*ptrLast = tab;
+
+		if (*ptrFirst == *ptrLast)
+		{
+			(*ptrFirst)++;
+		}
 	}
 	else
 	{
-		(*PtrPush)++;
+		(*ptrLast)++;
 	}
-
-	**PtrPush = *NewStruct;
 }
 
-int popTransmit(comms** PtrPop)
+int popTransmit(comms** ptrPop)
 {
-	return pop(&TransmitFirst, &TransmitPush, PtrPop);
+	return pop(&TransmitFirst, &TransmitPush, ptrPop);
 }
 
-void pushTransmit(comms newComms)
+void pushTransmit(comms* newComms)
 {
-	push(&TransmitFirst, &TransmitPush, &newComms);
+	push(comms_transmit_array, &TransmitFirst, &TransmitPush, newComms);
 }
 
 int popReceive(comms** PtrPop)
@@ -97,7 +96,7 @@ int popReceive(comms** PtrPop)
 	return pop(&ReceiveFirst, &ReceivePush, PtrPop);
 }
 
-void pushReceive(comms newComms)
+void pushReceive(comms* newComms)
 {
-	push(&ReceiveFirst, &ReceivePush, &newComms);
+	push(comms_receive_array, &ReceiveFirst, &ReceivePush, newComms);
 }

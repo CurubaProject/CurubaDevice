@@ -56,7 +56,7 @@ void payloadReceived(unsigned char *usBuffer)
         case PAYLOAD_INFO_REQUEST :
         	usInfoResquestReceived = 1;
             comms_receive.payloadid = PAYLOAD_INFO_REQUEST;
-            pushReceive(comms_receive);
+            pushReceive(&comms_receive);
             break;
         case PAYLOAD_CONTROL_REQUEST :
             comms_receive.payloadid = PAYLOAD_CONTROL_REQUEST;
@@ -65,7 +65,7 @@ void payloadReceived(unsigned char *usBuffer)
             comms_receive.state = usBuffer[3];
             comms_receive.data = usBuffer[4];
 
-            pushReceive(comms_receive);
+            pushReceive(&comms_receive);
             break;
         case PAYLOAD_CONFIG_REQUEST:
             comms_receive.payloadid = PAYLOAD_CONFIG_REQUEST;

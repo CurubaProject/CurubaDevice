@@ -44,9 +44,9 @@ typedef struct comms {
 } comms;
 
 int popTransmit(comms** PtrPop);
-void pushTransmit(comms newComms);
+void pushTransmit(comms* newComms);
 
 int popReceive(comms** PtrPop);
-void pushReceive(comms newComms);
+void pushReceive(comms* newComms);
 
 #endif /* COMMSMANAGER_H_ */

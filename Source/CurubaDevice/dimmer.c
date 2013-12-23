@@ -81,7 +81,7 @@ void heartBeat_dimmer()
 		payload.data = ComputationWattHour(getValues());
 	}
 
-	pushTransmit(payload);
+	pushTransmit(&payload);
 }
 
 void controlCommsReceive_dimmer(TYPEDEVICE* device,
@@ -111,7 +111,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 			turnOffligth();
 		}
 
-		pushTransmit(payload);
+		pushTransmit(&payload);
 	}
 	else if (ReceivePop->status == STATUS_INACTIVE)
 	{
@@ -131,7 +131,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 		payload.type = TYPE_DIMMER;
 		payload.data = ComputationWattHour(getValues());
 
-		pushTransmit(payload);
+		pushTransmit(&payload);
 	}
 }
 
@@ -146,7 +146,7 @@ void infoCommsReceive_dimmer()
 	payload.type = TYPE_DIMMER;
 	payload.data = ComputationWattHour(getValues());
 
-	pushTransmit(payload);
+	pushTransmit(&payload);
 }
 
 void changeIO_dimmer(int deviceNumber, int state)

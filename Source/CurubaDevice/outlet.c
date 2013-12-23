@@ -66,7 +66,7 @@ void heartBeat_outlet()
 		payload.data = ComputationWattHour(getValues());
 	}
 
-	pushTransmit(payload);
+	pushTransmit(&payload);
 
 	payload.payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
 	payload.status = STATUS_INACTIVE; // TODO OLD STATUS
@@ -85,7 +85,7 @@ void heartBeat_outlet()
 		payload.data = ComputationWattHour(getValues());
 	}
 
-	pushTransmit(payload);
+	pushTransmit(&payload);
 }
 
 void controlCommsReceive_outlet(TYPEDEVICE* device,
@@ -103,7 +103,7 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 		payload.type = TYPE_OUTLET;
 		payload.data = ComputationWattHour(getValues());
 
-		pushTransmit(payload);
+		pushTransmit(&payload);
 	}
 	else if (ReceivePop->device == DEVICE_2)
 	{
@@ -116,7 +116,7 @@ void controlCommsReceive_outlet(TYPEDEVICE* device,
 		payload.type = TYPE_OUTLET;
 		payload.data = ComputationWattHour(getValues());
 
-		pushTransmit(payload);
+		pushTransmit(&payload);
 	}
 }
 
@@ -157,10 +157,10 @@ void infoCommsReceive_outlet()
 	payload.type = TYPE_OUTLET;
 	payload.data = 0;
 
-	pushTransmit(payload);
+	pushTransmit(&payload);
 
 	payload.device = DEVICE_2;
-	pushTransmit(payload);
+	pushTransmit(&payload);
 }
 
 void initTIMER1_outlet()
