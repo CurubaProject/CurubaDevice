@@ -31,7 +31,7 @@
 #include "commun.h"
 
 static int tab_ADC10[MAXTABADC] = { 0 };
-static int* ptr = (void *)0;
+static int* ptr = tab_ADC10;
 
 int* getValues()
 {

@@ -48,7 +48,7 @@
 #endif
 
 
-#define MST_DEBUG								//ToDo: Remove after test
+#define JO_DEBUG								//ToDo: Remove after test
 #ifdef AJC_DEBUG
 	unsigned long SSIDType = WLAN_SEC_WPA2;
 	unsigned char SSIDKey[] = "domumservuskey00";
@@ -61,6 +61,11 @@
 	char SSIDName[] = "domumrff";
 #endif
 
+#ifdef JO_DEBUG
+	unsigned long SSIDType = WLAN_SEC_WPA2;
+	unsigned char SSIDKey[] = "testtest";//"15AB1437CDPA175387";
+	char SSIDName[] = "MAIN";
+#endif
 volatile unsigned long  ulCC3000Connected,
                         ulCC3000DHCP,
                         ulCC3000SocketClosed,
@@ -69,7 +74,7 @@ volatile long ulSocketTCP;
 sockaddr tSocketAddr;
 netapp_pingreport_args_t pingReport;
 tNetappIpconfigRetArgs CC3000ipconfig;
-unsigned char DSServerIP[4] = { 192, 168, 20, 140 };
+unsigned char DSServerIP[4] = { 192, 168, 0, 104 };
 unsigned char DSServerPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
 
 //*****************************************************************************

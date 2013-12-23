@@ -28,7 +28,7 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-volatile unsigned short ulHeartbeatflag;
+static volatile unsigned short ulHeartbeatflag;
 
 void setHeartbeatflag(unsigned short flagvalue)
 {
