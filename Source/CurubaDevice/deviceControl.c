@@ -32,7 +32,9 @@
 
 #include "typeDevice.h"
 
+#include "evnt_handler.h"
 #include "board.h"
+#include <msp430.h>
 
 void initApp(TYPEDEVICE** device)
 {
@@ -43,6 +45,8 @@ void initApp(TYPEDEVICE** device)
 
 	initInterupt(device);
 	(*device)->initDevice();
+
+	__bis_SR_register(GIE);
 }
 
 void initADC10(void)

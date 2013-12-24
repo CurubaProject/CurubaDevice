@@ -27,27 +27,27 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "CommsReceive.h"
+#include "commsReceive.h"
 #include "commun.h"
 #include "util.h"
 #include "typeDevice.h"
 #include "commsManager.h"
 
-void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop)
+void infoCommsReceive(TYPEDEVICE* device, comms* receivePop)
 {
 	TimerStop(TIMER_1);
 	device->infoCommsReceive();
 	TimerStart(TIMER_1);
 }
 
-void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop)
+void controlCommsReceive(TYPEDEVICE* device, comms* receivePop)
 {
 	TimerStop(TIMER_1);
-	device->controlCommsReceive(device, ReceivePop);
+	device->controlCommsReceive(device, receivePop);
 	TimerStart(TIMER_1);
 }
 
-CommsReceive reveiceComms(int payloadId)
+CommsReceive receiveComms(int payloadId)
 {
 	CommsReceive result;
 

@@ -185,7 +185,7 @@ int openSocket(void)
     	initSocket();
         sSocketConnected = 0;
 
-        clearpingReceived();
+        clearPingReceived();
         iReturnping = pingServer(PING_ATTEMPT, PING_SIZE, PING_TIMEOUT);
         ulReftime = getRefTime();
         //Check Server IP address
@@ -194,7 +194,7 @@ int openSocket(void)
         	updateAsyncEvent();
             ulTime = getTimeElapsed(ulReftime);
         }
-        clearpingReceived();
+        clearPingReceived();
         if(iReturnping != 0 || ulTime >= DELAY5SEC) //Problem finding server IP
         {
             iReturnValue = 0;

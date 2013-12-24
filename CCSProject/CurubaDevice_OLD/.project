@@ -79,14 +79,14 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/network.h</locationURI>
 		</link>
 		<link>
-			<name>Control/CommsReceive.c</name>
+			<name>Control/commsReceive.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsReceive.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsReceive.c</locationURI>
 		</link>
 		<link>
-			<name>Control/CommsReceive.h</name>
+			<name>Control/commsReceive.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsReceive.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsReceive.h</locationURI>
 		</link>
 		<link>
 			<name>Control/deviceControl.c</name>

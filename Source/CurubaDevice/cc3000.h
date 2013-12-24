@@ -42,10 +42,10 @@ void initDriver(void);
 void initSocket();
 
 void callCloseSocket(void);
-void clearpingReceived(void);
+void clearPingReceived(void);
 void clearSocketClosedflag(void);
 void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive,unsigned long aucInactivity);
-int configcc3000(char *ssidname, char* ssidkey, unsigned short ssidtype, unsigned short lengthssidname, unsigned short lengthssidkey);
+void configCC3000(char *ssidname, unsigned char* ssidkey, unsigned short ssidtype);
 int connectWifi(void);
 int connectServer(void);
 void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config);

@@ -77,7 +77,7 @@ void heartBeat_dimmer()
 	}
 	else
 	{
-		payload.state = state;                             //TODO remove ducktape
+		payload.state = state;
 		payload.data = ComputationWattHour(getValues());
 	}
 

@@ -30,12 +30,8 @@
 #ifndef DOMUMAPP_H
 #define DOMUMAPP_H
 
-#include "evnt_handler.h"
-#include "board.h"
-#include <msp430.h>
-
 #include "typeDevice.h"
-#include "CommsReceive.h"
+#include "commsReceive.h"
 
 //////////////////////////////////////
 //            PROTOTYPES            //
@@ -48,7 +44,5 @@ void initTIMER1(TYPEDEVICE* device);
 void initTIMER2(TYPEDEVICE* device);
 
 unsigned short readAppSwitch(void);
-
-CommsReceive reveiceComms(int payloadId);
 
 #endif

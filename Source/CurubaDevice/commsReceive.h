@@ -38,4 +38,6 @@ typedef void (*CommsReceive)(TYPEDEVICE* device, comms* ReceivePop);
 void infoCommsReceive(TYPEDEVICE* device, comms* ReceivePop);
 void controlCommsReceive(TYPEDEVICE* device, comms* ReceivePop);
 
+CommsReceive receiveComms(int payloadId);
+
 #endif
