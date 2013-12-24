@@ -33,6 +33,7 @@
 #define TIMER_0 0
 #define TIMER_1 1
 #define TIMER_2 2
+#define TIMERB_0 3
 
 #define STATE_ON			(1)
 #define STATE_OFF			(2)
@@ -61,5 +62,10 @@
 #define STATUS_OVERRIDE 	(3)
 
 #define MAXTABADC 			(308)
+
+#define LED_STATE_OFF                   (0)
+#define LED_STATE_UNCONNECTED           (1)
+#define LED_STATE_CONNECTED             (2)
+#define LED_STATE_CONFIGURING           (3)
 
 #endif

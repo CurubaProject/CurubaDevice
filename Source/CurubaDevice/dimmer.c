@@ -40,6 +40,7 @@
 #include "commun.h"
 
 #include "adcBuffer.h"
+#include "deviceInfoState.h"
 
 #include "evnt_handler.h"
 #include "board.h"
@@ -65,13 +66,12 @@ void heartBeat_dimmer()
 	payload.payloadid = PAYLOAD_HEARTBEAT_RESPONSE;
 	payload.device = DEVICE_1;
 	payload.type = TYPE_DIMMER;
-
-	payload.status = STATUS_INACTIVE; // TODO ADD OLD STATUS
-	payload.state = STATE_OFF; // TODO ADD OLD STATUS
+	payload.status = getDeviceInfoState()->currentStatus;
+	payload.state = getDeviceInfoState()->previousState;
 
 	int state = GetState(DEVICE_1);
 
-	if(IsStateChange(state, payload.state)) // TODO OLD STATE
+	if(IsStateChange(state, payload.state))
 	{
 		payload.data = ComputationWattHour(getValues());
 	}
@@ -84,25 +84,24 @@ void heartBeat_dimmer()
 	pushTransmit(&payload);
 }
 
-void controlCommsReceive_dimmer(TYPEDEVICE* device,
-								comms* ReceivePop)
+void controlCommsReceive_dimmer(TYPEDEVICE* device, comms* receivePop)
 {
-	if (ReceivePop->status == STATUS_ACTIVE)
+	if (receivePop->status == STATUS_ACTIVE)
 	{
 		comms payload;
 
 		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
 		payload.status = STATUS_ACTIVE;
-		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
+		payload.state = ChangeIO_Device(device, receivePop->state, DEVICE_1);
 		payload.device = DEVICE_1;
 		payload.type = TYPE_DIMMER;
 		payload.data = ComputationWattHour(getValues());
 
 		//Enable Zero cross for dimmer function
 		ZERO_CROSS_IE |= ZERO_CROSS;
-		if (ReceivePop->state == STATE_ON && ReceivePop->data > 10)
+		if (receivePop->state == STATE_ON && receivePop->data > 10)
 		{
-			TA2CCR0 = (int) (101 - ReceivePop->data) / 100.0 * PERIODHZ;
+			TA2CCR0 = (int) (101 - receivePop->data) / 100.0 * PERIODHZ;
 		}
 		else
 		{
@@ -113,7 +112,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 
 		pushTransmit(&payload);
 	}
-	else if (ReceivePop->status == STATUS_INACTIVE)
+	else if (receivePop->status == STATUS_INACTIVE)
 	{
 		//Disable Zero cross for dimmer function
 		ZERO_CROSS_IE &= ~ZERO_CROSS;
@@ -126,13 +125,15 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device,
 
 		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
 		payload.status = STATUS_INACTIVE;
-		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
+		payload.state = ChangeIO_Device(device, receivePop->state, DEVICE_1);
 		payload.device = DEVICE_1;
 		payload.type = TYPE_DIMMER;
 		payload.data = ComputationWattHour(getValues());
 
 		pushTransmit(&payload);
 	}
+
+	getDeviceInfoState()->currentStatus = receivePop->status;
 }
 
 void infoCommsReceive_dimmer()
@@ -160,6 +161,8 @@ void changeIO_dimmer(int deviceNumber, int state)
 	{
 		SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
 	}
+
+	getDeviceInfoState()->previousState = current_state;
 }
 
 void initTIMER1_dimmer()
@@ -203,7 +206,6 @@ void turnOffligth(void)
 		CTRL_OUT |= (~SwitchDimmer & CTRL_2);
 	}
 }
-
 
 void toggleControl(void)
 {

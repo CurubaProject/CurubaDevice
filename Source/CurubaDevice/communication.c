@@ -33,16 +33,13 @@
 #include "commsManager.h"
 #include "commun.h"
 
+#include "deviceInfoState.h"
 #include "heartbeat.h"
 
 #include "string.h"
 
 #define PAYLOAD_SIZE (25)
 #define SIZE (sizeof(char) * 25)
-
-extern unsigned char requestBuffer[];
-
-unsigned short usInfoResquestReceived = 0;
 
 void payloadReceived(unsigned char *usBuffer)
 {
@@ -54,7 +51,7 @@ void payloadReceived(unsigned char *usBuffer)
     switch (usBuffer[0])
     {
         case PAYLOAD_INFO_REQUEST :
-        	usInfoResquestReceived = 1;
+        	getDeviceInfoState()->infoResquestReceived = 1;
             comms_receive.payloadid = PAYLOAD_INFO_REQUEST;
             pushReceive(&comms_receive);
             break;
@@ -76,16 +73,6 @@ void payloadReceived(unsigned char *usBuffer)
         default:
             break;
     }
-}
-
-unsigned short getInfoResquestflag(void)
-{
-	return(usInfoResquestReceived);
-}
-
-void clearInfoResquestflag(void)
-{
-	usInfoResquestReceived = 0;
 }
 
 void payloadToSend(comms* PtrPop)
@@ -184,7 +171,7 @@ void payloadToSend(comms* PtrPop)
     }
 }
 
-void receivePayLoad(void)
+void receivePayLoad(unsigned char *requestBuffer)
 {
 	if (receivePackets() > 0)
 	{

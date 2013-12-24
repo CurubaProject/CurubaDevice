@@ -62,6 +62,8 @@
 #include "network.h"
 #include "cc3000.h"
 
+extern unsigned char requestBuffer[];
+
 void main(void) {
 	configCC3000(_SSIDName, _SSIDKey, _SSIDType);
 
@@ -81,7 +83,7 @@ void main(void) {
 		if( connectNetwork() )
 		{
 			// Receive payload from buffer
-			receivePayLoad();
+			receivePayLoad(requestBuffer);
 
 			// Do reception of payload
 			if ( popReceive(&receivePop) )

@@ -28,34 +28,27 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 #include "network.h"
-#include "board.h"
-#include <msp430.h>
 
 #include "cc3000.h"
-#include "communication.h"
 
 #include "util.h"
 #include "commun.h"
-
+#include "deviceInfoState.h"
 #include "heartbeat.h"
 
+/* Private Function */
+unsigned long getRefTime(void);
+/* End Private Function */
 
-volatile unsigned long ulTimecount;
-volatile unsigned long ulTimeRef,		//use for Timer LED
-						ulHbTimeref,	//use to asset heartbeat response delay
+volatile unsigned long  ulHbTimeref,	//use to asset heartbeat response delay
 						ulIrTimeref;	//use to asset inforesquest delay time
 volatile short  sSocketConnected,
                 sNetworkConnectAttempt;
-volatile short sLedState;
-
 
 void initNetwork(void)
 {
-	initTIMERB0();
-
     sSocketConnected = 0;
     sNetworkConnectAttempt = 0;
-    ulTimecount = 0;
 }
 
 int connectNetwork(void)
@@ -74,7 +67,7 @@ int connectNetwork(void)
         	iReturnConnect = connectWifi();
 
             ulReftime = getRefTime(); //Wait until connected to Network
-            while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(ulReftime) < DELAY5SEC) //Wait 5 sec
+            while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getRefTime(), ulReftime) < DELAY5SEC) //Wait 5 sec
             {
             	updateAsyncEvent();
             }
@@ -95,7 +88,7 @@ int connectNetwork(void)
             {
                 iReturnValue = 1;
                 sNetworkConnectAttempt = 0;
-                sLedState = LED_STATE_CONNECTED;
+                getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
                 static short sflag = 0;
                 static short sinfoflag = 0;
                 if(getHeartbeatSentFlag())	//Heartbeat sent - Server must response back
@@ -107,7 +100,7 @@ int connectNetwork(void)
                 	}
                 	else
                 	{
-                		if(getTimeElapsed(ulHbTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
+                		if(getTimeElapsed(getRefTime(), ulHbTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
                 		{
                 			callCloseSocket();
                 			sSocketConnected = 0; 	//close socket and retry to reconnect
@@ -122,7 +115,7 @@ int connectNetwork(void)
 
                 }
 
-                if(getInfoResquestflag() == 0)
+                if(getDeviceInfoState()->infoResquestReceived == 0)
 				{
 					if(sinfoflag == 0)
 					{
@@ -131,11 +124,11 @@ int connectNetwork(void)
 					}
 					else
 					{
-						if(getTimeElapsed(ulIrTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
+						if(getTimeElapsed(getRefTime(), ulIrTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
 						{
 							callCloseSocket();
 							sSocketConnected = 0; 	//close socket and retry to reconnect
-							clearInfoResquestflag();
+							getDeviceInfoState()->infoResquestReceived = 0;
 							sinfoflag = 0;
 						}
 					}
@@ -147,8 +140,8 @@ int connectNetwork(void)
             }
             else
             {
-                sLedState = LED_STATE_UNCONNECTED;
-                clearHeartbeatSentFlag();
+            	getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
+            	getDeviceInfoState()->infoResquestReceived = 0;
             }
         }
     }
@@ -156,9 +149,8 @@ int connectNetwork(void)
     {
         //Reset Variable to try to reconnect
         sNetworkConnectAttempt = 0;
-        sLedState = LED_STATE_UNCONNECTED;
+        getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
         iReturnValue = 0;
-
     }
     return (iReturnValue);
 }
@@ -179,7 +171,7 @@ int openSocket(void)
 
     if (sSocketConnected == 0)
     {
-    	clearInfoResquestflag();
+    	getDeviceInfoState()->infoResquestReceived = 0;
     	TimerStop(TIMER_1);
     	setHeartbeatFlag(FALSE);
     	initSocket();
@@ -192,7 +184,7 @@ int openSocket(void)
         while(iReturnping == 0 && pingReceived() == 0 && ulTime < DELAY5SEC) //Stop after 5 sec of finding the Server
         {
         	updateAsyncEvent();
-            ulTime = getTimeElapsed(ulReftime);
+            ulTime = getTimeElapsed(getRefTime(), ulReftime);
         }
         clearPingReceived();
         if(iReturnping != 0 || ulTime >= DELAY5SEC) //Problem finding server IP
@@ -219,107 +211,7 @@ int openSocket(void)
     return (iReturnValue);
 }
 
-void initTIMERB0(void)
-{
-	//Timer for Server connection delay time
-	TB0CTL |= TBCLR;
-	TB0CTL |= TBSSEL_1 + ID_3 + TBIE;
-	TB0EX0 |= TBIDEX_7; //Timer clock = ACLK/64 = 512 Hz
-	TB0CCR0 = (int) 32;
-	StartTIMERB0(); //Never stop this timer
-}
-
-void StartTIMERB0(void)
-{
-	TB0CTL |= MC_1; //Start timer in Up-mode
-}
-
-void StopTIMERB0(void)
-{
-	TB0CTL &= 0xFFCF; //Halt timer
-	TB0R = 0;
-}
-
 unsigned long getRefTime(void)
 {
-	return(ulTimecount);
-}
-
-unsigned long getTimeElapsed(unsigned long lastcount)
-{
-	if(getRefTime() >= lastcount)
-	{
-		return(getRefTime() - lastcount);
-	}
-	else
-	{
-		return(((unsigned long) (0xFFFFFFFF) - lastcount) + getRefTime());
-	}
-}
-
-//Timer used to interrupt at every 500 msec
-#pragma vector=TIMER0_B1_VECTOR
-__interrupt void TIMER0_B1_ISR(void)
-{
-    static short sFlag = 0;
-    unsigned long ultime;
-    switch (__even_in_range(TB0IV, 14))
-    {
-        case 0:                            // No interrupt
-            break;
-        case TB0IV_TB0CCR1:                            // Capture/Compare 1
-            break;
-        case TB0IV_TB0CCR2:                            // Capture/Compare 2
-            break;
-        case TB0IV_3:                            // Capture/Compare 3
-            break;
-        case TB0IV_4:                            // Capture/Compare 4
-            break;
-        case TB0IV_5:                           // Capture/Compare 5
-            break;
-        case TB0IV_6:                           // Capture/Compare 6
-            break;
-        case TB0IV_TB0IFG:                           // Timer overflow
-            ulTimecount++;
-            if(sFlag == 0)
-            {
-                ulTimeRef = getRefTime();
-                sFlag = 1;
-                ultime = getTimeElapsed(ulTimeRef);
-            }
-            else if(sFlag == 1)
-            {
-                ultime = getTimeElapsed(ulTimeRef);
-            }
-            switch (sLedState)
-            {
-                case LED_STATE_OFF:
-                    turnLedOff(WARNING_LED);
-                    break;
-                case LED_STATE_UNCONNECTED:
-                    turnLedOn(WARNING_LED);
-                    break;
-                case LED_STATE_CONNECTED:
-                    if(ultime >= 16) // Toggle LED at each 1 Hz
-                    {
-                        toggleLed(WARNING_LED);
-                        sFlag = 0;
-                    }
-                    break;
-                case LED_STATE_CONFIGURING:
-                    if(ultime >= 1) //Toggle LED at each 8 Hz
-                    {
-                        toggleLed(WARNING_LED);
-                        sFlag = 0;
-                    }
-                    break;
-                default:
-                    sFlag = 0;
-                    break;
-            }
-            TB0CTL &= ~TBIFG;
-            break;
-        default:
-            break;
-    }
+	return getDeviceInfoState()->timeCounter;
 }

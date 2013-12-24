@@ -27,19 +27,29 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#ifndef DEVICEINFOSTATE_H
+#define DEVICEINFOSTATE_H
 
-#ifndef NETWORK_H_
-#define NETWORK_H_
+typedef struct deviceInfoState
+{
+	int currentStatus;
+	int previousState;
+	int previousControlOutput;
 
-#define PING_ATTEMPT                    (5)
-#define PING_SIZE                       (40)
-#define PING_TIMEOUT                    (20)
+	unsigned long timeCounter;
 
-#define DELAY5SEC						(40)
-#define DELAY2SEC						(20)
+	short socketConnected,
+		  networkConnectionAttempts,
+		  ledState;
 
-void initNetwork(void);
-int connectNetwork(void);
-int openSocket(void);
+	unsigned short infoResquestReceived,
+				   ulCC3000Connected,
+				   ulCC3000DHCP,
+	               ulCC3000SocketClosed,
+	               ulPingReceived;
 
-#endif /* NETWORK_H_ */
+} DeviceInfoState;
+
+DeviceInfoState* getDeviceInfoState();
+
+#endif

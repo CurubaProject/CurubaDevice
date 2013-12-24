@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -47,5 +47,6 @@ void TimerStop(int timer_number);
 void ADCRead(int ADC_number);
 int IsStateChange(int State, int StateComms);
 int ComputationWattHour(int *Tab_ADC10);
+unsigned long getTimeElapsed(unsigned long ref, unsigned long lastcount);
 
 #endif

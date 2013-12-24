@@ -33,12 +33,15 @@
 
 #include "heartbeat.h"
 #include "adcBuffer.h"
+#include "deviceInfoState.h"
 
 #include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
 static TYPEDEVICE* _device = 0x0;
+
+volatile unsigned long ulTimeRef;		//use for Timer LED
 
 void initInterupt(TYPEDEVICE** device)
 {
@@ -160,6 +163,75 @@ __interrupt void TIMER2_A1_ISR(void)
 		default:
 			break;
 	}
+}
+
+//Timer used to interrupt at every 500 msec
+#pragma vector=TIMER0_B1_VECTOR
+__interrupt void TIMER0_B1_ISR(void)
+{
+    static short sFlag = 0;
+    unsigned long ultime;
+    unsigned long timeCounter = getDeviceInfoState()->timeCounter;
+
+    switch (__even_in_range(TB0IV, 14))
+    {
+        case 0:                            // No interrupt
+            break;
+        case TB0IV_TB0CCR1:                            // Capture/Compare 1
+            break;
+        case TB0IV_TB0CCR2:                            // Capture/Compare 2
+            break;
+        case TB0IV_3:                            // Capture/Compare 3
+            break;
+        case TB0IV_4:                            // Capture/Compare 4
+            break;
+        case TB0IV_5:                           // Capture/Compare 5
+            break;
+        case TB0IV_6:                           // Capture/Compare 6
+            break;
+        case TB0IV_TB0IFG:                           // Timer overflow
+        	timeCounter++;
+            if(sFlag == 0)
+            {
+                ulTimeRef = timeCounter;
+                sFlag = 1;
+                ultime = getTimeElapsed(timeCounter, ulTimeRef);
+            }
+            else if(sFlag == 1)
+            {
+                ultime = getTimeElapsed(timeCounter, ulTimeRef);
+            }
+            switch (getDeviceInfoState()->ledState)
+            {
+                case LED_STATE_OFF:
+                    turnLedOff(WARNING_LED);
+                    break;
+                case LED_STATE_UNCONNECTED:
+                    turnLedOn(WARNING_LED);
+                    break;
+                case LED_STATE_CONNECTED:
+                    if(ultime >= 16) // Toggle LED at each 1 Hz
+                    {
+                        toggleLed(WARNING_LED);
+                        sFlag = 0;
+                    }
+                    break;
+                case LED_STATE_CONFIGURING:
+                    if(ultime >= 1) //Toggle LED at each 8 Hz
+                    {
+                        toggleLed(WARNING_LED);
+                        sFlag = 0;
+                    }
+                    break;
+                default:
+                    sFlag = 0;
+                    break;
+            }
+            TB0CTL &= ~TBIFG;
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma vector=PORT1_VECTOR

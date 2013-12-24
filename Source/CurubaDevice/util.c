@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------------------------------
 // ----------------- Curuba Device ----------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
-// Copyright (C) 2013 Mathieu Bélanger (mathieu.b.belanger@usherbrooke.ca)
+// Copyright (C) 2013 Mathieu Bï¿½langer (mathieu.b.belanger@usherbrooke.ca)
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -38,6 +38,7 @@
 
 void TimerStart(int timer_number)
 {
+	//TODO Change to switch
 	if (timer_number == TIMER_0)
 	{
 		TA0R = 0;
@@ -53,21 +54,31 @@ void TimerStart(int timer_number)
 		TA2R = 0;
 		TA2CTL |= MC_1;
 	}
+	else if (timer_number == TIMERB_0)
+	{
+		TB0CTL |= MC_1; //Start timer in Up-mode
+	}
 }
 
 void TimerStop(int timer_number)
 {
-	if (timer_number == TIMER_0)
+	switch (timer_number)
 	{
-		TA0CTL &= TIMER_OFF;
-	}
-	else if (timer_number == TIMER_1)
-	{
-		TA1CTL &= TIMER_OFF;
-	}
-	else if (timer_number == TIMER_2)
-	{
-		TA2CTL &= TIMER_OFF;
+		case TIMER_0:
+			TA0CTL &= TIMER_OFF;
+			break;
+		case TIMER_1:
+			TA1CTL &= TIMER_OFF;
+			break;
+		case TIMER_2:
+			TA2CTL &= TIMER_OFF;
+			break;
+		case TIMERB_0:
+			TB0CTL &= 0xFFCF; //Halt timer
+			TB0R = 0;
+			break;
+		default:
+			break;
 	}
 }
 
@@ -149,4 +160,16 @@ int ComputationWattHour(int *Tab_ADC10)
 	}
 
 	return power;
+}
+
+unsigned long getTimeElapsed(unsigned long ref, unsigned long lastcount)
+{
+	if(ref >= lastcount)
+	{
+		return(ref - lastcount);
+	}
+	else
+	{
+		return(((unsigned long) (0xFFFFFFFF) - lastcount) + ref);
+	}
 }

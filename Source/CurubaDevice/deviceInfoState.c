@@ -27,84 +27,11 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "deviceControl.h"
-#include "interuptDeviceControl.h"
+#include "deviceInfoState.h"
 
-#include "util.h"
-#include "commun.h"
-#include "typeDevice.h"
+static DeviceInfoState deviceInfoState;
 
-#include "evnt_handler.h"
-#include "board.h"
-#include <msp430.h>
-
-void initApp(TYPEDEVICE** device)
+DeviceInfoState* getDeviceInfoState()
 {
-	initADC10();
-	initTIMER0();
-	initTIMER1(*device);
-	initTIMER2(*device);
-	initTIMERB0();
-
-	initInterupt(device);
-	(*device)->initDevice();
-
-	__bis_SR_register(GIE);
-}
-
-void initADC10(void)
-{
-	//ADC10 Init
-	ADC10CTL0 |= ADC10SHT_2 + ADC10ON;
-	ADC10CTL1 |= ADC10SHP + ADC10DIV_4 + ADC10SSEL_2;
-	ADC10CTL2 |= ADC10RES;                            // 10 bits resolution
-	ADC10MCTL0 |= ADC10SREF_7;
-	ADC10IE |= ADC10IE0;                    		  // Interupt enable end of conversion
-	ADC10IFG &= 0x0000;                               // Reset all interupt flag
-	ADC10CTL0 |= ADC10ENC;                            // ADC enable conversion
-}
-
-void initTIMER0(void)
-{
-	//Timer0 Init (for ADC)
-	TA0CTL |= TACLR;
-	TA0CTL |= TASSEL_2 + TAIE;
-	TA0CCR0 &= 0x0000;
-	TA0CCR0 = 812;
-}
-
-void initTIMER1(TYPEDEVICE* device)
-{
-	//Timer1 Init (for Heartbeat)
-	TA1CTL |= TACLR;
-	TA1CTL |= TASSEL_1 + ID_3 + TAIE;
-	TA1EX0 |= TAIDEX_7;
-	device->initTIMER1();
-}
-
-//DOIT etre modifier badly en accordance avec MO
-void initTIMER2(TYPEDEVICE* device)
-{
-	//Timer2 Init (for Dimmer)
-	TA2CTL &= MC_0;
-	TA2CTL |= TACLR;
-	TA2CTL |= TASSEL_2 + TAIE;
-
-	device->initTIMER2();
-
-	TA2CCR0 = 0;
-}
-
-void initTIMERB0(void)
-{
-	//Timer for Server connection delay time
-	TB0CTL |= TBCLR;
-	TB0CTL |= TBSSEL_1 + ID_3 + TBIE;
-	TB0EX0 |= TBIDEX_7; //Timer clock = ACLK/64 = 512 Hz
-	TB0CCR0 = (int) 32;
-	TimerStart(TIMERB_0);//Never stop this timer
-}
-
-unsigned short readAppSwitch(void) {
-	return (SWITCH_B1_IN & 0x0F);
+	return &deviceInfoState;
 }

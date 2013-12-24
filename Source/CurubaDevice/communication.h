@@ -33,13 +33,9 @@
 
 #include "commsManager.h"
 
-void clearHeartbeatSentFlag(void);
-void clearInfoResquestflag(void);
-unsigned short getHeartbeatSentFlag(void);
-unsigned short getInfoResquestflag(void);
 void payloadReceived(unsigned char *usBuffer);
 void payloadToSend(comms* PtrPop);
-void receivePayLoad(void);
+void receivePayLoad(unsigned char *requestBuffer);
 void sendPayLoad(char* pcData, int length);
 
 #endif /* COMMUNICATION_H_ */
