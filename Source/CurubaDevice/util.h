@@ -39,6 +39,8 @@
 	#define PERIODHZ 31250
 #endif
 
+#define PERIODHZ_BY_100 (PERIODHZ/100)
+
 #define TIMER_OFF 0xFFCF
 #define ADC_SEL_RESET 0xFFF0;
 

@@ -32,7 +32,6 @@
 
 #include "deviceControl.h"
 
-#include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
@@ -129,7 +128,7 @@ int ComputationWattHour(int *Tab_ADC10)
 	long int temp_max = 0;
 	long int pente = 2;
 
-	int i = 0;
+	unsigned int i = 0;
 
 	sum_value_ADC = 0;
 

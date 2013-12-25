@@ -35,7 +35,6 @@
 #include "adcBuffer.h"
 #include "deviceInfoState.h"
 
-#include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
@@ -190,7 +189,7 @@ __interrupt void TIMER0_B1_ISR(void)
         case TB0IV_6:                           // Capture/Compare 6
             break;
         case TB0IV_TB0IFG:                           // Timer overflow
-        	timeCounter++;
+        	getDeviceInfoState()->timeCounter = ++timeCounter;
             if(sFlag == 0)
             {
                 ulTimeRef = timeCounter;

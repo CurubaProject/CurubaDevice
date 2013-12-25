@@ -30,6 +30,8 @@
 #ifndef DEVICEINFOSTATE_H
 #define DEVICEINFOSTATE_H
 
+#include "cc3000.h"
+
 typedef struct deviceInfoState
 {
 	int currentStatus;
@@ -37,16 +39,14 @@ typedef struct deviceInfoState
 	int previousControlOutput;
 
 	unsigned long timeCounter;
+	short ledState;
 
-	short socketConnected,
-		  networkConnectionAttempts,
-		  ledState;
-
-	unsigned short infoResquestReceived,
-				   ulCC3000Connected,
+	unsigned short ulCC3000Connected,
 				   ulCC3000DHCP,
 	               ulCC3000SocketClosed,
 	               ulPingReceived;
+
+	LanConfig config;
 
 } DeviceInfoState;
 

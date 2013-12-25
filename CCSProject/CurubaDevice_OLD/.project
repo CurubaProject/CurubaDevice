@@ -6,6 +6,7 @@
 		<project>CC3000 Board</project>
 		<project>CC3000 Spi</project>
 		<project>CC3000HostDriver</project>
+		<project>Wifi</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -37,16 +38,6 @@
 			<name>main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/main.c</locationURI>
-		</link>
-		<link>
-			<name>Communication/cc3000.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/cc3000.c</locationURI>
-		</link>
-		<link>
-			<name>Communication/cc3000.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/cc3000.h</locationURI>
 		</link>
 		<link>
 			<name>Communication/communication.c</name>
@@ -172,6 +163,16 @@
 			<name>Util/commsManager.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsManager.h</locationURI>
+		</link>
+		<link>
+			<name>Util/timer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/timer.c</locationURI>
+		</link>
+		<link>
+			<name>Util/timer.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/timer.h</locationURI>
 		</link>
 		<link>
 			<name>Util/util.c</name>

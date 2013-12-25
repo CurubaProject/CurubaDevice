@@ -42,7 +42,6 @@
 #include "adcBuffer.h"
 #include "deviceInfoState.h"
 
-#include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
@@ -101,7 +100,7 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device, comms* receivePop)
 		ZERO_CROSS_IE |= ZERO_CROSS;
 		if (receivePop->state == STATE_ON && receivePop->data > 10)
 		{
-			TA2CCR0 = (int) (101 - receivePop->data) / 100.0 * PERIODHZ;
+			TA2CCR0 = (int) (101 - receivePop->data) * PERIODHZ_BY_100;
 		}
 		else
 		{

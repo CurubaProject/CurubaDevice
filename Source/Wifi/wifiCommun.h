@@ -28,16 +28,11 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-#ifndef NETWORK_H_
-#define NETWORK_H_
+#ifndef WIFICOMMUN_H
+#define WIFICOMMUN_H
 
-void initNetwork(void);
-int checkNetwork(void);
+// TODO #include "wlan.h"
 
-void stopTimerInfoRequest();
-void stopTimerHeartbeat();
+#define SECURITE_WPA2 (3) //WLAN_SEC_WPA2
 
-void addTimerHeartbeat();
-void addTimerInfoRequest();
-
-#endif /* NETWORK_H_ */
+#endif /* WIFICOMMUN_H */

@@ -28,16 +28,60 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 
-#ifndef NETWORK_H_
-#define NETWORK_H_
+#ifndef CC3000_H
+#define CC3000_H
 
-void initNetwork(void);
-int checkNetwork(void);
+#define DISABLE                                     (0)
+#define ENABLE                                      (1)
+#define NETAPP_IPCONFIG_MAC_OFFSET              	(20)
 
-void stopTimerInfoRequest();
-void stopTimerHeartbeat();
+typedef void (*CallbackWifiConnected)();
+typedef void (*CallbackWifiDisconnected)();
+typedef void (*CallbackPingResult)();
+typedef void (*CallbackDHCPConfig)();
 
-void addTimerHeartbeat();
-void addTimerInfoRequest();
+typedef struct lanConfig
+{
+    unsigned char aucIP[4];
+	unsigned char aucSubnetMask[4];
+	unsigned char aucDefaultGateway[4];
+	unsigned char aucDHCPServer[4];
+	unsigned char aucDNSServer[4];
+	unsigned char uaMacAddr[6];
+	unsigned char uaSSID[32];
+} LanConfig;
 
-#endif /* NETWORK_H_ */
+void initCC3000(void);
+void initDriver(void);
+void initSocket();
+
+void callCloseSocket(void);
+void clearPingReceived(void);
+void clearSocketClosedflag(void);
+unsigned long wifiConnected(void);
+
+void configDHCP(unsigned long aucDHCP, unsigned long aucARP,
+				unsigned long aucKeepalive, unsigned long aucInactivity,
+				CallbackDHCPConfig callbackConfig);
+void updateIPinfo(LanConfig* lanconfig);
+
+int connectWifi(char *SSIDName, unsigned char* SSIDKey, unsigned short SSIDType,
+				CallbackWifiConnected callbackConnect,
+				CallbackWifiDisconnected callbackDisConnect);
+int connectServer(unsigned char* serverPort, unsigned char* serverIP);
+
+unsigned long pingReceived(void);
+int pingServer(unsigned char* serverIP,
+				unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout,
+				CallbackPingResult callbackPing);
+
+void sendPackets(char* pcData, int length);
+int receivePackets(void);
+
+unsigned long socketclosed(void);
+
+void updateAsyncEvent(void);
+
+void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length);
+
+#endif /* CC3000_H */

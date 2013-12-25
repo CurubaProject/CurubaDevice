@@ -27,17 +27,20 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#ifndef TIMER_H
+#define TIMER_H
 
-#ifndef NETWORK_H_
-#define NETWORK_H_
+typedef void (* CallbackTimer)();
 
-void initNetwork(void);
-int checkNetwork(void);
+typedef struct timer
+{
+	int timeOut;
+	int refTime;
+	CallbackTimer callback;
+} TIMEOUT;
 
-void stopTimerInfoRequest();
-void stopTimerHeartbeat();
+void timeOut();
+void addTimer(TIMEOUT* timer);
+void stopTimer(TIMEOUT* timer);
 
-void addTimerHeartbeat();
-void addTimerInfoRequest();
-
-#endif /* NETWORK_H_ */
+#endif

@@ -37,7 +37,6 @@
 #include "adcBuffer.h"
 #include "deviceInfoState.h"
 
-#include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
