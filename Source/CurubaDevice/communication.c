@@ -41,6 +41,8 @@
 #define PAYLOAD_SIZE (25)
 #define SIZE (sizeof(char) * 25)
 
+extern unsigned char requestBuffer[];
+
 void payloadReceived(unsigned char *usBuffer)
 {
     char szResponse[PAYLOAD_SIZE];
@@ -171,7 +173,7 @@ void payloadToSend(comms* PtrPop)
     }
 }
 
-void receivePayLoad(unsigned char *requestBuffer)
+void receivePayLoad()
 {
 	if (receivePackets() > 0)
 	{

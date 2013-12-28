@@ -35,7 +35,7 @@
 
 void payloadReceived(unsigned char *usBuffer);
 void payloadToSend(comms* PtrPop);
-void receivePayLoad(unsigned char *requestBuffer);
+void receivePayLoad();
 void sendPayLoad(char* pcData, int length);
 
 #endif /* COMMUNICATION_H_ */

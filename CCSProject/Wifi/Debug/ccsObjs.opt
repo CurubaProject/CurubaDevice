@@ -1,0 +1,1 @@
+"./cc3000.obj" "../lib/CC3000 Board.lib" "../lib/CC3000 Spi.lib" "../lib/CC3000HostDriver.lib" 

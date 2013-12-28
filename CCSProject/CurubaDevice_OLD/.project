@@ -39,16 +39,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/main.c</locationURI>
 		</link>
 		<link>
-			<name>Communication/cc3000.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/cc3000.c</locationURI>
-		</link>
-		<link>
-			<name>Communication/cc3000.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/cc3000.h</locationURI>
-		</link>
-		<link>
 			<name>Communication/communication.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/communication.c</locationURI>

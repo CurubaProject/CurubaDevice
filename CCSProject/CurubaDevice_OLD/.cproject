@@ -44,6 +44,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.INCLUDE_PATH.2011231835" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${CCS_BASE_ROOT}/msp430/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../Source/CC3000 Board&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../Source/Wifi&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../Source/CC3000 Spi&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../Source/CC3000HostDriver&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>

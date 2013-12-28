@@ -38,9 +38,6 @@
 #include "spi.h"
 #include "wlan.h"
 
-#include "commsManager.h"
-#include "commun.h"
-
 #define MAXKEYSIZE 32
 #define MAXSSIDNAMESIZE 16
 
@@ -251,6 +248,19 @@ void clearPingReceived(void)
 
 int connectServer(void)
 {
+	// the family is always AF_INET
+	tSocketAddr.sa_family = AF_INET;
+
+	// the destination port
+	tSocketAddr.sa_data[0] = DSServerPort[0];
+	tSocketAddr.sa_data[1] = DSServerPort[1];
+
+	// the destination IP address
+	tSocketAddr.sa_data[2] = DSServerIP[0];
+	tSocketAddr.sa_data[3] = DSServerIP[1];
+	tSocketAddr.sa_data[4] = DSServerIP[2];
+	tSocketAddr.sa_data[5] = DSServerIP[3];
+
 	return (connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr)));
 }
 
@@ -277,18 +287,11 @@ void initSocket(void)
 		__delay_cycles(10000);
 	}
 
-	// the family is always AF_INET
-	tSocketAddr.sa_family = AF_INET;
+	updateAsyncEvent();
+	updateAsyncEvent();
+	updateAsyncEvent();
 
-	// the destination port
-	tSocketAddr.sa_data[0] = DSServerPort[0];
-	tSocketAddr.sa_data[1] = DSServerPort[1];
-
-	// the destination IP address
-	tSocketAddr.sa_data[2] = DSServerIP[0];
-	tSocketAddr.sa_data[3] = DSServerIP[1];
-	tSocketAddr.sa_data[4] = DSServerIP[2];
-	tSocketAddr.sa_data[5] = DSServerIP[3];
+	__delay_cycles(1000000);
 }
 
 void clearSocketClosedflag(void)

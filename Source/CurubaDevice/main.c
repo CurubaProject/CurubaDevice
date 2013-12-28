@@ -29,26 +29,8 @@
 // ------------------------------------------------------------------------------------------------
 #include <assert.h>
 
-#include "wlan.h"
-
 #ifndef NULL
 #define NULL (void*)0
-#endif
-
-#define JO_DEBUG
-
-#if defined(AJC_DEBUG)
-	unsigned long _SSIDType = WLAN_SEC_WPA2;
-	unsigned char _SSIDKey[] = "domumservuskey00";
-	char _SSIDName[] = "DSRouter";
-#elif defined(MST_DEBUG)
-	unsigned long _SSIDType = WLAN_SEC_WPA2;
-	unsigned char _SSIDKey[] = "domumservus";
-	char _SSIDName[] = "domumrff";
-#elif defined(JO_DEBUG)
-	unsigned long _SSIDType = WLAN_SEC_WPA2;
-	unsigned char _SSIDKey[] = "testtest";
-	char _SSIDName[] = "MAIN";
 #endif
 
 #include "deviceControl.h"
@@ -60,17 +42,12 @@
 
 #include "communication.h"
 #include "network.h"
-#include "cc3000.h"
 
-extern unsigned char requestBuffer[];
-
-void main(void) {
-	configCC3000(_SSIDName, _SSIDKey, _SSIDType);
-
+void main(void)
+{
 	comms* receivePop;
 	comms* transmitPop;
 
-	initDriver();
 	initNetwork();
 
 	//Type of module
@@ -83,7 +60,7 @@ void main(void) {
 		if( connectNetwork() )
 		{
 			// Receive payload from buffer
-			receivePayLoad(requestBuffer);
+			receivePayLoad();
 
 			// Do reception of payload
 			if ( popReceive(&receivePop) )

@@ -36,19 +36,43 @@
 #include "deviceInfoState.h"
 #include "heartbeat.h"
 
+#include "wlan.h"
+
+#define JO_DEBUG
+
+#if defined(AJC_DEBUG)
+	unsigned long _SSIDType = WLAN_SEC_WPA2;
+	unsigned char _SSIDKey[] = "domumservuskey00";
+	char _SSIDName[] = "DSRouter";
+#elif defined(MST_DEBUG)
+	unsigned long _SSIDType = WLAN_SEC_WPA2;
+	unsigned char _SSIDKey[] = "domumservus";
+	char _SSIDName[] = "domumrff";
+#elif defined(JO_DEBUG)
+	unsigned long _SSIDType = WLAN_SEC_WPA2;
+	unsigned char _SSIDKey[] = "testtest";
+	char _SSIDName[] = "MAIN";
+#endif
+
 /* Private Function */
 unsigned long getRefTime(void);
+
+void callback_wificonnected();
+void callback_wifiConnectedContinue();
 /* End Private Function */
 
 volatile unsigned long  ulHbTimeref,	//use to asset heartbeat response delay
 						ulIrTimeref;	//use to asset inforesquest delay time
-volatile short  sSocketConnected,
-                sNetworkConnectAttempt;
+volatile short  sSocketConnected;
 
 void initNetwork(void)
 {
+	configCC3000(_SSIDName, _SSIDKey, _SSIDType);
+
+	getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
+
+	initDriver();
     sSocketConnected = 0;
-    sNetworkConnectAttempt = 0;
 }
 
 int connectNetwork(void)
@@ -59,107 +83,57 @@ int connectNetwork(void)
 
     updateAsyncEvent();
 
-    if(sNetworkConnectAttempt < 5) //After 5  attempt, stopped trying to connect
-    {
-        sNetworkConnectAttempt++;
-        if (wifiConnected() == 0)
-        {
-        	iReturnConnect = connectWifi();
+	if (wifiConnected() == 0)
+	{
+		iReturnConnect = connectWifi();
 
-            ulReftime = getRefTime(); //Wait until connected to Network
-            while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getRefTime(), ulReftime) < DELAY5SEC) //Wait 5 sec
-            {
-            	updateAsyncEvent();
-            }
-            if(wifiConnected() == 1)
-            {
-                const unsigned long aucDHCP = 14400;
-                const unsigned long aucARP = 3600;
-                const unsigned long aucKeepalive = 10;
-                const unsigned long aucInactivity = 0;
+		ulReftime = getRefTime(); //Wait until connected to Network
+		while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getRefTime(), ulReftime) < DELAY5SEC) //Wait 5 sec
+		{
+			updateAsyncEvent();
+		}
+		if(wifiConnected() == 1)
+		{
+			callback_wificonnected();
+		}
+	}
 
-                configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
-                updateIPinfo(); //Get My IP address & MAC address
-            }
-        }
-        if(wifiConnected() == 1)
-        {
-            if(openSocket())
-            {
-                iReturnValue = 1;
-                sNetworkConnectAttempt = 0;
-                getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
-                static short sflag = 0;
-                static short sinfoflag = 0;
-                if(getHeartbeatSentFlag())	//Heartbeat sent - Server must response back
-                {
-                	if(sflag == 0)
-                	{
-                		sflag = 1;
-                		ulHbTimeref = getRefTime(); //Get time ref heartbeart sent
-                	}
-                	else
-                	{
-                		if(getTimeElapsed(getRefTime(), ulHbTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
-                		{
-                			callCloseSocket();
-                			sSocketConnected = 0; 	//close socket and retry to reconnect
-                			clearHeartbeatSentFlag();
-                			sflag = 0;
-                		}
-                	}
-                }
-                else
-                {
-                	sflag = 0;
+	if(wifiConnected() == 1)
+	{
+		iReturnValue = 1;
+		callback_wifiConnectedContinue();
+	}
 
-                }
-
-                if(getDeviceInfoState()->infoResquestReceived == 0)
-				{
-					if(sinfoflag == 0)
-					{
-						sinfoflag = 1;
-						ulIrTimeref = getRefTime(); //Get time ref heartbeart sent
-					}
-					else
-					{
-						if(getTimeElapsed(getRefTime(), ulIrTimeref) > DELAY2SEC) // Waif 2 sec for heart beat response
-						{
-							callCloseSocket();
-							sSocketConnected = 0; 	//close socket and retry to reconnect
-							getDeviceInfoState()->infoResquestReceived = 0;
-							sinfoflag = 0;
-						}
-					}
-				}
-                else
-                {
-                	sinfoflag = 0;
-                }
-            }
-            else
-            {
-            	getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
-            	getDeviceInfoState()->infoResquestReceived = 0;
-            }
-        }
-    }
-    else //Wait Before reconnecting to Wifi Network or Socket server
-    {
-        //Reset Variable to try to reconnect
-        sNetworkConnectAttempt = 0;
-        getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
-        iReturnValue = 0;
-    }
     return (iReturnValue);
+}
+
+void callback_wificonnected()
+{
+	const unsigned long aucDHCP = 14400;
+	const unsigned long aucARP = 3600;
+	const unsigned long aucKeepalive = 10;
+	const unsigned long aucInactivity = 0;
+
+	configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
+	updateIPinfo(); //Get My IP address & MAC address
+
+	callback_wifiConnectedContinue();
+}
+
+void callback_wifiConnectedContinue()
+{
+	if(openSocket())
+	{
+		getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
+	}
+	else
+	{
+		getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
+	}
 }
 
 int openSocket(void)
 {
-    unsigned long ulReftime;
-    unsigned long ulTime = 0;
-    int iReturnping = 0;
     int iReturnValue = 1; //Default fucntion return value
 
     if(socketclosed() == 1)
@@ -177,35 +151,17 @@ int openSocket(void)
     	initSocket();
         sSocketConnected = 0;
 
-        clearPingReceived();
-        iReturnping = pingServer(PING_ATTEMPT, PING_SIZE, PING_TIMEOUT);
-        ulReftime = getRefTime();
-        //Check Server IP address
-        while(iReturnping == 0 && pingReceived() == 0 && ulTime < DELAY5SEC) //Stop after 5 sec of finding the Server
-        {
-        	updateAsyncEvent();
-            ulTime = getTimeElapsed(getRefTime(), ulReftime);
-        }
-        clearPingReceived();
-        if(iReturnping != 0 || ulTime >= DELAY5SEC) //Problem finding server IP
-        {
-            iReturnValue = 0;
-        }
-        else //Connect to Server
-        {
-        	 int iReturnConnect = connectServer();
-			__delay_cycles(100000); //TODO remove??__delay_cycles(12500000);
+		int iReturnConnect = connectServer();
 
-			if (iReturnConnect == 0)
-			{
-				iReturnValue = 1;
-				sSocketConnected = 1;
-			}
-			else //Server present but not listening
-			{
-				iReturnValue = 0;
-			}
-        }
+		if (iReturnConnect == 0)
+		{
+			iReturnValue = 1;
+			sSocketConnected = 1;
+		}
+		else //Server present but not listening
+		{
+			iReturnValue = 0;
+		}
     }
 
     return (iReturnValue);
