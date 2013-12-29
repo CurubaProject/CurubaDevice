@@ -34,15 +34,24 @@
 #define EVENT_WIFI_DISCONNECTED 0x0002
 #define EVENT_WIFI_CONNECTION_TIMEOUT 0x0004
 
-#define EVENT_SOCKET_CONNECTED 0x1001
-#define EVENT_SOCKET_DISCONNECTED 0x1002
-#define EVENT_SOCKET_CONNECTION_TIMEOUT 0x1004
+#define EVENT_SOCKET_CONNECTED 0x0008
+#define EVENT_SOCKET_DISCONNECTED 0x0010
+#define EVENT_SOCKET_CONNECTION_TIMEOUT 0x0020
 
-#define EVENT_HEARTBEAT 0x2001
-#define EVENT_HEARTBEAT_TIMEOUT 0x2002
+#define EVENT_HEARTBEAT_RECEIVED 0x0040
+#define EVENT_HEARTBEAT_READYTOSEND 0x0080
+#define EVENT_HEARTBEAT_TIMEOUT 0x0100
 
-#define EVENT_PING_RESPONSE 0x3001
-#define EVENT_PING_TIMEOUT 0x3002
+#define EVENT_PING_RESPONSE 0x0200
+#define EVENT_PING_TIMEOUT 0x0400
+
+#define EVENT_INFOREQUEST_RECEIVED 0x0800
+#define EVENT_INFOREQUEST_TIMEOUT 0x1000
+
+#define EVENT_PACKETS_RECEIVED 0x2000
+
+#define EVENT_PAYLOAD_RECEIVED 0x4000
+#define EVENT_PAYLOAD_TOSEND 0x8000
 
 /* OVERWRITABLE FUNCTION*/
 void do_event_wifi_connected();
@@ -50,9 +59,19 @@ void do_event_wifi_disconnected();
 
 void do_event_socket_connected();
 void do_event_socket_disconnected();
+
+void do_event_heartbeat_received();
+void do_event_hearbeat_readyToSend();
+
+void do_event_inforequest_received();
+
+void do_event_packetsReceived();
+
+void do_event_payloadReceived();
+void do_event_payloadToSend();
 /**/
 
-void notify(int newEvent);
+void notify(unsigned int newEvent);
 void doEvent();
 
 #endif

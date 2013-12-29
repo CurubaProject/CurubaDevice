@@ -38,16 +38,23 @@
 #include "board.h"
 #include <msp430.h>
 
-void initApp(TYPEDEVICE** device)
+#include "typeDevice.h"
+#include "communication.h"
+
+void initApp()
 {
+	//Type of module
+	TYPEDEVICE* device = createTypeDevice(readAppSwitch());
+
 	initADC10();
 	initTIMER0();
-	initTIMER1(*device);
-	initTIMER2(*device);
+	initTIMER1(device);
+	initTIMER2(device);
 	initTIMERB0();
 
-	initInterupt(device);
-	(*device)->initDevice();
+	initInterupt(&device);
+	initCommunication(&device);
+	device->initDevice();
 
 	__bis_SR_register(GIE);
 }

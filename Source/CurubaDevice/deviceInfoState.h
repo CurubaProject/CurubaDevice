@@ -38,15 +38,7 @@ typedef struct deviceInfoState
 
 	unsigned long timeCounter;
 
-	short socketConnected,
-		  networkConnectionAttempts,
-		  ledState;
-
-	unsigned short infoResquestReceived,
-				   ulCC3000Connected,
-				   ulCC3000DHCP,
-	               ulCC3000SocketClosed,
-	               ulPingReceived;
+	short ledState;
 
 } DeviceInfoState;
 

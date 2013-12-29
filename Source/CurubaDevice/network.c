@@ -28,6 +28,7 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 #include "network.h"
+#include "communication.h"
 
 #include "cc3000.h"
 
@@ -57,16 +58,11 @@
 #endif
 
 /* Private Function */
-unsigned long getRefTime(void);
 
 void connectToWifi();
+void connectToServer();
 
-void callback_wificonnected();
-void callback_wifiConnectedContinue();
 /* End Private Function */
-
-volatile unsigned long  ulHbTimeref,	//use to asset heartbeat response delay
-						ulIrTimeref;	//use to asset inforesquest delay time
 
 
 /* EVENT FUNCTION */
@@ -80,7 +76,7 @@ void do_event_wifi_connected()
 	configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
 	updateIPinfo(); //Get My IP address & MAC address
 
-	callback_wifiConnectedContinue();
+	connectToServer();
 }
 
 void do_event_wifi_disconnected()
@@ -90,7 +86,7 @@ void do_event_wifi_disconnected()
 
 void do_event_socket_connected()
 {
-
+	getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
 }
 
 void do_event_socket_disconnected()
@@ -98,6 +94,22 @@ void do_event_socket_disconnected()
 	callCloseSocket();
 	clearSocketClosedflag();
 }
+
+void do_event_heartbeat_received()
+{
+	//TODO CLEAR TIMEOUT
+}
+
+void do_event_inforequest_received()
+{
+	//TODO CLEAR TIMEOUT
+}
+
+void do_event_packetsReceived()
+{
+	payloadReceived();
+}
+
 /* END EVENT FUNCTION */
 
 void initNetwork(void)
@@ -111,12 +123,14 @@ void initNetwork(void)
 
 void connectToServer()
 {
+	TimerStop(TIMER_1);
+	initSocket();
+
 	int iReturnConnect = connectServer();
 
 	if (iReturnConnect == 0)
 	{
 		notify(EVENT_SOCKET_CONNECTED);
-		doEvent();
 	}
 }
 
@@ -127,8 +141,8 @@ void connectToWifi()
 
 	iReturnConnect = connectWifi();
 
-	ulReftime = getRefTime(); //Wait until connected to Network
-	while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getRefTime(), ulReftime) < DELAY5SEC) //Wait 5 sec
+	ulReftime = getDeviceInfoState()->timeCounter;
+	while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getDeviceInfoState()->timeCounter, ulReftime) < DELAY5SEC) //Wait 5 sec
 	{
 		updateAsyncEvent();
 	}
@@ -136,11 +150,10 @@ void connectToWifi()
 	if(wifiConnected() == 1)
 	{
 		notify(EVENT_WIFI_CONNECTED);
-		doEvent();
 	}
 }
 
-int connectNetwork(void)
+void checkNetwork()
 {
     updateAsyncEvent();
 
@@ -152,36 +165,10 @@ int connectNetwork(void)
     if(socketclosed() == 1)
     {
 		notify(EVENT_SOCKET_DISCONNECTED);
-		doEvent();
     }
 
-    return (wifiConnected() && !socketclosed());
-}
-
-void callback_wificonnected()
-{
-	const unsigned long aucDHCP = 14400;
-	const unsigned long aucARP = 3600;
-	const unsigned long aucKeepalive = 10;
-	const unsigned long aucInactivity = 0;
-
-	configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
-	updateIPinfo(); //Get My IP address & MAC address
-
-	callback_wifiConnectedContinue();
-}
-
-void callback_wifiConnectedContinue()
-{
-	TimerStop(TIMER_1);
-	setHeartbeatFlag(FALSE);
-	initSocket();
-
-	connectToServer();
-	getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
-}
-
-unsigned long getRefTime(void)
-{
-	return getDeviceInfoState()->timeCounter;
+	if (receivePackets() > 0)
+	{
+		notify(EVENT_PACKETS_RECEIVED);
+	}
 }

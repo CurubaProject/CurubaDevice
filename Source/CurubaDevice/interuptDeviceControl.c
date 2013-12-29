@@ -34,6 +34,7 @@
 #include "heartbeat.h"
 #include "adcBuffer.h"
 #include "deviceInfoState.h"
+#include "eventManager.h"
 
 #include "evnt_handler.h"
 #include "board.h"
@@ -129,7 +130,7 @@ __interrupt void TIMER1_A1_ISR(void)
 		case TA1IV_6:                      // Capture/Compare 6
 			break;
 		case TA1IV_TA1IFG:                 // Timer overflow
-			setHeartbeatFlag(TRUE);
+			notify(EVENT_HEARTBEAT_READYTOSEND);
 			TA1CTL &= ~TAIFG;
 			break;
 		default:

@@ -29,18 +29,6 @@
 // ------------------------------------------------------------------------------------------------
 #include "eventManager.h"
 
-#define EVENT_WIFI_CONNECTION_TIMEOUT 0x0004
-
-#define EVENT_SOCKET_CONNECTED 0x1001
-#define EVENT_SOCKET_DISCONNECTED 0x1002
-#define EVENT_SOCKET_CONNECTION_TIMEOUT 0x1004
-
-#define EVENT_HEARTBEAT 0x2001
-#define EVENT_HEARTBEAT_TIMEOUT 0x2002
-
-#define EVENT_PING_RESPONSE 0x3001
-#define EVENT_PING_TIMEOUT 0x3002
-
 int event = 0x0000;
 
 void doEvent()
@@ -69,9 +57,27 @@ void doEvent()
 		do_event_socket_disconnected();
 	}
 
+	if ( event&EVENT_PACKETS_RECEIVED )
+	{
+		event ^= EVENT_PACKETS_RECEIVED;
+		do_event_packetsReceived();
+	}
+
+	if ( event&EVENT_PAYLOAD_RECEIVED )
+	{
+		event ^= EVENT_PAYLOAD_RECEIVED;
+		do_event_payloadReceived();
+	}
+
+	if ( event&EVENT_PAYLOAD_TOSEND )
+	{
+		event ^= EVENT_PAYLOAD_TOSEND;
+		do_event_payloadToSend();
+	}
+
 }
 
-void notify(int newEvent)
+void notify(unsigned int newEvent)
 {
 	event |= newEvent;
 }

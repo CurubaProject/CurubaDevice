@@ -30,11 +30,5 @@
 #ifndef HEARTBEAT_H
 #define HEARTBEAT_H
 
-unsigned short getHeartbeatFlag(void);
-void setHeartbeatFlag(unsigned short flagvalue);
-
-unsigned short getHeartbeatSentFlag();
-void setHeartbeatSentFlag(unsigned short flagvalue);
-void clearHeartbeatSentFlag();
 
 #endif

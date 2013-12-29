@@ -34,7 +34,9 @@
 #include "commun.h"
 
 #include "deviceInfoState.h"
-#include "heartbeat.h"
+#include "eventManager.h"
+
+#include "commsReceive.h"
 
 #include "string.h"
 
@@ -43,8 +45,45 @@
 
 extern unsigned char requestBuffer[];
 
-void payloadReceived(unsigned char *usBuffer)
+TYPEDEVICE* _device = 0;
+
+/* EVENT FUNCTION */
+void do_event_hearbeat_readyToSend()
 {
+	_device->heartBeat();
+}
+
+void do_event_payloadReceived()
+{
+	comms* receivePop;
+
+	if ( popReceive(&receivePop) )
+	{
+		( receiveComms(receivePop->payloadid) )(_device, receivePop);
+	}
+}
+
+void do_event_payloadToSend()
+{
+	comms* transmitPop;
+
+	if ( popTransmit(&transmitPop) )
+	{
+		payloadToSend(transmitPop);
+	}
+}
+
+/* END EVENT FUNCTION */
+
+void initCommunication(TYPEDEVICE** device)
+{
+	_device = *device;
+}
+
+void payloadReceived()
+{
+	unsigned char *usBuffer = requestBuffer;
+
     char szResponse[PAYLOAD_SIZE];
     memset(szResponse, 0, sizeof(szResponse));
 
@@ -53,7 +92,7 @@ void payloadReceived(unsigned char *usBuffer)
     switch (usBuffer[0])
     {
         case PAYLOAD_INFO_REQUEST :
-        	getDeviceInfoState()->infoResquestReceived = 1;
+        	notify(EVENT_INFOREQUEST_RECEIVED);
             comms_receive.payloadid = PAYLOAD_INFO_REQUEST;
             pushReceive(&comms_receive);
             break;
@@ -70,11 +109,13 @@ void payloadReceived(unsigned char *usBuffer)
             comms_receive.payloadid = PAYLOAD_CONFIG_REQUEST;
             break;
         case PAYLOAD_HEARTBEAT_REQUEST:
-        	setHeartbeatSentFlag(0);
+        	notify(EVENT_HEARTBEAT_RECEIVED);
             break;
         default:
             break;
     }
+
+	notify(EVENT_PAYLOAD_RECEIVED);
 }
 
 void payloadToSend(comms* PtrPop)
@@ -164,7 +205,6 @@ void payloadToSend(comms* PtrPop)
     		szResponse[7] = comms_transmit.state;
     		szResponse[8] = comms_transmit.data;
 
-    		setHeartbeatSentFlag(1);
     		sendPayLoad(szResponse, 9);
     		break;
         default:
@@ -173,16 +213,9 @@ void payloadToSend(comms* PtrPop)
     }
 }
 
-void receivePayLoad()
-{
-	if (receivePackets() > 0)
-	{
-		payloadReceived(requestBuffer);
-	}
-}
-
 void sendPayLoad(char* pcData, int length)
 {
 	sendPackets(pcData, length); // data pointer
 	__delay_cycles(7500000); //Important to make sure All packet sent
 }
+

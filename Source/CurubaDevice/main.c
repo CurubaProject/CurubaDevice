@@ -27,61 +27,22 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include <assert.h>
-
-#ifndef NULL
-#define NULL (void*)0
-#endif
-
 #include "deviceControl.h"
-#include "commsManager.h"
-#include "commsReceive.h"
-#include "typeDevice.h"
-
-#include "heartbeat.h"
-
-#include "communication.h"
 #include "network.h"
+#include "eventManager.h"
 
 void main(void)
 {
-	comms* receivePop;
-	comms* transmitPop;
-
 	initNetwork();
-
-	//Type of module
-	TYPEDEVICE* device = createTypeDevice(readAppSwitch());
-
-	initApp(&device);
+	initApp();
 
 	while (1)
 	{
-		if( connectNetwork() )
-		{
-			// Receive payload from buffer
-			receivePayLoad();
+		checkNetwork();
 
-			// Do reception of payload
-			if ( popReceive(&receivePop) )
-			{
-				assert(receivePop != NULL);
-				( receiveComms(receivePop->payloadid) )(device, receivePop);
-			}
+		//TODO ONLY IF ARRAY IF NOT NULL
+		notify(EVENT_PAYLOAD_TOSEND);
 
-			// Transmit payload to send
-			if ( popTransmit(&transmitPop) )
-			{
-				assert(transmitPop != NULL);
-				payloadToSend(transmitPop);
-			}
-
-			// Do heartbeat
-			if( getHeartbeatFlag() )
-			{
-				setHeartbeatFlag(0);
-				device->heartBeat();
-			}
-		}
+		doEvent();
 	}
 }

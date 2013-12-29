@@ -38,8 +38,7 @@
 #define DELAY5SEC						(40)
 #define DELAY2SEC						(20)
 
-void initNetwork(void);
-int connectNetwork(void);
-int openSocket(void);
+void initNetwork();
+void checkNetwork();
 
 #endif /* NETWORK_H_ */

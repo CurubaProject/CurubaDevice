@@ -49,16 +49,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/communication.h</locationURI>
 		</link>
 		<link>
-			<name>Communication/heartbeat.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/heartbeat.c</locationURI>
-		</link>
-		<link>
-			<name>Communication/heartbeat.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/heartbeat.h</locationURI>
-		</link>
-		<link>
 			<name>Communication/network.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/network.c</locationURI>

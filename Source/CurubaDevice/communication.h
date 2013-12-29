@@ -32,10 +32,11 @@
 #define COMMUNICATION_H_
 
 #include "commsManager.h"
+#include "typeDevice.h"
 
-void payloadReceived(unsigned char *usBuffer);
+void initCommunication(TYPEDEVICE** device);
+void payloadReceived();
 void payloadToSend(comms* PtrPop);
-void receivePayLoad();
 void sendPayLoad(char* pcData, int length);
 
 #endif /* COMMUNICATION_H_ */
