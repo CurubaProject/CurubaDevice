@@ -47,6 +47,9 @@
 /* OVERWRITABLE FUNCTION*/
 void do_event_wifi_connected();
 void do_event_wifi_disconnected();
+
+void do_event_socket_connected();
+void do_event_socket_disconnected();
 /**/
 
 void notify(int newEvent);

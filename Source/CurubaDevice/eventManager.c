@@ -53,8 +53,22 @@ void doEvent()
 
 	if( event&EVENT_WIFI_DISCONNECTED )
 	{
-
+		event ^= EVENT_WIFI_DISCONNECTED;
+		do_event_wifi_disconnected();
 	}
+
+	if ( event&EVENT_SOCKET_CONNECTED )
+	{
+		event ^= EVENT_SOCKET_CONNECTED;
+		do_event_socket_connected();
+	}
+
+	if ( event&EVENT_SOCKET_DISCONNECTED )
+	{
+		event ^= EVENT_SOCKET_DISCONNECTED;
+		do_event_socket_disconnected();
+	}
+
 }
 
 void notify(int newEvent)

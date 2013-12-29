@@ -59,13 +59,14 @@
 /* Private Function */
 unsigned long getRefTime(void);
 
+void connectToWifi();
+
 void callback_wificonnected();
 void callback_wifiConnectedContinue();
 /* End Private Function */
 
 volatile unsigned long  ulHbTimeref,	//use to asset heartbeat response delay
 						ulIrTimeref;	//use to asset inforesquest delay time
-volatile short  sSocketConnected;
 
 
 /* EVENT FUNCTION */
@@ -81,6 +82,22 @@ void do_event_wifi_connected()
 
 	callback_wifiConnectedContinue();
 }
+
+void do_event_wifi_disconnected()
+{
+	connectToWifi();
+}
+
+void do_event_socket_connected()
+{
+
+}
+
+void do_event_socket_disconnected()
+{
+	callCloseSocket();
+	clearSocketClosedflag();
+}
 /* END EVENT FUNCTION */
 
 void initNetwork(void)
@@ -90,41 +107,55 @@ void initNetwork(void)
 	getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
 
 	initDriver();
-    sSocketConnected = 0;
 }
 
-int connectNetwork(void)
+void connectToServer()
+{
+	int iReturnConnect = connectServer();
+
+	if (iReturnConnect == 0)
+	{
+		notify(EVENT_SOCKET_CONNECTED);
+		doEvent();
+	}
+}
+
+void connectToWifi()
 {
     int iReturnConnect;
-    int iReturnValue = 0; //Default return value if problem connecting to Network or Server
     unsigned long ulReftime;
 
-    updateAsyncEvent();
+	iReturnConnect = connectWifi();
 
-	if (wifiConnected() == 0)
+	ulReftime = getRefTime(); //Wait until connected to Network
+	while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getRefTime(), ulReftime) < DELAY5SEC) //Wait 5 sec
 	{
-		iReturnConnect = connectWifi();
-
-		ulReftime = getRefTime(); //Wait until connected to Network
-		while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getRefTime(), ulReftime) < DELAY5SEC) //Wait 5 sec
-		{
-			updateAsyncEvent();
-		}
-
-		if(wifiConnected() == 1)
-		{
-			notify(EVENT_WIFI_CONNECTED);
-			doEvent();
-		}
+		updateAsyncEvent();
 	}
 
 	if(wifiConnected() == 1)
 	{
-		iReturnValue = 1;
-		callback_wifiConnectedContinue();
+		notify(EVENT_WIFI_CONNECTED);
+		doEvent();
+	}
+}
+
+int connectNetwork(void)
+{
+    updateAsyncEvent();
+
+	if (wifiConnected() == 0)
+	{
+		connectToWifi();
 	}
 
-    return (iReturnValue);
+    if(socketclosed() == 1)
+    {
+		notify(EVENT_SOCKET_DISCONNECTED);
+		doEvent();
+    }
+
+    return (wifiConnected() && !socketclosed());
 }
 
 void callback_wificonnected()
@@ -142,49 +173,12 @@ void callback_wificonnected()
 
 void callback_wifiConnectedContinue()
 {
-	if(openSocket())
-	{
-		getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
-	}
-	else
-	{
-		getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
-	}
-}
+	TimerStop(TIMER_1);
+	setHeartbeatFlag(FALSE);
+	initSocket();
 
-int openSocket(void)
-{
-    int iReturnValue = 1; //Default fucntion return value
-
-    if(socketclosed() == 1)
-    {
-    	callCloseSocket();
-    	clearSocketClosedflag();
-    	sSocketConnected  = 0;
-    }
-
-    if (sSocketConnected == 0)
-    {
-    	getDeviceInfoState()->infoResquestReceived = 0;
-    	TimerStop(TIMER_1);
-    	setHeartbeatFlag(FALSE);
-    	initSocket();
-        sSocketConnected = 0;
-
-		int iReturnConnect = connectServer();
-
-		if (iReturnConnect == 0)
-		{
-			iReturnValue = 1;
-			sSocketConnected = 1;
-		}
-		else //Server present but not listening
-		{
-			iReturnValue = 0;
-		}
-    }
-
-    return (iReturnValue);
+	connectToServer();
+	getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
 }
 
 unsigned long getRefTime(void)
