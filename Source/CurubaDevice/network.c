@@ -36,6 +36,8 @@
 #include "deviceInfoState.h"
 #include "heartbeat.h"
 
+#include "eventManager.h"
+
 #include "wlan.h"
 
 #define JO_DEBUG
@@ -65,6 +67,22 @@ volatile unsigned long  ulHbTimeref,	//use to asset heartbeat response delay
 						ulIrTimeref;	//use to asset inforesquest delay time
 volatile short  sSocketConnected;
 
+
+/* EVENT FUNCTION */
+void do_event_wifi_connected()
+{
+	const unsigned long aucDHCP = 14400;
+	const unsigned long aucARP = 3600;
+	const unsigned long aucKeepalive = 10;
+	const unsigned long aucInactivity = 0;
+
+	configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
+	updateIPinfo(); //Get My IP address & MAC address
+
+	callback_wifiConnectedContinue();
+}
+/* END EVENT FUNCTION */
+
 void initNetwork(void)
 {
 	configCC3000(_SSIDName, _SSIDKey, _SSIDType);
@@ -92,9 +110,11 @@ int connectNetwork(void)
 		{
 			updateAsyncEvent();
 		}
+
 		if(wifiConnected() == 1)
 		{
-			callback_wificonnected();
+			notify(EVENT_WIFI_CONNECTED);
+			doEvent();
 		}
 	}
 
