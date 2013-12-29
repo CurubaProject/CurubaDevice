@@ -31,6 +31,8 @@
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
+#include "wifiCommun.h"
+
 #define PING_ATTEMPT                    (5)
 #define PING_SIZE                       (40)
 #define PING_TIMEOUT                    (20)
@@ -38,7 +40,11 @@
 #define DELAY5SEC						(40)
 #define DELAY2SEC						(20)
 
+#define REQ_BUFFER_SIZE 100
+
 void initNetwork();
 void checkNetwork();
+void getLanConfig(unsigned char* serverIP,unsigned char* serverPort, LanConfig** config);
+void sendPayLoad(char* pcData, int length);
 
 #endif /* NETWORK_H_ */

@@ -28,22 +28,18 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 #include "communication.h"
-#include "cc3000.h"
+#include "network.h"
+#include "wifiCommun.h"
+
+#include "commsReceive.h"
 
 #include "commsManager.h"
 #include "commun.h"
-
-#include "deviceInfoState.h"
 #include "eventManager.h"
-
-#include "commsReceive.h"
 
 #include "string.h"
 
 #define PAYLOAD_SIZE (25)
-#define SIZE (sizeof(char) * 25)
-
-extern unsigned char requestBuffer[];
 
 TYPEDEVICE* _device = 0;
 
@@ -80,16 +76,14 @@ void initCommunication(TYPEDEVICE** device)
 	_device = *device;
 }
 
-void payloadReceived()
+void payloadReceived(unsigned char* requestBuffer)
 {
-	unsigned char *usBuffer = requestBuffer;
-
     char szResponse[PAYLOAD_SIZE];
     memset(szResponse, 0, sizeof(szResponse));
 
     comms comms_receive;
 
-    switch (usBuffer[0])
+    switch (requestBuffer[0])
     {
         case PAYLOAD_INFO_REQUEST :
         	notify(EVENT_INFOREQUEST_RECEIVED);
@@ -98,10 +92,10 @@ void payloadReceived()
             break;
         case PAYLOAD_CONTROL_REQUEST :
             comms_receive.payloadid = PAYLOAD_CONTROL_REQUEST;
-            comms_receive.device = usBuffer[1];
-            comms_receive.status = usBuffer[2];
-            comms_receive.state = usBuffer[3];
-            comms_receive.data = usBuffer[4];
+            comms_receive.device = requestBuffer[1];
+            comms_receive.status = requestBuffer[2];
+            comms_receive.state = requestBuffer[3];
+            comms_receive.data = requestBuffer[4];
 
             pushReceive(&comms_receive);
             break;
@@ -120,23 +114,23 @@ void payloadReceived()
 
 void payloadToSend(comms* PtrPop)
 {
-	tNetappIpconfigRetArgs* CC3000config;
-	unsigned char* serverIP;
-	unsigned char* serverPort;
-	getConfigInfo(serverIP, serverPort, &CC3000config);
+    comms comms_transmit = *PtrPop;
+
+	LanConfig* config;
+	unsigned char* serverIP = 0;
+	unsigned char* serverPort = 0;
+	getLanConfig(serverIP, serverPort, &config);
 
     char szResponse[PAYLOAD_SIZE];
     memset(szResponse, 0, sizeof(szResponse));
-
-    comms comms_transmit = *PtrPop; // TODO USEFUL?
 
     switch (comms_transmit.payloadid)
     {
         case PAYLOAD_INFO_RESPONSE :
             szResponse[0] = PAYLOAD_INFO_RESPONSE;
-            szResponse[1] = CC3000config->uaMacAddr[2];
-            szResponse[2] = CC3000config->uaMacAddr[1];
-            szResponse[3] = CC3000config->uaMacAddr[0];
+            szResponse[1] = config->uaMacAddr[2];
+            szResponse[2] = config->uaMacAddr[1];
+            szResponse[3] = config->uaMacAddr[0];
             szResponse[4] = comms_transmit.type;
             szResponse[5] = comms_transmit.device;
             szResponse[6] = comms_transmit.status;
@@ -147,9 +141,9 @@ void payloadToSend(comms* PtrPop)
             break;
         case PAYLOAD_CONTROL_RESPONSE :
             szResponse[0] = PAYLOAD_CONTROL_RESPONSE;
-            szResponse[1] = CC3000config->uaMacAddr[2];
-            szResponse[2] = CC3000config->uaMacAddr[1];
-            szResponse[3] = CC3000config->uaMacAddr[0];
+            szResponse[1] = config->uaMacAddr[2];
+            szResponse[2] = config->uaMacAddr[1];
+            szResponse[3] = config->uaMacAddr[0];
             szResponse[4] = comms_transmit.type;
             szResponse[5] = comms_transmit.device;
             szResponse[6] = comms_transmit.status;
@@ -162,27 +156,27 @@ void payloadToSend(comms* PtrPop)
 
             szResponse[0] = PAYLOAD_CONFIG_RESPONSE;
 
-            szResponse[1] = CC3000config->uaMacAddr[5];
-            szResponse[2] = CC3000config->uaMacAddr[4];
-            szResponse[3] = CC3000config->uaMacAddr[3];
-            szResponse[4] = CC3000config->uaMacAddr[2];
-            szResponse[5] = CC3000config->uaMacAddr[1];
-            szResponse[6] = CC3000config->uaMacAddr[0];
+            szResponse[1] = config->uaMacAddr[5];
+            szResponse[2] = config->uaMacAddr[4];
+            szResponse[3] = config->uaMacAddr[3];
+            szResponse[4] = config->uaMacAddr[2];
+            szResponse[5] = config->uaMacAddr[1];
+            szResponse[6] = config->uaMacAddr[0];
 
-            szResponse[7] = CC3000config->aucIP[3];
-            szResponse[8] = CC3000config->aucIP[2];
-            szResponse[9] = CC3000config->aucIP[1];
-            szResponse[10] = CC3000config->aucIP[0];
+            szResponse[7] = config->aucIP[3];
+            szResponse[8] = config->aucIP[2];
+            szResponse[9] = config->aucIP[1];
+            szResponse[10] = config->aucIP[0];
 
-            szResponse[11] = CC3000config->aucSubnetMask[3];
-            szResponse[12] = CC3000config->aucSubnetMask[2];
-            szResponse[13] = CC3000config->aucSubnetMask[1];
-            szResponse[14] = CC3000config->aucSubnetMask[0];
+            szResponse[11] = config->aucSubnetMask[3];
+            szResponse[12] = config->aucSubnetMask[2];
+            szResponse[13] = config->aucSubnetMask[1];
+            szResponse[14] = config->aucSubnetMask[0];
 
-            szResponse[15] = CC3000config->aucDefaultGateway[3];
-            szResponse[16] = CC3000config->aucDefaultGateway[2];
-            szResponse[17] = CC3000config->aucDefaultGateway[1];
-            szResponse[18] = CC3000config->aucDefaultGateway[0];
+            szResponse[15] = config->aucDefaultGateway[3];
+            szResponse[16] = config->aucDefaultGateway[2];
+            szResponse[17] = config->aucDefaultGateway[1];
+            szResponse[18] = config->aucDefaultGateway[0];
 
             szResponse[19] = serverIP[0];
             szResponse[20] = serverIP[1];
@@ -196,9 +190,9 @@ void payloadToSend(comms* PtrPop)
             break;
     	case PAYLOAD_HEARTBEAT_RESPONSE :
     		szResponse[0] = PAYLOAD_HEARTBEAT_RESPONSE;
-    		szResponse[1] = CC3000config->uaMacAddr[2];
-    		szResponse[2] = CC3000config->uaMacAddr[1];
-    		szResponse[3] = CC3000config->uaMacAddr[0];
+    		szResponse[1] = config->uaMacAddr[2];
+    		szResponse[2] = config->uaMacAddr[1];
+    		szResponse[3] = config->uaMacAddr[0];
     		szResponse[4] = comms_transmit.type;
     		szResponse[5] = comms_transmit.device;
     		szResponse[6] = comms_transmit.status;
@@ -211,11 +205,5 @@ void payloadToSend(comms* PtrPop)
         	//TODO SOMETHING
             break;
     }
-}
-
-void sendPayLoad(char* pcData, int length)
-{
-	sendPackets(pcData, length); // data pointer
-	__delay_cycles(7500000); //Important to make sure All packet sent
 }
 

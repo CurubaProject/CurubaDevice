@@ -35,8 +35,7 @@
 #include "typeDevice.h"
 
 void initCommunication(TYPEDEVICE** device);
-void payloadReceived();
+void payloadReceived(unsigned char* requestBuffer);
 void payloadToSend(comms* PtrPop);
-void sendPayLoad(char* pcData, int length);
 
 #endif /* COMMUNICATION_H_ */

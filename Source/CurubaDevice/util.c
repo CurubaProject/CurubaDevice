@@ -30,9 +30,6 @@
 #include "util.h"
 #include "commun.h"
 
-#include "deviceControl.h"
-
-#include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 
@@ -74,7 +71,7 @@ void TimerStop(int timer_number)
 			TA2CTL &= TIMER_OFF;
 			break;
 		case TIMERB_0:
-			TB0CTL &= 0xFFCF; //Halt timer
+			TB0CTL &= TIMER_OFF; //Halt timer
 			TB0R = 0;
 			break;
 		default:
@@ -109,7 +106,6 @@ void ADCRead(int ADC_number)
 	}
 }
 
-// TODO ADD NOLOAD RETURN
 int IsStateChange(int State, int StateComms)
 {
 	return ((State == STATE_ON && StateComms == STATE_ON) ||

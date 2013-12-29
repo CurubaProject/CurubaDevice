@@ -36,7 +36,6 @@
 #include "deviceInfoState.h"
 #include "eventManager.h"
 
-#include "evnt_handler.h"
 #include "board.h"
 #include <msp430.h>
 

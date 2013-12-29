@@ -31,35 +31,36 @@
 #ifndef CC3000_H
 #define CC3000_H
 
-#include "netapp.h"
+#include "wifiCommun.h"
 
 #define DISABLE                                     (0)
 #define ENABLE                                      (1)
 #define NETAPP_IPCONFIG_MAC_OFFSET              	(20)
 
-void initCC3000(void);
 void initDriver(void);
+void initCC3000(void);
 void initSocket();
 
-void callCloseSocket(void);
-void clearPingReceived(void);
-void clearSocketClosedflag(void);
 void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive,unsigned long aucInactivity);
-void configCC3000(char *ssidname, unsigned char* ssidkey, unsigned short ssidtype);
-int connectWifi(void);
-int connectServer(void);
-void getConfigInfo (unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config);
-unsigned long pingReceived(void);
-int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);
+void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length);
+
+int receivePackets(unsigned char* requestBuffer);
 void sendPackets(char* pcData, int length);
-int receivePackets(void);
+
+int connectServer(unsigned char* serverIP, unsigned char* serverPort);
+int connectWifi(char* SSIDName, unsigned char* SSIDKey, unsigned short SSIDType);
+int pingServer(unsigned char* serverIP, unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);
+
+void updateIPinfo(LanConfig* lanconfig);
+void updateAsyncEvent(void);
+void callCloseSocket(void);
+
+unsigned long wifiConnected(void);
+unsigned long pingReceived(void);
+unsigned long socketclosed(void);
+
 char *sendDriverPatch(unsigned long *Length);
 char *sendWLFWPatch(unsigned long *Length);
 char *sendBootLoaderPatch(unsigned long *Length);
-unsigned long socketclosed(void);
-void updateAsyncEvent(void);
-void updateIPinfo(void);
-void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length);
-unsigned long wifiConnected(void);
 
 #endif /* CC3000_H */

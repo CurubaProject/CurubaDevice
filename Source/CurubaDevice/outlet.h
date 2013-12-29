@@ -35,8 +35,7 @@
 void initDevice_outlet();
 void initListComms_outlet();
 void heartBeat_outlet();
-void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop);
+void controlCommsReceive_outlet(TYPEDEVICE* device, comms* ReceivePop);
 void changeIO_outlet(int deviceNumber, int state);
 void infoCommsReceive_outlet();
 void initTIMER1_outlet();

@@ -89,36 +89,18 @@ void heartBeat_outlet()
 	pushTransmit(&payload);
 }
 
-void controlCommsReceive_outlet(TYPEDEVICE* device,
-								 comms* ReceivePop)
+void controlCommsReceive_outlet(TYPEDEVICE* device, comms* ReceivePop)
 {
-	//TODO REMOVE IF AND PASS ReceivePop->device as DEVICE NUMBER
-	if (ReceivePop->device == DEVICE_1)
-	{
-		comms payload;
+	comms payload;
 
-		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
-		payload.status = ReceivePop->status;
-		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_1);
-		payload.device = DEVICE_1;
-		payload.type = TYPE_OUTLET;
-		payload.data = ComputationWattHour(getValues());
+	payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
+	payload.status = ReceivePop->status;
+	payload.state = ChangeIO_Device(device, ReceivePop->state, ReceivePop->device);
+	payload.device = ReceivePop->device;
+	payload.type = TYPE_OUTLET;
+	payload.data = ComputationWattHour(getValues());
 
-		pushTransmit(&payload);
-	}
-	else if (ReceivePop->device == DEVICE_2)
-	{
-		comms payload;
-
-		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
-		payload.status = ReceivePop->status;
-		payload.state = ChangeIO_Device(device, ReceivePop->state, DEVICE_2);
-		payload.device = DEVICE_2;
-		payload.type = TYPE_OUTLET;
-		payload.data = ComputationWattHour(getValues());
-
-		pushTransmit(&payload);
-	}
+	pushTransmit(&payload);
 }
 
 void changeIO_outlet(int deviceNumber, int state)

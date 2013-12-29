@@ -41,20 +41,6 @@
 #define MAXKEYSIZE 32
 #define MAXSSIDNAMESIZE 16
 
-#define REQ_BUFFER_SIZE 100
-#ifdef __CCS__
-	unsigned char requestBuffer[REQ_BUFFER_SIZE];
-#elif __IAR_SYSTEMS_ICC__
-	__no_init char requestBuffer[REQ_BUFFER_SIZE];
-#endif
-
-unsigned long SSIDType = WLAN_SEC_WPA2;
-unsigned char SSIDKey[MAXKEYSIZE] = "";
-char SSIDName[MAXSSIDNAMESIZE] = "";
-unsigned char DSServerIP[4] = { 192, 168, 0, 104 };
-unsigned char DSServerPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
-
-tNetappIpconfigRetArgs CC3000ipconfig;
 netapp_pingreport_args_t pingReport;
 
 volatile unsigned long  ulCC3000Connected,
@@ -74,9 +60,6 @@ void initDriver(void)
 	ulCC3000Connected = 0;
 	ulCC3000SocketClosed = 0;
 	ulPingReceived = 0;
-
-	// Initialize the RX Buffer
-	memset(requestBuffer, 0, sizeof(requestBuffer));
 
 	// Init GPIO's
 	pio_init();
@@ -138,41 +121,34 @@ void initCC3000(void)
 	wlan_set_event_mask(HCI_EVNT_WLAN_KEEPALIVE | HCI_EVNT_WLAN_UNSOL_INIT);
 }
 
-void configCC3000(char *ssidname, unsigned char* ssidkey, unsigned short ssidtype)
+void initSocket(void)
 {
-	SSIDType = ssidtype;
-	memcpy(SSIDKey, ssidkey, MAXKEYSIZE);
-	memcpy(SSIDName, ssidname, MAXSSIDNAMESIZE);
+	unsigned long socketTimeout = 10;
+	int iReturnValue = -1;
+
+	ulPingReceived = 0;
+	ulSocketTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	while (iReturnValue != 0)
+	{
+		iReturnValue = setsockopt(ulSocketTCP,
+											SOL_SOCKET,
+											SOCKOPT_RECV_TIMEOUT,
+											&socketTimeout,
+											sizeof(socketTimeout));
+		__delay_cycles(10000);
+	}
+
+	updateAsyncEvent();
+	updateAsyncEvent();
+	updateAsyncEvent();
+
+	__delay_cycles(1000000);
 }
 
-void configDHCP(unsigned long aucDHCP, unsigned long aucARP,
-		unsigned long aucKeepalive,unsigned long aucInactivity)
+void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive, unsigned long aucInactivity)
 {
 	netapp_timeout_values(&aucDHCP, &aucARP, &aucKeepalive, &aucInactivity);
-}
-
-int _system_pre_init(void)
-{
-	WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
-	return 1;
-}
-
-char *sendDriverPatch(unsigned long *Length)
-{
-	*Length = 0;
-	return NULL;
-}
-
-char *sendWLFWPatch(unsigned long *Length)
-{
-	*Length = 0;
-	return NULL;
-}
-
-char *sendBootLoaderPatch(unsigned long *Length)
-{
-	*Length = 0;
-	return NULL;
 }
 
 void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
@@ -218,17 +194,66 @@ void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
 
 }
 
+int receivePackets(unsigned char* requestBuffer)
+{
+	return (recv(ulSocketTCP, requestBuffer, sizeof(requestBuffer), 0));
+}
+
+void sendPackets(char* pcData, int length)
+{
+	send(ulSocketTCP, pcData, length, 0);
+	__delay_cycles(7501000); //Important to make sure All packet sent
+}
+
+int connectServer(unsigned char* serverIP, unsigned char* serverPort)
+{
+	// the family is always AF_INET
+	tSocketAddr.sa_family = AF_INET;
+
+	// the destination port
+	tSocketAddr.sa_data[0] = serverPort[0];
+	tSocketAddr.sa_data[1] = serverPort[1];
+
+	// the destination IP address
+	tSocketAddr.sa_data[2] = serverIP[0];
+	tSocketAddr.sa_data[3] = serverIP[1];
+	tSocketAddr.sa_data[4] = serverIP[2];
+	tSocketAddr.sa_data[5] = serverIP[3];
+
+	return (connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr)));
+}
+
+int connectWifi(char* SSIDName, unsigned char* SSIDKey, unsigned short SSIDType)
+{
+	return(wlan_connect(SSIDType, SSIDName, strlen(SSIDName), NULL, SSIDKey, strlen((char*) SSIDKey)));
+}
+
+int pingServer(unsigned char* serverIP, unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout)
+{
+	int iReturnping = netapp_ping_send((unsigned long *) serverIP, ulPingAttempts, ulPingSize, ulPingTimeout);
+	__delay_cycles(100000);
+	return(iReturnping);
+}
+
+void updateIPinfo(LanConfig* lanconfig)
+{
+	tNetappIpconfigRetArgs cc3000config;
+	__delay_cycles(3000000); //Wait Important the CC3000 get IP from DHCP //__delay_cycles(50000000);
+	netapp_ipconfig(&cc3000config);
+
+	memcpy(lanconfig, &cc3000config, sizeof(LanConfig));
+}
+
 void updateAsyncEvent(void)
 {
 	hci_unsolicited_event_handler();
 	__delay_cycles(100);
 }
 
-int pingServer(unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout)
+void callCloseSocket(void)
 {
-	int iReturnping = netapp_ping_send((unsigned long *) DSServerIP, ulPingAttempts, ulPingSize, ulPingTimeout);
-	__delay_cycles(100000);
-	return(iReturnping);
+	closesocket(ulSocketTCP);
+	ulCC3000SocketClosed = 1;
 }
 
 unsigned long wifiConnected(void)
@@ -241,94 +266,31 @@ unsigned long pingReceived(void)
 	return (ulPingReceived);
 }
 
-void clearPingReceived(void)
-{
-	ulPingReceived = 0;
-}
-
-int connectServer(void)
-{
-	// the family is always AF_INET
-	tSocketAddr.sa_family = AF_INET;
-
-	// the destination port
-	tSocketAddr.sa_data[0] = DSServerPort[0];
-	tSocketAddr.sa_data[1] = DSServerPort[1];
-
-	// the destination IP address
-	tSocketAddr.sa_data[2] = DSServerIP[0];
-	tSocketAddr.sa_data[3] = DSServerIP[1];
-	tSocketAddr.sa_data[4] = DSServerIP[2];
-	tSocketAddr.sa_data[5] = DSServerIP[3];
-
-	return (connect(ulSocketTCP, &tSocketAddr, sizeof(sockaddr)));
-}
-
-int connectWifi(void)
-{
-	return(wlan_connect(SSIDType, SSIDName, strlen(SSIDName), NULL, SSIDKey, strlen((char *) SSIDKey)));
-}
-
-void initSocket(void)
-{
-	unsigned long socketTimeout = 10;
-	int iReturnValue = -1;
-
-	ulPingReceived = 0;
-	ulSocketTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	while (iReturnValue != 0)
-	{
-		iReturnValue = setsockopt(ulSocketTCP,
-											SOL_SOCKET,
-											SOCKOPT_RECV_TIMEOUT,
-											&socketTimeout,
-											sizeof(socketTimeout));
-		__delay_cycles(10000);
-	}
-
-	updateAsyncEvent();
-	updateAsyncEvent();
-	updateAsyncEvent();
-
-	__delay_cycles(1000000);
-}
-
-void clearSocketClosedflag(void)
-{
-	ulCC3000SocketClosed = 0;
-}
-
-void callCloseSocket(void)
-{
-	closesocket(ulSocketTCP);
-}
-
 unsigned long socketclosed(void)
 {
 	return(ulCC3000SocketClosed);
 }
 
-int receivePackets(void)
+int _system_pre_init(void)
 {
-	return (recv(ulSocketTCP, requestBuffer, sizeof(requestBuffer), 0));
+	WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
+	return 1;
 }
 
-void sendPackets(char* pcData, int length)
+char *sendDriverPatch(unsigned long *Length)
 {
-	send(ulSocketTCP, pcData, length, 0);
-	__delay_cycles(1000);
+	*Length = 0;
+	return NULL;
 }
 
-void updateIPinfo(void)
+char *sendWLFWPatch(unsigned long *Length)
 {
-	__delay_cycles(3000000); //Wait Important the CC3000 get IP from DHCP //__delay_cycles(50000000);
-	netapp_ipconfig(&CC3000ipconfig); //Get My IP address
+	*Length = 0;
+	return NULL;
 }
 
-void getConfigInfo(unsigned char* dsServerIP, unsigned char* dsServerPort, tNetappIpconfigRetArgs** cc3000config)
+char *sendBootLoaderPatch(unsigned long *Length)
 {
-	dsServerIP = DSServerIP;
-	dsServerPort = DSServerPort;
-	*cc3000config = &CC3000ipconfig;
+	*Length = 0;
+	return NULL;
 }

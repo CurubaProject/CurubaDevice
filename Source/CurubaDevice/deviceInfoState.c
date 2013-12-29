@@ -29,9 +29,9 @@
 // ------------------------------------------------------------------------------------------------
 #include "deviceInfoState.h"
 
-static DeviceInfoState deviceInfoState;
-
 DeviceInfoState* getDeviceInfoState()
 {
+	static DeviceInfoState deviceInfoState;
+
 	return &deviceInfoState;
 }

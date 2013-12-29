@@ -35,5 +35,10 @@
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/cc3000.h</locationURI>
 		</link>
+		<link>
+			<name>wifiCommun.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifiCommun.h</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

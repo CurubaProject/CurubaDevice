@@ -27,35 +27,37 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#include <string.h>
+
 #include "network.h"
 #include "communication.h"
-
 #include "cc3000.h"
+#include "wifiCommun.h"
 
 #include "util.h"
 #include "commun.h"
 #include "deviceInfoState.h"
 #include "heartbeat.h"
-
 #include "eventManager.h"
 
-#include "wlan.h"
-
 #define JO_DEBUG
-
 #if defined(AJC_DEBUG)
-	unsigned long _SSIDType = WLAN_SEC_WPA2;
+	unsigned long _SSIDType = SECURITY_WPA2;
 	unsigned char _SSIDKey[] = "domumservuskey00";
 	char _SSIDName[] = "DSRouter";
 #elif defined(MST_DEBUG)
-	unsigned long _SSIDType = WLAN_SEC_WPA2;
+	unsigned long _SSIDType = SECURITY_WPA2;
 	unsigned char _SSIDKey[] = "domumservus";
 	char _SSIDName[] = "domumrff";
 #elif defined(JO_DEBUG)
-	unsigned long _SSIDType = WLAN_SEC_WPA2;
+	unsigned long _SSIDType = SECURITY_WPA2;
 	unsigned char _SSIDKey[] = "testtest";
 	char _SSIDName[] = "MAIN";
 #endif
+
+unsigned char _serverIP[4] = { 192, 168, 0, 104 };
+unsigned char _serverPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
+unsigned char requestBuffer[REQ_BUFFER_SIZE];
 
 /* Private Function */
 
@@ -74,7 +76,7 @@ void do_event_wifi_connected()
 	const unsigned long aucInactivity = 0;
 
 	configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
-	updateIPinfo(); //Get My IP address & MAC address
+	updateIPinfo(&(getDeviceInfoState()->lanConfig));
 
 	connectToServer();
 }
@@ -92,7 +94,6 @@ void do_event_socket_connected()
 void do_event_socket_disconnected()
 {
 	callCloseSocket();
-	clearSocketClosedflag();
 }
 
 void do_event_heartbeat_received()
@@ -107,31 +108,19 @@ void do_event_inforequest_received()
 
 void do_event_packetsReceived()
 {
-	payloadReceived();
+	payloadReceived(requestBuffer);
 }
 
 /* END EVENT FUNCTION */
 
 void initNetwork(void)
 {
-	configCC3000(_SSIDName, _SSIDKey, _SSIDType);
-
 	getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
 
 	initDriver();
-}
 
-void connectToServer()
-{
-	TimerStop(TIMER_1);
-	initSocket();
-
-	int iReturnConnect = connectServer();
-
-	if (iReturnConnect == 0)
-	{
-		notify(EVENT_SOCKET_CONNECTED);
-	}
+	// Initialize the RX Buffer
+	memset(requestBuffer, 0, sizeof(requestBuffer));
 }
 
 void connectToWifi()
@@ -139,7 +128,7 @@ void connectToWifi()
     int iReturnConnect;
     unsigned long ulReftime;
 
-	iReturnConnect = connectWifi();
+	iReturnConnect = connectWifi(_SSIDName, _SSIDKey, _SSIDType);
 
 	ulReftime = getDeviceInfoState()->timeCounter;
 	while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getDeviceInfoState()->timeCounter, ulReftime) < DELAY5SEC) //Wait 5 sec
@@ -150,6 +139,21 @@ void connectToWifi()
 	if(wifiConnected() == 1)
 	{
 		notify(EVENT_WIFI_CONNECTED);
+	}
+}
+
+void connectToServer()
+{
+	TimerStop(TIMER_1);
+	initSocket();
+
+	if (connectServer(_serverIP, _serverPort) == 0)
+	{
+		notify(EVENT_SOCKET_CONNECTED);
+	}
+	else
+	{
+		//TODO Notify fail connected
 	}
 }
 
@@ -167,8 +171,22 @@ void checkNetwork()
 		notify(EVENT_SOCKET_DISCONNECTED);
     }
 
-	if (receivePackets() > 0)
+	if (receivePackets(requestBuffer) > 0)
 	{
 		notify(EVENT_PACKETS_RECEIVED);
 	}
+}
+
+#pragma diag_suppress=552
+void getLanConfig(unsigned char* serverIP, unsigned char* serverPort, LanConfig** config)
+{
+	serverIP = _serverIP;
+	serverPort = _serverPort;
+	*config = &(getDeviceInfoState()->lanConfig);
+}
+#pragma diag_default=552
+
+void sendPayLoad(char* pcData, int length)
+{
+	sendPackets(pcData, length);
 }

@@ -31,14 +31,10 @@
 #include "commun.h"
 #include "commsManager.h"
 #include "util.h"
-
 #include "adcBuffer.h"
 
 #include "dimmer.h"
 #include "outlet.h"
-
-#include "board.h"
-#include <msp430.h>
 
 #include <stdlib.h>
 
@@ -109,13 +105,8 @@ TYPEDEVICE* createTypeDevice(int typeModule) {
 			device = createOutlet();
 			break;
 		default :
-
-			while (1)
-			{
-				P1OUT ^= BIT4;
-				__delay_cycles(25000000);
-			}
-
+			//TODO Led_ERROR
+			for(;;);
 	}
 
 	return device;

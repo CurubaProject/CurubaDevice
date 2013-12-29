@@ -30,6 +30,8 @@
 #ifndef DEVICEINFOSTATE_H
 #define DEVICEINFOSTATE_H
 
+#include "wifiCommun.h"
+
 typedef struct deviceInfoState
 {
 	int currentStatus;
@@ -39,6 +41,7 @@ typedef struct deviceInfoState
 	unsigned long timeCounter;
 
 	short ledState;
+	LanConfig lanConfig;
 
 } DeviceInfoState;
 

@@ -27,19 +27,22 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#ifndef DOMUMAPP_H
-#define DOMUMAPP_H
 
-#include "typeDevice.h"
+#ifndef WIFICOMMUN_H
+#define WIFICOMMUN_H
 
-void initApp();
+typedef struct lanConfig
+{
+    unsigned char aucIP[4];
+	unsigned char aucSubnetMask[4];
+	unsigned char aucDefaultGateway[4];
+	unsigned char aucDHCPServer[4];
+	unsigned char aucDNSServer[4];
+	unsigned char uaMacAddr[6];
+	unsigned char uaSSID[32];
+} LanConfig;
 
-void initADC10(void);
-void initTIMER0(void);
-void initTIMER1(TYPEDEVICE* device);
-void initTIMER2(TYPEDEVICE* device);
-void initTIMERB0(void);
 
-unsigned short readAppSwitch(void);
+#define SECURITY_WPA2 3 // WLAN_SEC_WPA2
 
-#endif
+#endif /* WIFICOMMUN_H */
