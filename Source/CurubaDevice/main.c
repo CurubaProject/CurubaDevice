@@ -31,6 +31,8 @@
 #include "network.h"
 #include "eventManager.h"
 
+#include "util.h"
+
 void main(void)
 {
 	initNetwork();
@@ -44,5 +46,7 @@ void main(void)
 		notify(EVENT_PAYLOAD_TOSEND);
 
 		doEvent();
+
+		ledControl();
 	}
 }

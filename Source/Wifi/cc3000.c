@@ -29,7 +29,7 @@
 // ------------------------------------------------------------------------------------------------
 #include "cc3000.h"
 
-#include "board.h"
+#include "boardMSP430.h"
 #include "evnt_handler.h"
 #include "host_driver_version.h"
 #include <msp430.h>

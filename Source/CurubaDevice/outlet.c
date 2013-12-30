@@ -27,23 +27,21 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "device.h"
-#include "util.h"
-#include "commun.h"
 #include "outlet.h"
+#include "commun.h"
 
+#include "device.h"
 #include "typeDevice.h"
-
-#include "adcBuffer.h"
 #include "deviceInfoState.h"
 
-#include "evnt_handler.h"
+#include "util.h"
+#include "adcBuffer.h"
+
 #include "board.h"
-#include <msp430.h>
 
 void initDevice_outlet()
 {
-	//Nothing to do
+	setHeartbeatTime(HEARTBEAT_TIME);
 }
 
 void heartBeat_outlet()
@@ -89,44 +87,34 @@ void heartBeat_outlet()
 	pushTransmit(&payload);
 }
 
-void controlCommsReceive_outlet(TYPEDEVICE* device, comms* ReceivePop)
+void controlCommsReceive_outlet(comms* receivePop)
 {
 	comms payload;
 
 	payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
-	payload.status = ReceivePop->status;
-	payload.state = ChangeIO_Device(device, ReceivePop->state, ReceivePop->device);
-	payload.device = ReceivePop->device;
+	payload.status = receivePop->status;
+	payload.state = changeIO_outlet(receivePop->device, receivePop->state);
+	payload.device = receivePop->device;
 	payload.type = TYPE_OUTLET;
 	payload.data = ComputationWattHour(getValues());
 
 	pushTransmit(&payload);
 }
-
-void changeIO_outlet(int deviceNumber, int state)
+//TODO OPTIMIZE
+long int changeIO_outlet(int deviceNumber, int command)
 {
-	if (deviceNumber == DEVICE_1)
+	static long int currentState = STATE_OFF;
+
+	setState(deviceNumber, command);
+
+	currentState = GetState(deviceNumber);
+
+	if (currentState != command)
 	{
-		if (state == STATE_ON)
-		{
-			CTRL_OUT |= CTRL_1;
-		}
-		else if(state == STATE_OFF)
-		{
-			CTRL_OUT &= ~CTRL_1;
-		}
+		currentState = STATE_NOLOAD;
 	}
-	else if (deviceNumber == DEVICE_2 )
-	{
-		if (state == STATE_ON)
-		{
-			CTRL_OUT |= CTRL_2;
-		}
-		else if(state == STATE_OFF)
-		{
-			CTRL_OUT &= ~CTRL_2;
-		}
-	}
+
+	return currentState;
 }
 
 void infoCommsReceive_outlet()
@@ -144,16 +132,6 @@ void infoCommsReceive_outlet()
 
 	payload.device = DEVICE_2;
 	pushTransmit(&payload);
-}
-
-void initTIMER1_outlet()
-{
-	TA1CCR0 |= HEARTBEAT_TIME;
-}
-
-void initTIMER2_outlet()
-{
-	//Nothing to do
 }
 
 // Interupt

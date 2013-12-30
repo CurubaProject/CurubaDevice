@@ -33,29 +33,32 @@
 *
 *****************************************************************************/
 #include "dimmer.h"
+
 #include "device.h"
 #include "commsManager.h"
-#include "util.h"
+#include "deviceInfoState.h"
 #include "typeDevice.h"
 #include "commun.h"
 
+#include "util.h"
 #include "adcBuffer.h"
-#include "deviceInfoState.h"
 
 #include "board.h"
-#include <msp430.h>
 
-static int SwitchDimmer = 0;
+static int switchDimmer = 0;
 
 void initDevice_dimmer()
 {
-	CTRL_OUT |= CTRL_1;
+	setHeartbeatTime(HEARTBEAT_5SEC);
+
+	setCurrentStateDimmerOn();
 
 	if(GetState(DEVICE_1) == STATE_ON)
 	{
 		toggleControl();
 	}
-	SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
+
+	switchDimmer = getCurrentStateDimmer();
 }
 
 void heartBeat_dimmer()
@@ -83,7 +86,7 @@ void heartBeat_dimmer()
 	pushTransmit(&payload);
 }
 
-void controlCommsReceive_dimmer(TYPEDEVICE* device, comms* receivePop)
+void controlCommsReceive_dimmer(comms* receivePop)
 {
 	if (receivePop->status == STATUS_ACTIVE)
 	{
@@ -91,40 +94,35 @@ void controlCommsReceive_dimmer(TYPEDEVICE* device, comms* receivePop)
 
 		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
 		payload.status = STATUS_ACTIVE;
-		payload.state = ChangeIO_Device(device, receivePop->state, DEVICE_1);
+		payload.state = changeIO_dimmer(DEVICE_1, receivePop->state);
 		payload.device = DEVICE_1;
 		payload.type = TYPE_DIMMER;
 		payload.data = ComputationWattHour(getValues());
 
-		//Enable Zero cross for dimmer function
-		ZERO_CROSS_IE |= ZERO_CROSS;
+		enableDimmer();
 		if (receivePop->state == STATE_ON && receivePop->data > 10)
 		{
-			TA2CCR0 = (int) (101 - receivePop->data) / 100.0 * PERIODHZ;
+			setDimmerTime((unsigned int) (101 - receivePop->data) / 100.0 * PERIODHZ);
 		}
 		else
 		{
-			ZERO_CROSS_IE &= ~ZERO_CROSS;
+			disableDimmer();
 			TimerStop(TIMER_2);
-			turnOffligth();
+			turnOffligth(switchDimmer);
 		}
 
 		pushTransmit(&payload);
 	}
 	else if (receivePop->status == STATUS_INACTIVE)
 	{
-		//Disable Zero cross for dimmer function
-		ZERO_CROSS_IE &= ~ZERO_CROSS;
-		ZERO_CROSS_IFG &= ~ZERO_CROSS;
-
-		//Timer2 count to 0
-		TA2CCR0 = 0;
+		disableDimmer();
+		setDimmerTime(0);
 
 		comms payload;
 
 		payload.payloadid = PAYLOAD_CONTROL_RESPONSE;
 		payload.status = STATUS_INACTIVE;
-		payload.state = ChangeIO_Device(device, receivePop->state, DEVICE_1);
+		payload.state = changeIO_dimmer(DEVICE_1, receivePop->state);
 		payload.device = DEVICE_1;
 		payload.type = TYPE_DIMMER;
 		payload.data = ComputationWattHour(getValues());
@@ -148,102 +146,29 @@ void infoCommsReceive_dimmer()
 
 	pushTransmit(&payload);
 }
-
-void changeIO_dimmer(int deviceNumber, int state)
+//TODO OPTIMIZE
+long int changeIO_dimmer(int deviceNumber, int command)
 {
+	static long int currentState = STATE_OFF;
+
 	int current_state = GetState(deviceNumber);
-	if (current_state == STATE_ON && (CTRL_OUT & (CTRL_1 + CTRL_2)) != 0)
-	{
-		SwitchDimmer = (CTRL_1 + CTRL_2) & CTRL_OUT;
-	}
-	else if(CTRL_OUT & (CTRL_1 + CTRL_2) != 0)
-	{
-		SwitchDimmer = (CTRL_1 + CTRL_2) & ~CTRL_OUT;
-	}
-
+	setStateDimmer(current_state);
 	getDeviceInfoState()->previousState = current_state;
-}
 
-void initTIMER1_dimmer()
-{
-	TA1CCR0 |= HEARTBEAT_5SEC;
-}
+	currentState = GetState(deviceNumber);
 
-void initTIMER2_dimmer()
-{
-	TA2CCR0 = 0;
+	if (currentState != command)
+	{
+		currentState = STATE_NOLOAD;
+	}
+
+	return currentState;
 }
 
 // Interupt
-
 void timer2_Execute_dimmer()
 {
-	turnOnlight();
+	turnOnlight(switchDimmer);
 	TimerStop(TIMER_2);
-	// Reset the count
-	TA2R &= 0x0000;
-	TA2CTL &= ~TAIFG;
-}
-
-void turnOffligth(void)
-{
-	if(CTRL_OUT & CTRL_1)
-	{
-		CTRL_OUT &= (~SwitchDimmer & CTRL_1);
-	}
-	else
-	{
-		CTRL_OUT |= (~SwitchDimmer & CTRL_1);
-	}
-
-	if(CTRL_OUT & CTRL_2)
-	{
-		CTRL_OUT &= (~SwitchDimmer & CTRL_2);
-	}
-	else
-	{
-		CTRL_OUT |= (~SwitchDimmer & CTRL_2);
-	}
-}
-
-void toggleControl(void)
-{
-	if(CTRL_OUT & CTRL_1)
-	{
-		CTRL_OUT &= ~CTRL_1;
-	}
-	else
-	{
-		CTRL_OUT |= CTRL_1;
-	}
-
-	if(CTRL_OUT & CTRL_2)
-	{
-		CTRL_OUT &= ~CTRL_2;
-	}
-	else
-	{
-		CTRL_OUT |= CTRL_2;
-	}
-}
-
-void turnOnlight()
-{
-	if(CTRL_OUT & CTRL_1)
-	{
-		CTRL_OUT &= (SwitchDimmer & CTRL_1);
-	}
-	else
-	{
-		CTRL_OUT |= (SwitchDimmer & CTRL_1);
-	}
-
-	if(CTRL_OUT & CTRL_2)
-	{
-		CTRL_OUT &= (SwitchDimmer & CTRL_2);
-	}
-	else
-	{
-		CTRL_OUT |= (SwitchDimmer & CTRL_2);
-	}
+	resetDimmerTimer();
 }

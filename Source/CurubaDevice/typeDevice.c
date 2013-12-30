@@ -27,42 +27,13 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#include <stdlib.h>
+
 #include "typeDevice.h"
 #include "commun.h"
-#include "commsManager.h"
-#include "util.h"
-#include "adcBuffer.h"
 
 #include "dimmer.h"
 #include "outlet.h"
-
-#include <stdlib.h>
-
-int GetState(int deviceNumber)
-{
-	static long int state = 0;
-	ADCRead(deviceNumber);
-
-	state = ComputationWattHour(getValues()) > 1 ? STATE_ON : STATE_OFF;
-
-	return state;
-}
-
-int ChangeIO_Device(TYPEDEVICE* device, int commande, int deviceNumber)
-{
-	static long int currentState = STATE_OFF;
-
-	device->changeIO(deviceNumber, commande);
-
-	currentState = GetState(deviceNumber);
-
-	if (currentState != commande)
-	{
-		currentState = STATE_NOLOAD;
-	}
-
-	return currentState;
-}
 
 TYPEDEVICE* createDimmer() {
 	TYPEDEVICE* device = (TYPEDEVICE*) malloc(sizeof *device);
@@ -71,9 +42,6 @@ TYPEDEVICE* createDimmer() {
 	device->heartBeat = heartBeat_dimmer;
 	device->controlCommsReceive = controlCommsReceive_dimmer;
 	device->infoCommsReceive = infoCommsReceive_dimmer;
-	device->changeIO = changeIO_dimmer;
-	device->initTIMER1 = initTIMER1_dimmer;
-	device->initTIMER2 = initTIMER2_dimmer;
 	device->timer2_execute = timer2_Execute_dimmer;
 
 	return device;
@@ -86,9 +54,6 @@ TYPEDEVICE* createOutlet() {
 	device->heartBeat = heartBeat_outlet;
 	device->controlCommsReceive = controlCommsReceive_outlet;
 	device->infoCommsReceive = infoCommsReceive_outlet;
-	device->changeIO = changeIO_outlet;
-	device->initTIMER1 = initTIMER1_outlet;
-	device->initTIMER2 = initTIMER2_outlet;
 	device->timer2_execute = timer2_Execute_outlet;
 
 	return device;

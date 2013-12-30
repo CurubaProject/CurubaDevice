@@ -38,9 +38,9 @@
 void initDevice_dimmer();
 void initListComms_dimmer();
 void heartBeat_dimmer();
-void controlCommsReceive_dimmer(TYPEDEVICE* device, comms* ReceivePop);
+void controlCommsReceive_dimmer(comms* receivePop);
 void infoCommsReceive_dimmer();
-void changeIO_dimmer(int deviceNumber, int state);
+long int changeIO_dimmer(int deviceNumber, int state);
 void initTIMER1_dimmer();
 void initTIMER2_dimmer() ;
 

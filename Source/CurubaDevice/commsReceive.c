@@ -29,9 +29,10 @@
 // ------------------------------------------------------------------------------------------------
 #include "commsReceive.h"
 #include "commun.h"
-#include "util.h"
 #include "typeDevice.h"
 #include "commsManager.h"
+
+#include "board.h"
 
 void infoCommsReceive(TYPEDEVICE* device, comms* receivePop)
 {
@@ -43,7 +44,7 @@ void infoCommsReceive(TYPEDEVICE* device, comms* receivePop)
 void controlCommsReceive(TYPEDEVICE* device, comms* receivePop)
 {
 	TimerStop(TIMER_1);
-	device->controlCommsReceive(device, receivePop);
+	device->controlCommsReceive(receivePop);
 	TimerStart(TIMER_1);
 }
 
@@ -60,9 +61,10 @@ CommsReceive receiveComms(int payloadId)
 			result = &controlCommsReceive;
 			break;
 		case PAYLOAD_CONFIG_REQUEST :
-			//Not use for now
+			//TODO PAYLOAD_CONFIG_REQUEST
 			break;
 		default :
+			//TODO ON error receive comms
 			break;
 	}
 

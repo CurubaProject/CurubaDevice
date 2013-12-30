@@ -30,13 +30,15 @@
 #ifndef OUTLET_H
 #define OUTLET_H
 
+#include "commsManager.h"
+
 #define HEARTBEAT_TIME 0x3C00
 
 void initDevice_outlet();
 void initListComms_outlet();
 void heartBeat_outlet();
-void controlCommsReceive_outlet(TYPEDEVICE* device, comms* ReceivePop);
-void changeIO_outlet(int deviceNumber, int state);
+void controlCommsReceive_outlet(comms* receivePop);
+long int changeIO_outlet(int deviceNumber, int state);
 void infoCommsReceive_outlet();
 void initTIMER1_outlet();
 void initTIMER2_outlet();

@@ -35,6 +35,26 @@
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/board.h</locationURI>
 		</link>
+		<link>
+			<name>interuptDeviceControl.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/interuptDeviceControl.c</locationURI>
+		</link>
+		<link>
+			<name>interuptDeviceControl.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/interuptDeviceControl.h</locationURI>
+		</link>
+		<link>
+			<name>MSP430F5310/boardMSP430.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/boardMSP430.c</locationURI>
+		</link>
+		<link>
+			<name>MSP430F5310/boardMSP430.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/boardMSP430.h</locationURI>
+		</link>
 	</linkedResources>
 	<variableList>
 		<variable>

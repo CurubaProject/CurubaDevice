@@ -40,6 +40,8 @@
 #include "heartbeat.h"
 #include "eventManager.h"
 
+#include "board.h"
+
 #define JO_DEBUG
 #if defined(AJC_DEBUG)
 	unsigned long _SSIDType = SECURITY_WPA2;
@@ -55,7 +57,7 @@
 	char _SSIDName[] = "MAIN";
 #endif
 
-unsigned char _serverIP[4] = { 192, 168, 0, 104 };
+unsigned char _serverIP[4] = { 192, 168, 0, 100 };
 unsigned char _serverPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
 unsigned char requestBuffer[REQ_BUFFER_SIZE];
 

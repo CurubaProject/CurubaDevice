@@ -28,24 +28,71 @@
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
 #include "interuptDeviceControl.h"
-#include "util.h"
-#include "commun.h"
-
-#include "heartbeat.h"
-#include "adcBuffer.h"
-#include "deviceInfoState.h"
-#include "eventManager.h"
-
 #include "board.h"
+#include "boardMSP430.h"
 #include <msp430.h>
 
-static TYPEDEVICE* _device = 0x0;
+Callback _callback_readCurrent = 0;
+Callback _callback_hearbeatTimer = 0;
+Callback _callback_dimmerTimer = 0;
+Callback _callback_ledTimer = 0;
 
-volatile unsigned long ulTimeRef;		//use for Timer LED
-
-void initInterupt(TYPEDEVICE** device)
+void initReadCurrent(Callback callback_readCurrent)
 {
-	_device = *device;
+	//ADC10 Init
+	ADC10CTL0 |= ADC10SHT_2 + ADC10ON;
+	ADC10CTL1 |= ADC10SHP + ADC10DIV_4 + ADC10SSEL_2;
+	ADC10CTL2 |= ADC10RES;                            // 10 bits resolution
+	ADC10MCTL0 |= ADC10SREF_7;
+	ADC10IE |= ADC10IE0;                    		  // Interupt enable end of conversion
+	ADC10IFG &= 0x0000;                               // Reset all interupt flag
+	ADC10CTL0 |= ADC10ENC;                            // ADC enable conversion
+
+	_callback_readCurrent = callback_readCurrent;
+}
+
+void initTIMER0(void)
+{
+	//Timer0 Init (for ADC)
+	TA0CTL |= TACLR;
+	TA0CTL |= TASSEL_2 + TAIE;
+	TA0CCR0 &= 0x0000;
+	TA0CCR0 = 812;
+}
+
+void initHearbeatTimer(Callback callback_hearbeatTimer)
+{
+	//Timer1 Init (for Heartbeat)
+	TA1CTL |= TACLR;
+	TA1CTL |= TASSEL_1 + ID_3 + TAIE;
+	TA1EX0 |= TAIDEX_7;
+
+	_callback_hearbeatTimer = callback_hearbeatTimer;
+}
+
+void initDimmerTimer(Callback callback_dimmerTimer)
+{
+	//Timer2 Init (for Dimmer)
+	TA2CTL &= MC_0;
+	TA2CTL |= TACLR;
+	TA2CTL |= TASSEL_2 + TAIE;
+
+	TA2CCR0 = 0;
+
+	_callback_dimmerTimer = callback_dimmerTimer;
+}
+
+void initLedTimer(Callback callback_ledTimer)
+{
+	//Timer for Server connection delay time
+	TB0CTL |= TBCLR;
+	TB0CTL |= TBSSEL_1 + ID_3 + TBIE;
+	TB0EX0 |= TBIDEX_7; //Timer clock = ACLK/64 = 512 Hz
+	TB0CCR0 = (int) 32;
+
+	_callback_ledTimer = callback_ledTimer;
+
+	TimerStart(TIMERB_0);//Never stop this timer
 }
 
 /*********************
@@ -69,12 +116,7 @@ __interrupt void ADC10_ISR(void)
 		case ADC10INIFG:                   // conversion result is within the treshold
 			break;
 		case 12:
-			setValue(ADC10MEM0);
-
-			if ( ! next() )
-			{
-				TimerStop(TIMER_0);
-			}
+			_callback_readCurrent();
 			break;
 		default:
 			break;
@@ -129,7 +171,7 @@ __interrupt void TIMER1_A1_ISR(void)
 		case TA1IV_6:                      // Capture/Compare 6
 			break;
 		case TA1IV_TA1IFG:                 // Timer overflow
-			notify(EVENT_HEARTBEAT_READYTOSEND);
+			_callback_hearbeatTimer();
 			TA1CTL &= ~TAIFG;
 			break;
 		default:
@@ -157,7 +199,7 @@ __interrupt void TIMER2_A1_ISR(void)
 		case TA2IV_6:                            // Capture/Compare 6
 			break;
 		case TA2IV_TA2IFG:                       // Timer overflow
-			_device->timer2_execute();
+			_callback_dimmerTimer();
 			ZERO_CROSS_IE |= ZERO_CROSS;
 			break;
 		default:
@@ -169,10 +211,6 @@ __interrupt void TIMER2_A1_ISR(void)
 #pragma vector=TIMER0_B1_VECTOR
 __interrupt void TIMER0_B1_ISR(void)
 {
-    static short sFlag = 0;
-    unsigned long ultime;
-    unsigned long timeCounter = getDeviceInfoState()->timeCounter;
-
     switch (__even_in_range(TB0IV, 14))
     {
         case 0:                            // No interrupt
@@ -190,43 +228,7 @@ __interrupt void TIMER0_B1_ISR(void)
         case TB0IV_6:                           // Capture/Compare 6
             break;
         case TB0IV_TB0IFG:                           // Timer overflow
-        	getDeviceInfoState()->timeCounter = ++timeCounter;
-            if(sFlag == 0)
-            {
-                ulTimeRef = timeCounter;
-                sFlag = 1;
-                ultime = getTimeElapsed(timeCounter, ulTimeRef);
-            }
-            else if(sFlag == 1)
-            {
-                ultime = getTimeElapsed(timeCounter, ulTimeRef);
-            }
-            switch (getDeviceInfoState()->ledState)
-            {
-                case LED_STATE_OFF:
-                    turnLedOff(WARNING_LED);
-                    break;
-                case LED_STATE_UNCONNECTED:
-                    turnLedOn(WARNING_LED);
-                    break;
-                case LED_STATE_CONNECTED:
-                    if(ultime >= 16) // Toggle LED at each 1 Hz
-                    {
-                        toggleLed(WARNING_LED);
-                        sFlag = 0;
-                    }
-                    break;
-                case LED_STATE_CONFIGURING:
-                    if(ultime >= 1) //Toggle LED at each 8 Hz
-                    {
-                        toggleLed(WARNING_LED);
-                        sFlag = 0;
-                    }
-                    break;
-                default:
-                    sFlag = 0;
-                    break;
-            }
+        	_callback_ledTimer();
             TB0CTL &= ~TBIFG;
             break;
         default:

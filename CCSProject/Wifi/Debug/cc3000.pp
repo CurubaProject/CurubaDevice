@@ -3,7 +3,7 @@
 cc3000.obj: C:/ti/CurubaDevice/Source/Wifi/cc3000.c
 cc3000.obj: C:/ti/CurubaDevice/Source/Wifi/cc3000.h
 cc3000.obj: C:/ti/CurubaDevice/Source/Wifi/wifiCommun.h
-cc3000.obj: C:/ti/CurubaDevice/Source/CC3000\ Board/board.h
+cc3000.obj: C:/ti/CurubaDevice/Source/CC3000\ Board/boardMSP430.h
 cc3000.obj: C:/ti/CurubaDevice/Source/CC3000HostDriver/evnt_handler.h
 cc3000.obj: C:/ti/CurubaDevice/Source/CC3000HostDriver/hci.h
 cc3000.obj: C:/ti/CurubaDevice/Source/CC3000HostDriver/cc3000_common.h
@@ -31,7 +31,7 @@ cc3000.obj: C:/ti/CurubaDevice/Source/CC3000HostDriver/wlan.h
 C:/ti/CurubaDevice/Source/Wifi/cc3000.c: 
 C:/ti/CurubaDevice/Source/Wifi/cc3000.h: 
 C:/ti/CurubaDevice/Source/Wifi/wifiCommun.h: 
-C:/ti/CurubaDevice/Source/CC3000\ Board/board.h: 
+C:/ti/CurubaDevice/Source/CC3000\ Board/boardMSP430.h: 
 C:/ti/CurubaDevice/Source/CC3000HostDriver/evnt_handler.h: 
 C:/ti/CurubaDevice/Source/CC3000HostDriver/hci.h: 
 C:/ti/CurubaDevice/Source/CC3000HostDriver/cc3000_common.h: 

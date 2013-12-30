@@ -29,82 +29,9 @@
 // ------------------------------------------------------------------------------------------------
 #include "util.h"
 #include "commun.h"
-
 #include "board.h"
-#include <msp430.h>
-
-void TimerStart(int timer_number)
-{
-	//TODO Change to switch
-	if (timer_number == TIMER_0)
-	{
-		TA0R = 0;
-		TA0CTL |= MC_1;
-	}
-	else if (timer_number == TIMER_1)
-	{
-		TA1R = 0;
-		TA1CTL |= MC_1;
-	}
-	else if (timer_number == TIMER_2)
-	{
-		TA2R = 0;
-		TA2CTL |= MC_1;
-	}
-	else if (timer_number == TIMERB_0)
-	{
-		TB0CTL |= MC_1; //Start timer in Up-mode
-	}
-}
-
-void TimerStop(int timer_number)
-{
-	switch (timer_number)
-	{
-		case TIMER_0:
-			TA0CTL &= TIMER_OFF;
-			break;
-		case TIMER_1:
-			TA1CTL &= TIMER_OFF;
-			break;
-		case TIMER_2:
-			TA2CTL &= TIMER_OFF;
-			break;
-		case TIMERB_0:
-			TB0CTL &= TIMER_OFF; //Halt timer
-			TB0R = 0;
-			break;
-		default:
-			break;
-	}
-}
-
-void ADCRead(int ADC_number)
-{
-	//to watch
-	if ((TA0CTL>>4 & 0x0001) == 1) //(TA0CTL == MC_1)
-	{
-		//Wait for the end of sampling
-		__delay_cycles(525000);
-	}
-
-	ADC10CTL0 &= ~ADC10ENC;
-
-	ADC10MCTL0 &= ADC_SEL_RESET;
-
-	ADC10MCTL0 |= (0x0000 & (ADC_number - 1));
-
-	ADC10CTL0 |= ADC10ENC;
-
-	__delay_cycles(2000000);
-
-	TimerStart(TIMER_0);
-
-	while((TA0CTL>>4 & 0x0001) == 1)
-	{
-
-	}
-}
+#include "adcBuffer.h"
+#include "deviceInfoState.h"
 
 int IsStateChange(int State, int StateComms)
 {
@@ -168,4 +95,47 @@ unsigned long getTimeElapsed(unsigned long ref, unsigned long lastcount)
 	{
 		return(((unsigned long) (0xFFFFFFFF) - lastcount) + ref);
 	}
+}
+
+int GetState(int deviceNumber)
+{
+	static long int state = 0;
+	readADC(deviceNumber);
+
+	state = ComputationWattHour(getValues()) > 1 ? STATE_ON : STATE_OFF;
+
+	return state;
+}
+
+void ledControl()
+{
+	static unsigned long ulTimeRef = 0;
+    unsigned long timeCounter = getDeviceInfoState()->timeCounter;
+    unsigned long ultime = getTimeElapsed(timeCounter, ulTimeRef);
+
+	switch (getDeviceInfoState()->ledState)
+	{
+	  case LED_STATE_OFF:
+		  turnLedOff(WARNING_LED);
+		  break;
+	  case LED_STATE_UNCONNECTED:
+		  turnLedOn(WARNING_LED);
+		  break;
+	  case LED_STATE_CONNECTED:
+		  if(ultime >= 16) // Toggle LED at each 1 Hz
+		  {
+			  toggleLed(WARNING_LED);
+		  }
+		  break;
+	  case LED_STATE_CONFIGURING:
+		  if(ultime >= 1) //Toggle LED at each 8 Hz
+		  {
+			  toggleLed(WARNING_LED);
+		  }
+		  break;
+	  default:
+		  break;
+	}
+
+	ulTimeRef = getDeviceInfoState()->timeCounter;
 }

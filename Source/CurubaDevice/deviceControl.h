@@ -34,12 +34,4 @@
 
 void initApp();
 
-void initADC10(void);
-void initTIMER0(void);
-void initTIMER1(TYPEDEVICE* device);
-void initTIMER2(TYPEDEVICE* device);
-void initTIMERB0(void);
-
-unsigned short readAppSwitch(void);
-
 #endif

@@ -36,111 +36,56 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-// Pins from MSP430 connected to the RF Header
-#define SPI_IRQ_PIN       BIT0  //P2.0
-#define WLAN_EN_PIN       BIT1  //PJ.1
+#define TIMER_0 0
+#define TIMER_1 1
+#define TIMER_2 2
+#define TIMERB_0 3
 
-#define SPI_SIMO        BIT1    //P4.1
-#define SPI_SOMI        BIT2    //P4.2
-#define SPI_CLK         BIT3    //P4.3
-#define RF_CS           BIT0    //P4.0
+#define STATE_ON			(1)
+#define STATE_OFF			(2)
+#define STATE_NOLOAD		(3)
 
-// Ports
-#define SPI_SEL         P4SEL
-#define SPI_DIR         P4DIR
-#define SPI_OUT         P4OUT
-#define SPI_REN         P4REN
-
-#define RF_CS_SEL       P4SEL
-#define RF_CS_OUT       P4OUT
-#define RF_CS_DIR       P4DIR
-
-#define SPI_IRQ_DIR       P2DIR
-#define SPI_IRQ_IN        P2IN
-#define SPI_IRQ_IES       P2IES
-#define SPI_IRQ_IE        P2IE
-#define SPI_IFG_PORT      P2IFG
-
-#define WLAN_EN_DIR       PJDIR
-#define WLAN_EN_OUT       PJOUT
+#define DEVICE_1 1
+#define DEVICE_2 2
 
 #define WARNING_LED       0x01
-#define LED1BIT        	  BIT4    	//P1.4
-#define LED1_PORT_DIR     P1DIR
-#define LED1_PORT_OUT     P1OUT
 
-// Pins from MSP430 connected to switch 4 dib
+#define TIMER_OFF 0xFFCF
+#define ADC_SEL_RESET 0xFFF0;
 
-#define SWITCH_B1_1          BIT0
-#define SWITCH_B1_2          BIT1
-#define SWITCH_B1_3          BIT2
-#define SWITCH_B1_4          BIT3
-
-#define SWITCH_B1_DIR        P1DIR
-#define SWITCH_B1_REN        P1REN
-#define SWITCH_B1_SEL        P1SEL
-#define SWITCH_B1_IN         P1IN
-#define SWITCH_B1_OUT        P1OUT
-
-// Pins from MSP430 connected to interrupt B2
-#define SWITCH_B2         BIT0		//PJ.0
-
-#define SWITCH_B2_DIR     PJDIR
-#define SWITCH_B2_REN     PJREN
-#define SWITCH_B2_SEL     PJSEL
-#define SWITCH_B2_IN      PJIN
-#define SWITCH_B2_OUT     PJOUT
-#define SWITCH_B2_IE      PJIE
-#define SWITCH_B2_IES     PJIES
-
-// Pins from MSP430 connected to interrupt zero-cross
-#define ZERO_CROSS          BIT7  	//P1.7
-
-#define ZERO_CROSS_DIR      P1DIR
-#define ZERO_CROSS_SEL      P1SEL
-#define ZERO_CROSS_IN       P1IN
-#define ZERO_CROSS_IE       P1IE
-#define ZERO_CROSS_IES      P1IES
-#define ZERO_CROSS_IFG      P1IFG
-
-// PIN from MSP430 connected to CTRL
-#define CTRL_1      BIT5	//P1.5
-#define CTRL_2      BIT6	//P1.6
-
-
-#define CTRL_DIR    P1DIR
-#define CTRL_SEL    P1SEL
-#define CTRL_OUT    P1OUT
-
-// PIN from MSP430 connected to ADC
-#define ADC_1      BIT0		//P6.0
-#define ADC_2      BIT1		//P6.1
-
-// PIN from MSP430 in option for I/O or ADC
-#define OPTION1    BIT2		//P6.2
-#define OPTION2    BIT3		//P6.3
-
-#define ADC_SEL    P6SEL
+#include "interuptDeviceControl.h"
 
 void pio_init();
 
+void readADC(int ADC_number);
+void TimerStart(int timer_number);
+void TimerStop(int timer_number);
+unsigned short readAppSwitch();
+
+void setHeartbeatTime(unsigned int time);
+void setDimmerTime(unsigned int time);
+
+void disableDimmer();
+void enableDimmer();
+
+void setState(int deviceNumber, int command);
+int setStateDimmer(int current_state);
+int getCurrentStateDimmer();
+void setCurrentStateDimmerOn();
+
+void turnOffligth(int SwitchDimmer);
+void turnOnlight(int SwitchDimmer);
+void toggleControl();
+
+void resetDimmerTimer();
+
+void init_bis_register();
+
 void initLEDs();
-
-long ReadWlanInterruptPin(void);
-void WlanInterruptEnable();
-void WlanInterruptDisable();
-void WriteWlanPin( unsigned char val );
-
-void initClk(void);
-void DissableSwitch();
 
 void turnLedOn(char ledNum);
 void turnLedOff(char ledNum);
 void toggleLed(char ledNum);
 
-void LFXT_Start(unsigned int xtdrive);
-void Init_FLL_Settle(unsigned int fsystem, unsigned int ratio);
-void Init_FLL(unsigned int fsystem, unsigned int ratio);
-unsigned int SetVCore(unsigned char level);
-
+int getValueCurrentVolt();
 #endif

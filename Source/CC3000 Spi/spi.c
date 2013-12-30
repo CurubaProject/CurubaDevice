@@ -43,7 +43,7 @@
 #include "hci.h"
 #include "spi.h"
 #include "evnt_handler.h"
-#include "board.h"
+#include "boardMSP430.h"
 #include <msp430.h>
 
 

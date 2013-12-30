@@ -99,16 +99,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/eventManager.h</locationURI>
 		</link>
 		<link>
-			<name>Control/interuptDeviceControl.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interuptDeviceControl.c</locationURI>
-		</link>
-		<link>
-			<name>Control/interuptDeviceControl.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/interuptDeviceControl.h</locationURI>
-		</link>
-		<link>
 			<name>Device/device.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/device.h</locationURI>

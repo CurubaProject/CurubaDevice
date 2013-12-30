@@ -30,8 +30,12 @@
 #ifndef INTERUPT_H
 #define INTERUPT_H
 
-#include "typeDevice.h"
+typedef void (*Callback)();
 
-void initInterupt(TYPEDEVICE** device);
+void initReadCurrent(Callback);
+void initTIMER0(void);
+void initHearbeatTimer(Callback);
+void initDimmerTimer(Callback);
+void initLedTimer(Callback);
 
 #endif
