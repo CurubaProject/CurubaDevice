@@ -62,7 +62,7 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.ti.ccstudio.buildDefinitions.MSP430.Debug.333083748.131650961" name="wifi.h" rcbsApplicability="disable" resourcePath="wifi.h" toolsToInvoke="">
+					<fileInfo id="com.ti.ccstudio.buildDefinitions.MSP430.Debug.333083748.131650961" name="wifi.h" rcbsApplicability="disable" resourcePath="src/wifi.h" toolsToInvoke="">
 						<tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.39188074" name="Resource Custom Build Step">
 							<inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.331075754" name="Resource Custom Build Step Input Type">
 								<additionalInput kind="additionalinputdependency" paths=""/>
@@ -203,9 +203,9 @@
 			<content-type-mapping configuration="" content-type="org.eclipse.cdt.core.cxxSource" language="com.ti.ccstudio.core.TIGPPLanguage"/>
 		</project-mappings>
 	</storageModule>
-	<storageModule moduleId="null.endianPreference"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="null.endianPreference"/>
 	<storageModule moduleId="null.devicePreference"/>
 	<storageModule moduleId="cpuFamily"/>
 </cproject>

@@ -27,42 +27,42 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>board.h</name>
+			<name>src/board.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/board.h</locationURI>
 		</link>
 		<link>
-			<name>interuptDeviceControl.h</name>
+			<name>src/interuptDeviceControl.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/interuptDeviceControl.h</locationURI>
 		</link>
 		<link>
-			<name>MSP430F5310/boardMSP430.c</name>
+			<name>src/MSP430F5310/boardMSP430.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/boardMSP430.c</locationURI>
 		</link>
 		<link>
-			<name>MSP430F5310/boardMSP430.h</name>
+			<name>src/MSP430F5310/boardMSP430.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/boardMSP430.h</locationURI>
 		</link>
 		<link>
-			<name>MSP430F5310/interuptDeviceControl.c</name>
+			<name>src/MSP430F5310/interuptDeviceControl.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/interuptDeviceControl.c</locationURI>
 		</link>
 		<link>
-			<name>Simulator/boardSimulator.c</name>
+			<name>src/Simulator/boardSimulator.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/boardSimulator.c</locationURI>
 		</link>
 		<link>
-			<name>Simulator/boardSimulatorConfig.h</name>
+			<name>src/Simulator/boardSimulatorConfig.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/boardSimulatorConfig.h</locationURI>
 		</link>
 		<link>
-			<name>Simulator/interruptSimulator.c</name>
+			<name>src/Simulator/interruptSimulator.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Board/interruptSimulator.c</locationURI>
 		</link>

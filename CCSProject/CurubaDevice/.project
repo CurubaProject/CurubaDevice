@@ -7,6 +7,7 @@
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -26,49 +27,139 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>CommsManager.c</name>
+			<name>src/commun.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commun.h</locationURI>
 		</link>
 		<link>
-			<name>CommsManager.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/CommsManager.h</locationURI>
-		</link>
-		<link>
-			<name>domumapp.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.c</locationURI>
-		</link>
-		<link>
-			<name>domumapp.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/domumapp.h</locationURI>
-		</link>
-		<link>
-			<name>main.c</name>
+			<name>src/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/main.c</locationURI>
 		</link>
 		<link>
-			<name>wifi.c</name>
+			<name>src/communication/communication.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/wifi.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/communication.c</locationURI>
 		</link>
 		<link>
-			<name>wifi.h</name>
+			<name>src/communication/communication.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/wifi.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/communication.h</locationURI>
+		</link>
+		<link>
+			<name>src/communication/network.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/network.c</locationURI>
+		</link>
+		<link>
+			<name>src/communication/network.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/network.h</locationURI>
+		</link>
+		<link>
+			<name>src/control/commsReceive.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsReceive.c</locationURI>
+		</link>
+		<link>
+			<name>src/control/commsReceive.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsReceive.h</locationURI>
+		</link>
+		<link>
+			<name>src/control/deviceControl.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/deviceControl.c</locationURI>
+		</link>
+		<link>
+			<name>src/control/deviceControl.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/deviceControl.h</locationURI>
+		</link>
+		<link>
+			<name>src/control/deviceInfoState.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/deviceInfoState.c</locationURI>
+		</link>
+		<link>
+			<name>src/control/deviceInfoState.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/deviceInfoState.h</locationURI>
+		</link>
+		<link>
+			<name>src/control/eventManager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/eventManager.c</locationURI>
+		</link>
+		<link>
+			<name>src/control/eventManager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/eventManager.h</locationURI>
+		</link>
+		<link>
+			<name>src/device/device.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/device.h</locationURI>
+		</link>
+		<link>
+			<name>src/device/dimmer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/dimmer.c</locationURI>
+		</link>
+		<link>
+			<name>src/device/dimmer.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/dimmer.h</locationURI>
+		</link>
+		<link>
+			<name>src/device/outlet.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/outlet.c</locationURI>
+		</link>
+		<link>
+			<name>src/device/outlet.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/outlet.h</locationURI>
+		</link>
+		<link>
+			<name>src/device/typeDevice.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/typeDevice.c</locationURI>
+		</link>
+		<link>
+			<name>src/device/typeDevice.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/typeDevice.h</locationURI>
+		</link>
+		<link>
+			<name>src/util/adcBuffer.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/adcBuffer.c</locationURI>
+		</link>
+		<link>
+			<name>src/util/adcBuffer.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/adcBuffer.h</locationURI>
+		</link>
+		<link>
+			<name>src/util/commsManager.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsManager.c</locationURI>
+		</link>
+		<link>
+			<name>src/util/commsManager.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/commsManager.h</locationURI>
+		</link>
+		<link>
+			<name>src/util/util.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/util.c</locationURI>
+		</link>
+		<link>
+			<name>src/util/util.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CurubaDevice/util.h</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>copy_PARENT</name>
-			<value>$%7BPARENT-1-CCS_INSTALL_ROOT%7D/PatchProgrammerMSP430F5529-6.11.7.13.19/Patch%20Programmer%20Source/Patch%20Programmer%20CCS</value>
-		</variable>
-		<variable>
-			<name>copy_PARENT1</name>
-			<value>$%7BPARENT-1-copy_PARENT%7D</value>
-		</variable>
-	</variableList>
 </projectDescription>

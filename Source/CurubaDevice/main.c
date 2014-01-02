@@ -33,7 +33,7 @@
 
 #include "util.h"
 
-void main(void)
+int main(void)
 {
 	initNetwork();
 	initApp();

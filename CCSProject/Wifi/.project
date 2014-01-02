@@ -26,22 +26,22 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>wifi.h</name>
+			<name>src/wifi.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifi.h</locationURI>
 		</link>
 		<link>
-			<name>wifiCommun.h</name>
+			<name>src/wifiCommun.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifiCommun.h</locationURI>
 		</link>
 		<link>
-			<name>CC3000/cc3000.c</name>
+			<name>src/CC3000/cc3000.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/cc3000.c</locationURI>
 		</link>
 		<link>
-			<name>Simulator/wifiSimulator.c</name>
+			<name>src/Simulator/wifiSimulator.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifiSimulator.c</locationURI>
 		</link>

@@ -37,7 +37,6 @@
 #include "util.h"
 #include "commun.h"
 #include "deviceInfoState.h"
-#include "heartbeat.h"
 #include "eventManager.h"
 
 #include "board.h"
@@ -179,14 +178,18 @@ void checkNetwork()
 	}
 }
 
+#ifndef __TESTDEBUG__
 #pragma diag_suppress=552
+#endif
 void getLanConfig(unsigned char* serverIP, unsigned char* serverPort, LanConfig** config)
 {
 	serverIP = _serverIP;
 	serverPort = _serverPort;
 	*config = &(getDeviceInfoState()->lanConfig);
 }
+#ifndef __TESTDEBUG__
 #pragma diag_default=552
+#endif
 
 void sendPayLoad(char* pcData, int length)
 {
