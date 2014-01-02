@@ -88,4 +88,13 @@ void turnLedOff(char ledNum);
 void toggleLed(char ledNum);
 
 int getValueCurrentVolt();
+
+long ReadWlanInterruptPin(void);
+void WlanInterruptEnable();
+void WlanInterruptDisable();
+void WriteWlanPin(unsigned char trueFalse);
+
+void initWatchDogTimer();
+void stopWatchDogTimer();
+
 #endif

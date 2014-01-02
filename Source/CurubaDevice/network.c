@@ -31,7 +31,7 @@
 
 #include "network.h"
 #include "communication.h"
-#include "cc3000.h"
+#include "wifi.h"
 #include "wifiCommun.h"
 
 #include "util.h"

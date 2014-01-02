@@ -32,6 +32,7 @@
 *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 *****************************************************************************/
+#ifndef __TESTDEBUG__
 
 #ifndef BOARDMSP430_H
 #define BOARDMSP430_H
@@ -135,5 +136,7 @@ void LFXT_Start(unsigned int xtdrive);
 void Init_FLL_Settle(unsigned int fsystem, unsigned int ratio);
 void Init_FLL(unsigned int fsystem, unsigned int ratio);
 unsigned int SetVCore(unsigned char level);
+
+#endif
 
 #endif

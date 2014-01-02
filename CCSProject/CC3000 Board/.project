@@ -26,19 +26,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>board.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/board.c</locationURI>
-		</link>
-		<link>
 			<name>board.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/board.h</locationURI>
-		</link>
-		<link>
-			<name>interuptDeviceControl.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/interuptDeviceControl.c</locationURI>
 		</link>
 		<link>
 			<name>interuptDeviceControl.h</name>
@@ -54,6 +44,26 @@
 			<name>MSP430F5310/boardMSP430.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/boardMSP430.h</locationURI>
+		</link>
+		<link>
+			<name>MSP430F5310/interuptDeviceControl.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/interuptDeviceControl.c</locationURI>
+		</link>
+		<link>
+			<name>Simulator/boardSimulator.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/boardSimulator.c</locationURI>
+		</link>
+		<link>
+			<name>Simulator/boardSimulatorConfig.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/boardSimulatorConfig.h</locationURI>
+		</link>
+		<link>
+			<name>Simulator/interruptSimulator.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/CC3000%20Board/interruptSimulator.c</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

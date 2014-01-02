@@ -27,12 +27,14 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
-#include "cc3000.h"
+#ifndef __TESTDEBUG__
 
-#include "boardMSP430.h"
+#include "wifi.h"
+
+#include "board.h"
+
 #include "evnt_handler.h"
 #include "host_driver_version.h"
-#include <msp430.h>
 #include "netapp.h"
 
 #include "spi.h"
@@ -53,7 +55,7 @@ sockaddr tSocketAddr;
 
 void initDriver(void)
 {
-	WDTCTL = WDTPW + WDTHOLD;
+	initWatchDogTimer();
 
 	//  Board Initialization start
 	ulCC3000DHCP = 0;
@@ -273,7 +275,7 @@ unsigned long socketclosed(void)
 
 int _system_pre_init(void)
 {
-	WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
+	stopWatchDogTimer();
 	return 1;
 }
 
@@ -294,3 +296,5 @@ char *sendBootLoaderPatch(unsigned long *Length)
 	*Length = 0;
 	return NULL;
 }
+
+#endif

@@ -23,37 +23,37 @@
 								<listOptionValue builtIn="false" value="CCS_MBS_VERSION=5.5.0"/>
 								<listOptionValue builtIn="false" value="OUTPUT_TYPE=staticLibrary"/>
 							</option>
-							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1688695438" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="4.2.1" valueType="string"/>
+							<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1688695438" name="Compiler version" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="4.2.1" valueType="string"/>
 							<targetPlatform id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.targetPlatformDebug.1397472005" name="Platform" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.targetPlatformDebug"/>
-							<builder buildPath="${BuildDirectory}" id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.builderDebug.1188833694" name="GNU Make.Debug" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.builderDebug"/>
+							<builder buildPath="${BuildDirectory}" id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.builderDebug.1188833694" keepEnvironmentInBuildfile="false" name="GNU Make" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.builderDebug"/>
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.compilerDebug.1332001625" name="MSP430 Compiler" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.compilerDebug">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_VERSION.59022099" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_VERSION.mspx" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEFINE.410972008" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEFINE" valueType="definedSymbols">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_VERSION.59022099" name="Silicon version (--silicon_version, -v)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_VERSION.mspx" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEFINE.410972008" name="Pre-define NAME (--define, -D)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEFINE" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__CCS__"/>
 									<listOptionValue builtIn="false" value="__MSP430F5310__"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU21.1372869499" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU21" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU22.1677398353" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU22" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU40.1773608402" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU40" value="true" valueType="boolean"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.PRINTF_SUPPORT.380216253" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.PRINTF_SUPPORT.minimal" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ABI.450687980" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ABI" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ABI.eabi" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEBUGGING_MODEL.1290918292" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.INCLUDE_PATH.1170088633" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.INCLUDE_PATH" valueType="includePath">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU21.1372869499" name="Workaround specified silicon errata (--silicon_errata) [CPU21]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU21" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU22.1677398353" name="Workaround specified silicon errata (--silicon_errata) [CPU22]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU22" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU40.1773608402" name="Workaround specified silicon errata (--silicon_errata) [CPU40]" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.SILICON_ERRATA.CPU40" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.PRINTF_SUPPORT.380216253" name="Level of printf/scanf support required (--printf_support)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.PRINTF_SUPPORT" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.PRINTF_SUPPORT.minimal" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ABI.450687980" name="Application binary interface [See 'General' page to edit] (--abi)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ABI" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ABI.eabi" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEBUGGING_MODEL.1290918292" name="Debugging model" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEBUGGING_MODEL" value="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DEBUGGING_MODEL.SYMDEBUG__DWARF" valueType="enumerated"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.INCLUDE_PATH.1170088633" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${CCS_BASE_ROOT}/msp430/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ADVICE__POWER.1948789021" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ADVICE__POWER" value="all" valueType="string"/>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DIAG_WARNING.1703923756" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DIAG_WARNING" valueType="stringList">
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ADVICE__POWER.1948789021" name="Enable checking of ULP power rules (--advice:power)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.ADVICE__POWER" value="all" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DIAG_WARNING.1703923756" name="Treat diagnostic &lt;id&gt; as warning (--diag_warning, -pdsw)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DIAG_WARNING" valueType="stringList">
 									<listOptionValue builtIn="false" value="225"/>
 								</option>
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DISPLAY_ERROR_NUMBER.1525765835" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DISPLAY_ERROR_NUMBER.1525765835" name="Emit diagnostic identifier numbers (--display_error_number, -pden)" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compilerID.DISPLAY_ERROR_NUMBER" value="true" valueType="boolean"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__C_SRCS.696869840" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__C_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__CPP_SRCS.1556296407" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__CPP_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__ASM_SRCS.1842188528" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__ASM_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__ASM2_SRCS.1446538472" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.compiler.inputType__ASM2_SRCS"/>
 							</tool>
 							<tool id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.librarianDebug.1208373948" name="MSP430 Archiver" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.library.librarianDebug">
-								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.archiverID.OUTPUT_FILE.288256456" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.archiverID.OUTPUT_FILE" value="&quot;${ProjName}.lib&quot;" valueType="string"/>
+								<option id="com.ti.ccstudio.buildDefinitions.MSP430_4.2.archiverID.OUTPUT_FILE.288256456" name="Output file" superClass="com.ti.ccstudio.buildDefinitions.MSP430_4.2.archiverID.OUTPUT_FILE" value="&quot;${ProjName}.lib&quot;" valueType="string"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
@@ -119,6 +119,63 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
+		<cconfiguration id="cdt.managedbuild.config.gnu.so.debug.450149516">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.so.debug.450149516" moduleId="org.eclipse.cdt.core.settings" name="TestDebug">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/CC3000 Board"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/CC3000 Board/TestDebug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="CC3000 Board" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="so" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" cleanCommand="rm -rf" description="TestDebug" id="cdt.managedbuild.config.gnu.so.debug.450149516" name="TestDebug" parent="cdt.managedbuild.config.gnu.so.debug">
+					<folderInfo id="cdt.managedbuild.config.gnu.so.debug.450149516." name="/" resourcePath="">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.so.debug.1373017891" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.so.debug">
+							<targetPlatform id="cdt.managedbuild.target.gnu.platform.so.debug.750524277" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.so.debug"/>
+							<builder buildPath="${workspace_loc:/CC3000 Board}/TestDebug" id="cdt.managedbuild.target.gnu.builder.so.debug.1228128901" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.so.debug"/>
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1673725621" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.so.debug.1693278915" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.so.debug">
+								<option id="gnu.cpp.compiler.so.debug.option.optimization.level.2101958965" name="Optimization Level" superClass="gnu.cpp.compiler.so.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.so.debug.option.debugging.level.1313061361" name="Debug Level" superClass="gnu.cpp.compiler.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1317519395" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+							</tool>
+							<tool command="gcc" id="cdt.managedbuild.tool.gnu.c.compiler.so.debug.1359733582" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.so.debug">
+								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.so.debug.option.optimization.level.1493473413" name="Optimization Level" superClass="gnu.c.compiler.so.debug.option.optimization.level" valueType="enumerated"/>
+								<option id="gnu.c.compiler.so.debug.option.debugging.level.1532793658" name="Debug Level" superClass="gnu.c.compiler.so.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1217093455" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="__TESTDEBUG__"/>
+								</option>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.4555896" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.so.debug.1253338204" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.so.debug">
+								<option defaultValue="true" id="gnu.c.link.so.debug.option.shared.1405332203" name="Shared (-shared)" superClass="gnu.c.link.so.debug.option.shared" valueType="boolean"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.so.debug.1901639562" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.so.debug">
+								<option defaultValue="true" id="gnu.cpp.link.so.debug.option.shared.1145561788" name="Shared (-shared)" superClass="gnu.cpp.link.so.debug.option.shared" valueType="boolean"/>
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1082517176" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.so.debug.993582556" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.so.debug">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1798557840" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -134,6 +191,9 @@
 			<content-type-mapping configuration="" content-type="org.eclipse.cdt.core.cxxSource" language="com.ti.ccstudio.core.TIGPPLanguage"/>
 		</project-mappings>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope"/>
 	<storageModule moduleId="null.endianPreference"/>
+	<storageModule moduleId="null.devicePreference"/>
 	<storageModule moduleId="cpuFamily"/>
 </cproject>

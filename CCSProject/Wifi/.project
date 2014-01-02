@@ -26,19 +26,24 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>cc3000.c</name>
+			<name>wifi.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/cc3000.c</locationURI>
-		</link>
-		<link>
-			<name>cc3000.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/cc3000.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifi.h</locationURI>
 		</link>
 		<link>
 			<name>wifiCommun.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifiCommun.h</locationURI>
+		</link>
+		<link>
+			<name>CC3000/cc3000.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/cc3000.c</locationURI>
+		</link>
+		<link>
+			<name>Simulator/wifiSimulator.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Source/Wifi/wifiSimulator.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

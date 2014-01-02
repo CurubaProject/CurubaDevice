@@ -27,6 +27,8 @@
 // for the parts of "CC3000 Host Driver Implementation" used as well as that
 // of the covered work.}
 // ------------------------------------------------------------------------------------------------
+#ifndef __TESTDEBUG__
+
 #include "interuptDeviceControl.h"
 #include "board.h"
 #include "boardMSP430.h"
@@ -251,3 +253,5 @@ __interrupt void IntGPIOHandler(void)
 			break;
 	}
 }
+
+#endif

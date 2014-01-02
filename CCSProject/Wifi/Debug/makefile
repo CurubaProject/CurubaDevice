@@ -2,28 +2,26 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-SHELL = cmd.exe
-
-CG_TOOL_ROOT := C:/ti/ccsv5/tools/compiler/msp430_4.2.1
+CG_TOOL_ROOT := /home/admin02/ccs/ccsv5/tools/compiler/msp430_4.2.1
 
 ORDERED_OBJS += \
 $(GEN_CMDS__FLAG) \
-"./cc3000.obj" \
-"../lib/CC3000 Board.lib" \
-"../lib/CC3000 Spi.lib" \
-"../lib/CC3000HostDriver.lib" \
+"./CC3000/cc3000.obj" \
+"./Simulator/wifiSimulator.obj" \
 
 -include ../makefile.init
 
-RM := DEL /F
-RMDIR := RMDIR /S/Q
+RM := rm -rf
+RMDIR := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir_vars.mk
--include lib/subdir_vars.mk
+-include Simulator/subdir_vars.mk
+-include CC3000/subdir_vars.mk
 -include subdir_rules.mk
--include lib/subdir_rules.mk
+-include Simulator/subdir_rules.mk
+-include CC3000/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -115,18 +113,18 @@ endif
 all: Wifi.lib
 
 # Tool invocations
-Wifi.lib: $(OBJS) $(LIB_SRCS)
+Wifi.lib: $(OBJS) $(O_SRCS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MSP430 Archiver'
-	"C:/ti/ccsv5/tools/compiler/msp430_4.2.1/bin/ar430" r "Wifi.lib" $(ORDERED_OBJS)
+	"/home/admin02/ccs/ccsv5/tools/compiler/msp430_4.2.1/bin/ar430" r "Wifi.lib" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(MSP430_LIBRARY_OUTPUTS__QUOTED) "Wifi.lib"
-	-$(RM) "cc3000.pp" 
-	-$(RM) "cc3000.obj" 
+	-$(RM) "Simulator/wifiSimulator.pp" "CC3000/cc3000.pp" 
+	-$(RM) "Simulator/wifiSimulator.obj" "CC3000/cc3000.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
