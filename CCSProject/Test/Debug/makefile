@@ -51,7 +51,7 @@ all: Test
 Test: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L"/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/CurubaDevice_OLD/TestDebug" -L"/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/Wifi/TestDebug" -L"/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/CC3000 Board/TestDebug" -Wl,-rpath=/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/CurubaDevice_OLD/TestDebug,-rpath=/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/Wifi/TestDebug,-rpath="/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/CC3000 Board/TestDebug" -o "Test" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/CurubaDevice_OLD/TestDebug" -L"/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/Wifi/TestDebug" -L"/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/Board/TestDebug" -Wl,-rpath=/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/CurubaDevice_OLD/TestDebug,-rpath=/home/admin02/ccs/CCS_5_5_0_00077/CCSProject/Wifi/TestDebug,-rpath="" -o "Test" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

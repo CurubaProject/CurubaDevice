@@ -7,6 +7,7 @@
 		<project>CC3000 Spi</project>
 		<project>CC3000HostDriver</project>
 		<project>Wifi</project>
+		<project>Board</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

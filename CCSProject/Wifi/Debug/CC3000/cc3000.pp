@@ -3,8 +3,8 @@
 CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/Wifi/cc3000.c
 CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/Wifi/wifi.h
 CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/Wifi/wifiCommun.h
-CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000\ Board/board.h
-CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000\ Board/interuptDeviceControl.h
+CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/Board/board.h
+CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/Board/interuptDeviceControl.h
 CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/evnt_handler.h
 CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/hci.h
 CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/cc3000_common.h
@@ -28,8 +28,8 @@ CC3000/cc3000.obj: /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/wla
 /home/admin02/ccs/CCS_5_5_0_00077/Source/Wifi/cc3000.c: 
 /home/admin02/ccs/CCS_5_5_0_00077/Source/Wifi/wifi.h: 
 /home/admin02/ccs/CCS_5_5_0_00077/Source/Wifi/wifiCommun.h: 
-/home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000\ Board/board.h: 
-/home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000\ Board/interuptDeviceControl.h: 
+/home/admin02/ccs/CCS_5_5_0_00077/Source/Board/board.h: 
+/home/admin02/ccs/CCS_5_5_0_00077/Source/Board/interuptDeviceControl.h: 
 /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/evnt_handler.h: 
 /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/hci.h: 
 /home/admin02/ccs/CCS_5_5_0_00077/Source/CC3000HostDriver/cc3000_common.h: 

@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lCurubaDevice -lWifi -lCC3000\ Board
+LIBS := -lCurubaDevice -lWifi -lBoard
 

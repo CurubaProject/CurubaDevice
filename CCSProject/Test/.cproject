@@ -47,12 +47,12 @@
 								<option id="gnu.cpp.link.option.paths.1630788148" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CurubaDevice/TestDebug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Wifi/TestDebug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CC3000 Board/TestDebug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Board/TestDebug}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.641041604" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="CurubaDevice"/>
 									<listOptionValue builtIn="false" value="Wifi"/>
-									<listOptionValue builtIn="false" value="CC3000 Board"/>
+									<listOptionValue builtIn="false" value="Board"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.1687004296" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-Wl,-rpath=${workspace_loc:/CurubaDevice/TestDebug},-rpath=${workspace_loc:/Wifi/TestDebug},-rpath=&quot;${workspace_loc:/CC3000 Board/TestDebug}&quot;" valueType="string"/>
 								<option id="gnu.cpp.link.option.shared.1059951376" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
