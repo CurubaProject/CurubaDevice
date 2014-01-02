@@ -19,13 +19,11 @@
 *.out
 *.app
 
-/CCSProject/CC3000 Board/Debug/*
-/CCSProject/CC3000 Board/Release/*
+/CCSProject/Board/Debug/*
+/CCSProject/Board/Release/*
 /CCSProject/CC3000 Spi/Debug/*
 /CCSProject/CC3000 Spi/Release/*
 /CCSProject/CC3000HostDriver/Debug/*
 /CCSProject/CC3000HostDriver/Release/*
 /CCSProject/CurubaDevice/Debug/*
 /CCSProject/CurubaDevice/Release/*
-/CCSProject/CurubaDevice_OLD/Debug/*
-/CCSProject/CurubaDevice_OLD/Release/*
