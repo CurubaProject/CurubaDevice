@@ -51,7 +51,7 @@ int connectServer(unsigned char* serverIP, unsigned char* serverPort);
 int connectWifi(char* SSIDName, unsigned char* SSIDKey, unsigned short SSIDType);
 int pingServer(unsigned char* serverIP, unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout);
 
-void updateIPinfo(LanConfig* lanconfig);
+void updateLanConfig(LanConfig* lanconfig);
 void updateAsyncEvent(void);
 void callCloseSocket(void);
 

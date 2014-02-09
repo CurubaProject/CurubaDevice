@@ -107,7 +107,6 @@
 #define CTRL_1      BIT5	//P1.5
 #define CTRL_2      BIT6	//P1.6
 
-
 #define CTRL_DIR    P1DIR
 #define CTRL_SEL    P1SEL
 #define CTRL_OUT    P1OUT
@@ -121,16 +120,6 @@
 #define OPTION2    BIT3		//P6.3
 
 #define ADC_SEL    P6SEL
-
-void pio_init();
-
-long ReadWlanInterruptPin(void);
-void WlanInterruptEnable();
-void WlanInterruptDisable();
-void WriteWlanPin( unsigned char val );
-
-void initClk(void);
-void DissableSwitch();
 
 void LFXT_Start(unsigned int xtdrive);
 void Init_FLL_Settle(unsigned int fsystem, unsigned int ratio);

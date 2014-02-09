@@ -1,1 +1,1 @@
-"./CC3000/cc3000.obj" "./Simulator/wifiSimulator.obj" 
+"./src/CC3000/cc3000.obj" "./src/Simulator/wifiSimulator.obj" 

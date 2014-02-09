@@ -197,7 +197,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.cross.so.debug.1131637167." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.so.debug.1833466551" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.so.debug">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.490208508" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder buildPath="${workspace_loc:/CurubaDevice}/TestDebug" id="cdt.managedbuild.builder.gnu.cross.730124962" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
+							<builder buildPath="${BuildDirectory}" id="cdt.managedbuild.builder.gnu.cross.730124962" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.460320007" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1805804552" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.146458160" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>

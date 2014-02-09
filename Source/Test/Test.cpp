@@ -8,7 +8,7 @@
 void runAllTests(int argc, char const *argv[]){
 	cute::suite s;
 
-	//TODO add your test here
+	// Add your test here
 	s.push_back(CUTE(test_pushTransmit));
 	s.push_back(CUTE(test_MultiplePushTransmit));
 

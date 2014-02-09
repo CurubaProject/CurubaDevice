@@ -40,9 +40,6 @@
 #include "spi.h"
 #include "wlan.h"
 
-#define MAXKEYSIZE 32
-#define MAXSSIDNAMESIZE 16
-
 netapp_pingreport_args_t pingReport;
 
 volatile unsigned long  ulCC3000Connected,
@@ -50,8 +47,6 @@ volatile unsigned long  ulCC3000Connected,
                         ulCC3000SocketClosed,
                         ulPingReceived;
 volatile long ulSocketTCP;
-sockaddr tSocketAddr;
-
 
 void initDriver(void)
 {
@@ -64,7 +59,7 @@ void initDriver(void)
 	ulPingReceived = 0;
 
 	// Init GPIO's
-	pio_init();
+	pio_init_wifi();
 
 	//init all layers
 	init_spi();
@@ -74,11 +69,6 @@ void initDriver(void)
 
 void initCC3000(void)
 {
-	const unsigned char pucIP_Addr[4] = { 0, 0, 0, 0 };
-	const unsigned char pucIP_DefaultGWAddr[4] = { 0, 0, 0, 0 };
-	const unsigned char pucSubnetMask[4] = { 0, 0, 0, 0 };
-	const unsigned char pucDNS[4] = { 0, 0, 0, 0 };
-
 	// WLAN On API Implementation
 	wlan_init(CC3000_UsynchCallback,
 			sendWLFWPatch,
@@ -89,35 +79,11 @@ void initCC3000(void)
 			WlanInterruptDisable,
 			WriteWlanPin);
 
-	__delay_cycles(10000);
-
 	// Trigger a WLAN device without Flag
 	wlan_start(0);
 
-	// DHCP is used by default
-	//Force DHCP
-	netapp_dhcp((unsigned long *) pucIP_Addr,
-			(unsigned long *) pucSubnetMask,
-			(unsigned long *) pucIP_DefaultGWAddr,
-			(unsigned long *) pucDNS);
-
 	wlan_ioctl_set_connection_policy(DISABLE, DISABLE, DISABLE);
 	wlan_ioctl_del_profile(255); //clear all profiles
-
-	//Wait until CC3000 is disconnected
-	while (ulCC3000Connected == 1)
-	{
-		__delay_cycles(100);
-		hci_unsolicited_event_handler();
-	}
-
-	ulCC3000Connected = 0;
-	ulCC3000DHCP = 0;
-
-	//init device
-	wlan_stop();
-	__delay_cycles(100000);
-	wlan_start(0);
 
 	// Mask out all non-required events from CC3000
 	wlan_set_event_mask(HCI_EVNT_WLAN_KEEPALIVE | HCI_EVNT_WLAN_UNSOL_INIT);
@@ -125,27 +91,14 @@ void initCC3000(void)
 
 void initSocket(void)
 {
-	unsigned long socketTimeout = 10;
-	int iReturnValue = -1;
-
-	ulPingReceived = 0;
 	ulSocketTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	while (iReturnValue != 0)
-	{
-		iReturnValue = setsockopt(ulSocketTCP,
-											SOL_SOCKET,
-											SOCKOPT_RECV_TIMEOUT,
-											&socketTimeout,
-											sizeof(socketTimeout));
-		__delay_cycles(10000);
-	}
-
-	updateAsyncEvent();
-	updateAsyncEvent();
-	updateAsyncEvent();
-
-	__delay_cycles(1000000);
+	unsigned long socketTimeout = 10;
+	int iReturnValue = setsockopt(ulSocketTCP,
+									SOL_SOCKET,
+									SOCKOPT_RECV_TIMEOUT,
+									&socketTimeout,
+									sizeof(socketTimeout));
 }
 
 void configDHCP(unsigned long aucDHCP, unsigned long aucARP, unsigned long aucKeepalive, unsigned long aucInactivity)
@@ -160,14 +113,12 @@ void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
     {
         ulCC3000Connected = 1;
     }
-
-    if (lEventType == HCI_EVNT_WLAN_UNSOL_DISCONNECT)
+    else if (lEventType == HCI_EVNT_WLAN_UNSOL_DISCONNECT)
     {
         ulCC3000Connected = 0;
         ulCC3000DHCP = 0;
     }
-
-    if (lEventType == HCI_EVNT_WLAN_UNSOL_DHCP)
+    else if (lEventType == HCI_EVNT_WLAN_UNSOL_DHCP)
     {
         if ( *(data + NETAPP_IPCONFIG_MAC_OFFSET) == 0)
         {
@@ -178,8 +129,7 @@ void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
             ulCC3000DHCP = 0;
         }
     }
-
-    if (lEventType == HCI_EVNT_WLAN_ASYNC_PING_REPORT)
+    else if (lEventType == HCI_EVNT_WLAN_ASYNC_PING_REPORT)
     {
         memcpy(&pingReport, data, length);
 
@@ -187,13 +137,11 @@ void CC3000_UsynchCallback(long lEventType, char * data, unsigned char length)
         {
         	ulPingReceived = 1;
         }
-
     }
-    if (lEventType == HCI_EVNT_BSD_TCP_CLOSE_WAIT)
+    else if (lEventType == HCI_EVNT_BSD_TCP_CLOSE_WAIT)
     {
         ulCC3000SocketClosed = 1;
     }
-
 }
 
 int receivePackets(unsigned char* requestBuffer)
@@ -209,6 +157,7 @@ void sendPackets(char* pcData, int length)
 
 int connectServer(unsigned char* serverIP, unsigned char* serverPort)
 {
+	sockaddr tSocketAddr;
 	// the family is always AF_INET
 	tSocketAddr.sa_family = AF_INET;
 
@@ -232,15 +181,12 @@ int connectWifi(char* SSIDName, unsigned char* SSIDKey, unsigned short SSIDType)
 
 int pingServer(unsigned char* serverIP, unsigned long ulPingAttempts, unsigned long ulPingSize, unsigned long ulPingTimeout)
 {
-	int iReturnping = netapp_ping_send((unsigned long *) serverIP, ulPingAttempts, ulPingSize, ulPingTimeout);
-	__delay_cycles(100000);
-	return(iReturnping);
+	return(netapp_ping_send((unsigned long *) serverIP, ulPingAttempts, ulPingSize, ulPingTimeout));
 }
 
-void updateIPinfo(LanConfig* lanconfig)
+void updateLanConfig(LanConfig* lanconfig)
 {
 	tNetappIpconfigRetArgs cc3000config;
-	__delay_cycles(3000000); //Wait Important the CC3000 get IP from DHCP //__delay_cycles(50000000);
 	netapp_ipconfig(&cc3000config);
 
 	memcpy(lanconfig, &cc3000config, sizeof(LanConfig));
@@ -249,7 +195,6 @@ void updateIPinfo(LanConfig* lanconfig)
 void updateAsyncEvent(void)
 {
 	hci_unsolicited_event_handler();
-	__delay_cycles(100);
 }
 
 void callCloseSocket(void)
@@ -260,7 +205,7 @@ void callCloseSocket(void)
 
 unsigned long wifiConnected(void)
 {
-	return(ulCC3000Connected);
+	return(ulCC3000Connected && ulCC3000DHCP);
 }
 
 unsigned long pingReceived(void)

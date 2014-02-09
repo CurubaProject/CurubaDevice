@@ -49,6 +49,7 @@ void WriteWlanPin(unsigned char trueFalse){}
 void LFXT_Start(unsigned int xtdrive){}
 
 void pio_init() {}
+void pio_init_wifi() {}
 void readADC(int ADC_number) {}
 void TimerStart(int timer_number) {}
 void TimerStop(int timer_number) {}

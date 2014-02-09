@@ -37,9 +37,6 @@
 #define PING_SIZE                       (40)
 #define PING_TIMEOUT                    (20)
 
-#define DELAY5SEC						(40)
-#define DELAY2SEC						(20)
-
 #define REQ_BUFFER_SIZE 100
 
 void initNetwork();

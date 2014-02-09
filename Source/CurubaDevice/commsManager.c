@@ -33,7 +33,7 @@
 
 int pop(comms**, comms**, comms**);
 void push(comms*, comms**, comms**, comms*);
-
+unsigned short haveComms(comms** ptrFirst, comms** ptrLast);
 /* End Private Function */
 
 comms comms_receive_array[5];
@@ -48,11 +48,7 @@ int pop(comms** ptrFirst, comms** ptrLast, comms** ptrPop)
 {
 	int StateComms = NOCOMMS;
 
-	if (*ptrFirst == *ptrLast)
-	{
-		StateComms = NOCOMMS;
-	}
-	else
+	if ( !haveComms(ptrFirst, ptrLast) )
 	{
 		*ptrPop = *ptrFirst;
 		(*ptrFirst)++;
@@ -99,4 +95,14 @@ int popReceive(comms** PtrPop)
 void pushReceive(comms* newComms)
 {
 	push(comms_receive_array, &ReceiveFirst, &ReceivePush, newComms);
+}
+
+unsigned short haveComms(comms** ptrFirst, comms** ptrLast)
+{
+	return *ptrFirst != *ptrLast;
+}
+
+unsigned short haveTransmitComms()
+{
+	 return haveComms(&TransmitFirst, &TransmitPush);
 }

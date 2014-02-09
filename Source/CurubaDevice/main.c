@@ -35,15 +35,17 @@
 
 int main(void)
 {
-	initNetwork();
 	initApp();
+	initNetwork();
 
 	while (1)
 	{
 		checkNetwork();
 
-		//TODO ONLY IF ARRAY IF NOT NULL
-		notify(EVENT_PAYLOAD_TOSEND);
+		if (haveTransmitComms())
+		{
+			notify(EVENT_PAYLOAD_TOSEND);
+		}
 
 		doEvent();
 

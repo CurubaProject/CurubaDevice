@@ -49,4 +49,6 @@ void pushTransmit(comms* newComms);
 int popReceive(comms** PtrPop);
 void pushReceive(comms* newComms);
 
+unsigned short haveTransmitComms();
+
 #endif /* COMMSMANAGER_H_ */

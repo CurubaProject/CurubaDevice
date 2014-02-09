@@ -232,85 +232,6 @@ PMMIFG	&= ~(SVSMHDLYIFG + SVSMLDLYIFG);
 	return PMM_STATUS_OK;                     // Return: OK
 }
 
-//*****************************************************************************
-//
-//! ReadWlanInterruptPin
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  return wlan interrup pin
-//
-//*****************************************************************************
-long ReadWlanInterruptPin(void) {
-	// Return the status of IRQ
-	return (SPI_IRQ_IN & SPI_IRQ_PIN);
-}
-
-//*****************************************************************************
-//
-//! WlanInterruptEnable
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  Enable waln IrQ pin
-//
-//*****************************************************************************
-
-void WlanInterruptEnable() {
-	SPI_IRQ_IES |= SPI_IRQ_PIN;
-	SPI_IRQ_IE |= SPI_IRQ_PIN;
-}
-
-//*****************************************************************************
-//
-//! WlanInterruptDisable
-//!
-//! @param  none
-//!
-//! @return none
-//!
-//! @brief  Disable waln IrQ pin
-//
-//*****************************************************************************
-
-void WlanInterruptDisable() {
-	SPI_IRQ_IE &= ~SPI_IRQ_PIN;
-}
-
-//*****************************************************************************
-//
-//! WriteWlanPin
-//!
-//! @param  val value to write to wlan pin
-//!
-//! @return none
-//!
-//! @brief  write value to wlan pin
-//
-//*****************************************************************************
-
-void WriteWlanPin(unsigned char trueFalse) {
-	if (trueFalse) {
-		WLAN_EN_OUT |= WLAN_EN_PIN;                 // RF_EN_PIN high
-	} else {
-		WLAN_EN_OUT &= ~WLAN_EN_PIN;                // RF_EN_PIN low
-	}
-}
-
-void initWatchDogTimer()
-{
-	WDTCTL = WDTPW + WDTHOLD;
-}
-
-void stopWatchDogTimer()
-{
-	WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
-}
-
 void LFXT_Start(unsigned int xtdrive) {
 	// If the drive setting is not already set to maximum
 	// Set it to max for LFXT startup
@@ -428,8 +349,6 @@ __interrupt void Trap_ISR(void) {
 
 #endif
 
-
-
 /* PRIVATE FUNCTION */
 void initClk();
 /* END PRIVATE FUNCTION */
@@ -458,23 +377,6 @@ void pio_init()
 
 	//init Leds
 	initLEDs();
-
-	// WLAN enable
-	WLAN_EN_OUT &= ~WLAN_EN_PIN;
-	WLAN_EN_DIR |= WLAN_EN_PIN;
-
-	// SPI IRQ enable
-	SPI_IRQ_DIR &= ~SPI_IRQ_PIN;
-
-	// Port initialization for SPI operation
-	SPI_SEL |= SPI_CLK + SPI_SOMI + SPI_SIMO;
-	SPI_DIR |= SPI_CLK + SPI_SIMO;
-	SPI_REN |= SPI_SOMI;                        // Pull-Ups on RF Interface SOMI
-	SPI_OUT |= SPI_SOMI;
-
-	RF_CS_SEL &= ~RF_CS;
-	RF_CS_OUT |= RF_CS;
-	RF_CS_DIR |= RF_CS;
 
 	// Port initialisation SWITCH_B1
 	SWITCH_B1_SEL &= ~SWITCH_B1_1;
@@ -517,6 +419,27 @@ void pio_init()
 	__enable_interrupt();
 }
 
+void pio_init_wifi()
+{
+	// WLAN enable
+	WLAN_EN_OUT &= ~WLAN_EN_PIN;
+	WLAN_EN_DIR |= WLAN_EN_PIN;
+
+	// SPI IRQ enable
+	SPI_IRQ_DIR &= ~SPI_IRQ_PIN;
+
+	// Port initialization for SPI operation
+	SPI_SEL |= SPI_CLK + SPI_SOMI + SPI_SIMO;
+	SPI_DIR |= SPI_CLK + SPI_SIMO;
+	SPI_REN |= SPI_SOMI;                        // Pull-Ups on RF Interface SOMI
+	SPI_OUT |= SPI_SOMI;
+
+	RF_CS_SEL &= ~RF_CS;
+	RF_CS_OUT |= RF_CS;
+	RF_CS_DIR |= RF_CS;
+}
+
+
 //*****************************************************************************
 //
 //! initClk
@@ -558,33 +481,28 @@ void readADC(int ADC_number)
 
 	TimerStart(TIMER_0);
 
-	while((TA0CTL>>4 & 0x0001) == 1)
-	{
-
-	}
+	while((TA0CTL>>4 & 0x0001) == 1);
 }
 
 void TimerStart(int timer_number)
 {
-	//TODO Change to switch
-	if (timer_number == TIMER_0)
+	switch (timer_number)
 	{
-		TA0R = 0;
-		TA0CTL |= MC_1;
-	}
-	else if (timer_number == TIMER_1)
-	{
-		TA1R = 0;
-		TA1CTL |= MC_1;
-	}
-	else if (timer_number == TIMER_2)
-	{
-		TA2R = 0;
-		TA2CTL |= MC_1;
-	}
-	else if (timer_number == TIMERB_0)
-	{
-		TB0CTL |= MC_1; //Start timer in Up-mode
+		case TIMER_0:
+			TA0R = 0;
+			TA0CTL |= MC_1;
+			break;
+		case TIMER_1:
+			TA1R = 0;
+			TA1CTL |= MC_1;
+			break;
+		case TIMER_2:
+			TA2R = 0;
+			TA2CTL |= MC_1;
+			break;
+		case TIMERB_0:
+			TB0CTL |= MC_1;
+			break;
 	}
 }
 
@@ -604,8 +522,6 @@ void TimerStop(int timer_number)
 		case TIMERB_0:
 			TB0CTL &= TIMER_OFF; //Halt timer
 			TB0R = 0;
-			break;
-		default:
 			break;
 	}
 }
@@ -843,6 +759,86 @@ void toggleLed(char ledNum) {
 int getValueCurrentVolt()
 {
 	return ADC10MEM0;
+}
+
+
+//*****************************************************************************
+//
+//! ReadWlanInterruptPin
+//!
+//! @param  none
+//!
+//! @return none
+//!
+//! @brief  return wlan interrup pin
+//
+//*****************************************************************************
+long ReadWlanInterruptPin(void) {
+	// Return the status of IRQ
+	return (SPI_IRQ_IN & SPI_IRQ_PIN);
+}
+
+//*****************************************************************************
+//
+//! WlanInterruptEnable
+//!
+//! @param  none
+//!
+//! @return none
+//!
+//! @brief  Enable waln IrQ pin
+//
+//*****************************************************************************
+
+void WlanInterruptEnable() {
+	SPI_IRQ_IES |= SPI_IRQ_PIN;
+	SPI_IRQ_IE |= SPI_IRQ_PIN;
+}
+
+//*****************************************************************************
+//
+//! WlanInterruptDisable
+//!
+//! @param  none
+//!
+//! @return none
+//!
+//! @brief  Disable waln IrQ pin
+//
+//*****************************************************************************
+
+void WlanInterruptDisable() {
+	SPI_IRQ_IE &= ~SPI_IRQ_PIN;
+}
+
+//*****************************************************************************
+//
+//! WriteWlanPin
+//!
+//! @param  val value to write to wlan pin
+//!
+//! @return none
+//!
+//! @brief  write value to wlan pin
+//
+//*****************************************************************************
+
+void WriteWlanPin(unsigned char trueFalse) {
+	if (trueFalse) {
+		WLAN_EN_OUT |= WLAN_EN_PIN;                 // RF_EN_PIN high
+	} else {
+		WLAN_EN_OUT &= ~WLAN_EN_PIN;                // RF_EN_PIN low
+	}
+}
+
+void initWatchDogTimer()
+{
+	WDTCTL = WDTPW + WDTHOLD;
+}
+
+void stopWatchDogTimer()
+{
+	WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
 }
 
 

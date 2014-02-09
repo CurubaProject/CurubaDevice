@@ -38,6 +38,7 @@
 #include "commun.h"
 #include "deviceInfoState.h"
 #include "eventManager.h"
+#include "timer.h"
 
 #include "board.h"
 
@@ -60,6 +61,8 @@ unsigned char _serverIP[4] = { 192, 168, 0, 100 };
 unsigned char _serverPort[2] = { 0x13, 0x88 }; // Port 5000 or 0x1388
 unsigned char requestBuffer[REQ_BUFFER_SIZE];
 
+unsigned short connecting = 0;
+
 /* Private Function */
 
 void connectToWifi();
@@ -71,13 +74,15 @@ void connectToServer();
 /* EVENT FUNCTION */
 void do_event_wifi_connected()
 {
+	stopTimer(EVENT_WIFI_CONNECTION_TIMEOUT);
+
 	const unsigned long aucDHCP = 14400;
 	const unsigned long aucARP = 3600;
 	const unsigned long aucKeepalive = 10;
 	const unsigned long aucInactivity = 0;
 
 	configDHCP(aucDHCP, aucARP, aucKeepalive, aucInactivity);
-	updateIPinfo(&(getDeviceInfoState()->lanConfig));
+	updateLanConfig(&(getDeviceInfoState()->lanConfig));
 
 	connectToServer();
 }
@@ -89,6 +94,7 @@ void do_event_wifi_disconnected()
 
 void do_event_socket_connected()
 {
+	stopTimer(EVENT_SOCKET_CONNECTION_TIMEOUT);
 	getDeviceInfoState()->ledState = LED_STATE_CONNECTED;
 }
 
@@ -99,12 +105,12 @@ void do_event_socket_disconnected()
 
 void do_event_heartbeat_received()
 {
-	//TODO CLEAR TIMEOUT
+	stopTimer(EVENT_HEARTBEAT_TIMEOUT);
 }
 
 void do_event_inforequest_received()
 {
-	//TODO CLEAR TIMEOUT
+	stopTimer(EVENT_INFOREQUEST_TIMEOUT);
 }
 
 void do_event_packetsReceived()
@@ -119,6 +125,7 @@ void initNetwork(void)
 	getDeviceInfoState()->ledState = LED_STATE_UNCONNECTED;
 
 	initDriver();
+	initTimer();
 
 	// Initialize the RX Buffer
 	memset(requestBuffer, 0, sizeof(requestBuffer));
@@ -126,21 +133,18 @@ void initNetwork(void)
 
 void connectToWifi()
 {
-    int iReturnConnect;
-    unsigned long ulReftime;
+	connecting = 1;
 
-	iReturnConnect = connectWifi(_SSIDName, _SSIDKey, _SSIDType);
+    int iReturnConnect = connectWifi(_SSIDName, _SSIDKey, _SSIDType);
 
-	ulReftime = getDeviceInfoState()->timeCounter;
-	while (iReturnConnect == 0 && wifiConnected() == 0 && getTimeElapsed(getDeviceInfoState()->timeCounter, ulReftime) < DELAY5SEC) //Wait 5 sec
-	{
-		updateAsyncEvent();
-	}
-
-	if(wifiConnected() == 1)
-	{
-		notify(EVENT_WIFI_CONNECTED);
-	}
+    if (!iReturnConnect)
+    {
+    	startTimer(EVENT_WIFI_CONNECTION_TIMEOUT);
+    }
+    else
+    {
+    	connectToWifi();
+    }
 }
 
 void connectToServer()
@@ -162,20 +166,31 @@ void checkNetwork()
 {
     updateAsyncEvent();
 
-	if (wifiConnected() == 0)
-	{
-		connectToWifi();
-	}
-
-    if(socketclosed() == 1)
+    if ( connecting == 1 )
     {
-		notify(EVENT_SOCKET_DISCONNECTED);
+    	if(wifiConnected() == 1)
+    	{
+    		notify(EVENT_WIFI_CONNECTED);
+        	connecting = 0;
+    	}
     }
+    else
+    {
+    	if (wifiConnected() == 0)
+    	{
+    		connectToWifi();
+    	}
 
-	if (receivePackets(requestBuffer) > 0)
-	{
-		notify(EVENT_PACKETS_RECEIVED);
-	}
+        if(socketclosed() == 1)
+        {
+    		notify(EVENT_SOCKET_DISCONNECTED);
+        }
+
+    	if (receivePackets(requestBuffer) > 0)
+    	{
+    		notify(EVENT_PACKETS_RECEIVED);
+    	}
+    }
 }
 
 #ifndef __TESTDEBUG__

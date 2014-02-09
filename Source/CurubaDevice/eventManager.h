@@ -30,6 +30,8 @@
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 
+#define Event unsigned int
+
 #define EVENT_WIFI_CONNECTED 0x0001
 #define EVENT_WIFI_DISCONNECTED 0x0002
 #define EVENT_WIFI_CONNECTION_TIMEOUT 0x0004
@@ -71,7 +73,7 @@ void do_event_payloadReceived();
 void do_event_payloadToSend();
 /**/
 
-void notify(unsigned int newEvent);
+void notify(Event newEvent);
 void doEvent();
 
 #endif

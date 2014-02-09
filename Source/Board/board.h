@@ -55,8 +55,8 @@
 
 #include "interuptDeviceControl.h"
 
-// TODO REMOVE pio_init from wifi project
 void pio_init();
+void pio_init_wifi();
 
 void readADC(int ADC_number);
 void TimerStart(int timer_number);

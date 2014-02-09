@@ -47,6 +47,8 @@ void callback_ledTimer();
 
 void initApp()
 {
+	pio_init();
+
 	//Type of module
 	device = createTypeDevice(readAppSwitch());
 
